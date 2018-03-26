@@ -49,6 +49,8 @@ data=scipy.io.loadmat(data_set_file, mdict=None, appendmat=True)
 u=data['u']
 v=data['v']
 w=data['w']
+#vspace=copy.copy(u)
+#vspace[0:192,0:192,0:192]=0
 
 if check_data:
     ok=True
@@ -65,6 +67,7 @@ if check_data:
     if ok:print('data is rectangular and ok')
     else:print('data not fine')
 
+vspace=np.zeros(np.shape(u))
 delta=2.*math.pi/np.shape(u)[0]
 x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
@@ -234,8 +237,6 @@ if to_load:
     print ('\n',calc_time,'sec  loaded calculation')
 else:
     if to_calc_Q:
-        vspace=copy.copy(u)
-        vspace[0:192,0:192,0:192]=0
         print ('start calc')
         stop1 = time.clock()
         for i in range(n_elements):
@@ -245,8 +246,6 @@ else:
         calc_time=int((time.clock()-stop1)*10000)/10000.
         print ('\n',calc_time,'sec  Q criterion calculation')
     elif to_calc_Lambda2:
-        vspace=copy.copy(u)
-        vspace[0:192,0:192,0:192]=0
         print ('start calc')
         stop1 = time.clock()
         for i in range(n_elements):
