@@ -25,3 +25,5 @@ points =27000   order of method=5  method=Q         time taken=2.9515sec    time
 points =27000   order of method=5  method=Q         time taken=2.9754sec    time per point=110.19999999999999^10-6  
 points =27000   order of method=5  method=Q         time taken=2.9923sec    time per point=110.82592592592593^10-6  
 points =27000   order of method=5  method=Q         time taken=2.854sec    time per point=105.70370370370371^10-6  
+points =27000   order of method=5  method=Q         time taken=2.7784sec    time per point=102.90370370370371^10-6  
+points =27000   order of method=5  method=Q         time taken=2.797sec    time per point=103.5925925925926^10-6  

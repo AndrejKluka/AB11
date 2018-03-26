@@ -1,32 +1,35 @@
 import time
 start = time.clock()
-# Modules used for plotting 
+#   Modules used for plotting 
 from matplotlib import pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-import matplotlib.pyplot
+#   import matplotlib.pyplot
 import plotly.plotly as py
 import plotly
 from plotly.graph_objs import *
 import plotly.figure_factory
+
+#   graveyard pf unused module for now
+#import matplotlib.pyplot
+#from mpl_toolkits.mplot3d import Axes3D
 #import Gnuplot as gp
-#plotly authentification
+
+#plotly authentification, I can give you the access to the account just ask
 plotly.tools.set_credentials_file(username='hunter139', api_key='lgN7Sd8dqPktT2wwpfCc')
 
-# For general life
+#   Modules for general life
 from os import path
 import scipy.io
 import scipy
 import numpy as np
 from skimage import measure
 import math
-import copy
 
 stop= time.clock()
 print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 
-# General setup for program
+#   General setup for program run
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
@@ -34,14 +37,14 @@ n_elements=30          # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 q_threshold=0.16          # threshold for marching cubes algorithm 
-order_der_method=5  # only 2 or 4 are implemented 3 is 2 but new
-data_num=1
-check_data=False
+order_der_method=5       # only 2 or 4 are implemented 3 is 2 but new
+data_num=1              # 0 for validation dataset, 1 for raw_data_1
+check_data=False        # check only first time you are using dataset
 
 
 data_set=['validation_Q_l2','raw_data_1']
 
-# reading raw dataset and putting them into u,v,w arrays
+#   reading raw dataset and putting them into u,v,w arrays
 calculated_data_dir=path.join(path.dirname(__file__),'calculated data') 
 data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num])
 calculated_data_file=path.join(calculated_data_dir,'vspace-'+data_set[data_num]+'.npy') 
@@ -49,8 +52,6 @@ data=scipy.io.loadmat(data_set_file, mdict=None, appendmat=True)
 u=data['u']
 v=data['v']
 w=data['w']
-#vspace=copy.copy(u)
-#vspace[0:192,0:192,0:192]=0
 
 if check_data:
     ok=True
@@ -75,10 +76,10 @@ z_max=np.shape(u)[2]-1
 if n_elements>x_max:
     n_elements=x_max
 
-# Definitions  for calculations
-def vel_der_ord2(vcomp,axis,p): #p is for point
+#   Definitions  for calculations
+def vel_der_ord2(vcomp,axis,p): # p is for point
     if axis=='x':
-        s=np.array([1,0,0])  #s is for s
+        s=np.array([1,0,0])  #s is for step
         if p[0]==0: return (vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]] - vcomp[p[0],p[1],p[2]])/delta
         elif p[0]==x_max: return (vcomp[p[0],p[1],p[2]] - vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])/delta
     elif axis=='y':
@@ -92,9 +93,9 @@ def vel_der_ord2(vcomp,axis,p): #p is for point
     else: print ('wrong axis')   
     return (vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])/2./delta
 
-def vel_der_ord2new(vcomp,axis,p): #p is for point
+def vel_der_ord2new(vcomp,axis,p):
     if axis=='x':
-        s=np.array([1,0,0])  #s is for s
+        s=np.array([1,0,0])
         if p[0]==0: return (vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[x_max,p[1]-s[1],p[2]-s[2]])/2./delta
         elif p[0]==x_max: return (vcomp[0,p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])/2./delta
     elif axis=='y':
@@ -108,9 +109,9 @@ def vel_der_ord2new(vcomp,axis,p): #p is for point
     else: print ('wrong axis')   
     return (vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])/2./delta
 
-def vel_der_ord4(vcomp,axis,p): #p is for point
+def vel_der_ord4(vcomp,axis,p):
     if axis=='x':
-        s=np.array([1,0,0])  #s is for step
+        s=np.array([1,0,0])
         if p[0]==0: return (vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]] - vcomp[p[0],p[1],p[2]])/delta
         elif p[0]==x_max: return (vcomp[p[0],p[1],p[2]] - vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])/delta
         elif p[0]==1: return (vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])/2./delta
@@ -130,9 +131,9 @@ def vel_der_ord4(vcomp,axis,p): #p is for point
     else: print ('wrong axis')   
     return (8*(vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])-vcomp[p[0]+2*s[0],p[1]+2*s[1],p[2]+2*s[2]]+vcomp[p[0]-2*s[0],p[1]-2*s[1],p[2]-2*s[2]])/12./delta
     
-def vel_der_ord4new(vcomp,axis,p): #p is for point
+def vel_der_ord4new(vcomp,axis,p):
     if axis=='x':
-        s=np.array([1,0,0])  #s is for step
+        s=np.array([1,0,0])
         if p[0]==0: return (8*(vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[x_max,p[1]-s[1],p[2]-s[2]])-vcomp[p[0]+2*s[0],p[1]+2*s[1],p[2]+2*s[2]]+vcomp[x_max-1,p[1]-2*s[1],p[2]-2*s[2]])/12./delta
         elif p[0]==x_max: return (8*(vcomp[0,p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])-vcomp[1,p[1]+2*s[1],p[2]+2*s[2]]+vcomp[p[0]-2*s[0],p[1]-2*s[1],p[2]-2*s[2]])/12./delta
         elif p[0]==1: return (8*(vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])-vcomp[p[0]+2*s[0],p[1]+2*s[1],p[2]+2*s[2]]+vcomp[x_max,p[1]-2*s[1],p[2]-2*s[2]])/12./delta
@@ -152,10 +153,9 @@ def vel_der_ord4new(vcomp,axis,p): #p is for point
     else: print ('wrong axis')   
     return (8*(vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])-vcomp[p[0]+2*s[0],p[1]+2*s[1],p[2]+2*s[2]]+vcomp[p[0]-2*s[0],p[1]-2*s[1],p[2]-2*s[2]])/12./delta
 
-
-def vel_der_ord6new(vcomp,axis,p): #p is for point
+def vel_der_ord6new(vcomp,axis,p):
     if axis=='x':
-        s=np.array([1,0,0])  #s is for step
+        s=np.array([1,0,0])
         if p[0]==0: return (45*(vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[x_max,p[1]-s[1],p[2]-s[2]])-9*(vcomp[p[0]+2*s[0],p[1]+2*s[1],p[2]+2*s[2]]-vcomp[x_max-1,p[1]-2*s[1],p[2]-2*s[2]])+vcomp[p[0]+3*s[0],p[1]+3*s[1],p[2]+3*s[2]]-vcomp[n_elements-3,p[1]-3*s[1],p[2]-3*s[2]])/60./delta
         elif p[0]==x_max: return (45*(vcomp[0,p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])-9*(vcomp[1,p[1]+2*s[1],p[2]+2*s[2]]-vcomp[p[0]-2*s[0],p[1]-2*s[1],p[2]-2*s[2]])+vcomp[2,p[1]+3*s[1],p[2]+3*s[2]]-vcomp[p[0]-3*s[0],p[1]-3*s[1],p[2]-3*s[2]])/60./delta
         elif p[0]==1: return (45*(vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])-9*(vcomp[p[0]+2*s[0],p[1]+2*s[1],p[2]+2*s[2]]-vcomp[x_max,p[1]-2*s[1],p[2]-2*s[2]])+vcomp[p[0]+3*s[0],p[1]+3*s[1],p[2]+3*s[2]]-vcomp[x_max-1,p[1]-3*s[1],p[2]-3*s[2]])/60./delta
@@ -180,7 +180,7 @@ def vel_der_ord6new(vcomp,axis,p): #p is for point
         elif p[2]==z_max-2: return (45*(vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])-9*(vcomp[p[0]+2*s[0],p[1]+2*s[1],p[2]+2*s[2]]-vcomp[p[0]-2*s[0],p[1]-2*s[1],p[2]-2*s[2]])+vcomp[p[0]+3*s[0],p[1]+3*s[1],0]-vcomp[p[0]-3*s[0],p[1]-3*s[1],p[2]-3*s[2]])/60./delta
     else: print ('wrong axis')   
     return (45*(vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])-9*(vcomp[p[0]+2*s[0],p[1]+2*s[1],p[2]+2*s[2]]-vcomp[p[0]-2*s[0],p[1]-2*s[1],p[2]-2*s[2]])+vcomp[p[0]+3*s[0],p[1]+3*s[1],p[2]+3*s[2]]-vcomp[p[0]-3*s[0],p[1]-3*s[1],p[2]-3*s[2]])/60./delta
-#velocity gradient matrix
+#   velocity gradient matrix
 def D_matrix(point):
     if order_der_method==4:
         D=np.array([[vel_der_ord4(u,'x',point), vel_der_ord4(u,'y',point), vel_der_ord4(u,'z',point)],\
@@ -207,7 +207,7 @@ def D_matrix(point):
 def S_matrix(Dmatrix):
     return (Dmatrix+np.transpose(Dmatrix))/2.    
     
-# O is Omega matrix       
+#   O is Omega matrix       
 def O_matrix(Dmatrix):
     return (Dmatrix-np.transpose(Dmatrix))/2.    
     
@@ -235,27 +235,30 @@ if to_load:
     vspace=np.load(calculated_data_file)
     calc_time=int((time.clock()-stop1)*10000)/10000.
     print ('\n',calc_time,'sec  loaded calculation')
+    highest_vorticity=np.amax(vspace) # need to be careful, here I assume that I load calculated Q values and no L2
 else:
+    print ('start calc')
+    stop1 = time.clock()
     if to_calc_Q:
-        print ('start calc')
-        stop1 = time.clock()
         for i in range(n_elements):
             for j in range(n_elements):
                 for k in range(n_elements):
                     vspace[i,j,k]=calc_Q(np.array([i,j,k]))
-        calc_time=int((time.clock()-stop1)*10000)/10000.
-        print ('\n',calc_time,'sec  Q criterion calculation')
+        print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
+        highest_vorticity=np.amax(vspace)
     elif to_calc_Lambda2:
-        print ('start calc')
-        stop1 = time.clock()
         for i in range(n_elements):
             for j in range(n_elements):
                 for k in range(n_elements):
                     vspace[i,j,k]=Lambda2(np.array([i,j,k]))
-        calc_time=int((time.clock()-stop1)*10000)/10000.
-        print ('\n',calc_time,'sec  Lambda2 calculation')
+        print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Lambda2 calculation')
+        highest_vorticity=np.amin(vspace)
+    calc_time=int((time.clock()-stop1)*10000)/10000.
     np.save(calculated_data_file,vspace)     
-       
+ 
+   
+    
+#   plotting in plotly if set true      
 if to_plotly:
     verts, simplices = measure.marching_cubes_classic(vspace, np.amax(vspace)*q_threshold)
     x,y,z = zip(*verts)
@@ -265,22 +268,18 @@ if to_plotly:
                         simplices=simplices,
                         title="Vortex field")
     py.iplot(fig)
-
-
-
+#   plotting in matplotlib if set true 
 if to_matplot:
     stop1 = time.clock()        
     verts, faces = measure.marching_cubes_classic(vspace, np.amax(vspace)*q_threshold)
     stop2 = time.clock()   
     print ('\n',int((stop2-stop1)*10000)/10000.,'sec  marching cubes')
 
-
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     mesh = Poly3DCollection(verts[faces])
     mesh.set_edgecolor('g')
     ax.add_collection3d(mesh)
-
     #ax.plot_trisurf(verts[:, 0], verts[:,1], faces, verts[:, 2],
                     #linewidth=0.1,antialiased=True)
                     #ax.set_edgecolor((255,255,255))
@@ -293,28 +292,23 @@ if to_matplot:
 
 
 
-
-
-
-
-
-stop= time.clock()
-print ('\n',int((stop-start)*100)/100.,'sec -- finished')
-
-if to_load:
-    method='previous'
-elif to_calc_Q:
-    method='Q       '
-elif to_calc_Lambda2:
-    method='Lambda2 '
-
+#   Saving calculation times to calctimes.txt
 if not to_load:
+    if to_calc_Q: method='Q       '
+    elif to_calc_Lambda2: method='Lambda2 '
+    
     wri=str('points ='+str(n_elements**3)+'   order of method='+str(order_der_method)+'  method='+method+'  time taken='+str(calc_time)+'sec    time per point='+str(calc_time/(n_elements**3.)*1000000)+'^10-6  ' )
-    f=open('calc.txt','a')
+    f=open('calctimes.txt','a')
     f.write(wri)
     f.write('\n')
     f.close()
+    
+    
 
+
+#   The very end of program...no going behind this line   
+stop= time.clock()
+print ('\n',int((stop-start)*100)/100.,'sec -- finished')
 ''' sort of useless pieces of code:
     
 a={}
