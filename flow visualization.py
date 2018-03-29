@@ -311,7 +311,7 @@ yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
 
-gridToVTK("./calculated data/" + data_set[0] + "-" + str(n_elements) , xvtk, yvtk, zvtk, pointData = {'pillfile': vspace})
+gridToVTK("./calculated data/" + data_set[0] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) , xvtk, yvtk, zvtk, pointData = {'pillfile': vspace})
 
 '''
 xvtk = np.zeros((vspace_shape[0],vspace_shape[1], vspace_shape[2]))

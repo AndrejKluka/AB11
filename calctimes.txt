@@ -49,3 +49,4 @@ points =216000   order of method=5  method=Q         time taken=20.2997sec    ti
 points =778688   order of method=5  method=Q         time taken=70.5482sec    time per point=90.59880208761403^10-6  
 points =778688   order of method=5  method=Q         time taken=70.0583sec    time per point=89.96966692693351^10-6  
 >>>>>>> 4839c5139e84c9909f7ef775a834588ce3282498
+points =778688   order of method=5  method=Q         time taken=68.9315sec    time per point=88.52261753102655^10-6  
