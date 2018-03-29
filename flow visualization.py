@@ -38,12 +38,12 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=92         # number of elements on each side of cube calculated
+n_elements=192         # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 q_threshold=0.16          # threshold for marching cubes algorithm 
 order_der_method=5       # only 2 or 4 are implemented 3 is 2 but new
-data_num=0             # 0 for validation dataset, 1 for raw_data_1
+data_num=1             # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
 
 
@@ -331,7 +331,7 @@ yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
 
-gridToVTK("./calculated data/pillfile", xvtk, yvtk, zvtk, pointData = {'pillfile': vspace})
+gridToVTK("./calculated data/" + data_set[0] + "-" + str(n_elements) , xvtk, yvtk, zvtk, pointData = {'pillfile': vspace})
 
 
 
