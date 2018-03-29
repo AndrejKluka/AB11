@@ -25,6 +25,11 @@ import numpy as np
 from skimage import measure
 import math
 
+
+# Visualization
+from pyevtk.hl import gridToVTK
+
+
 stop= time.clock()
 print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
@@ -33,12 +38,12 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=30          # number of elements on each side of cube calculated
+n_elements=92         # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 q_threshold=0.16          # threshold for marching cubes algorithm 
 order_der_method=5       # only 2 or 4 are implemented 3 is 2 but new
-data_num=1              # 0 for validation dataset, 1 for raw_data_1
+data_num=0             # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
 
 
@@ -52,6 +57,9 @@ data=scipy.io.loadmat(data_set_file, mdict=None, appendmat=True)
 u=data['u']
 v=data['v']
 w=data['w']
+
+ushape = u.shape
+
 
 if check_data:
     ok=True
@@ -68,7 +76,7 @@ if check_data:
     if ok:print('data is rectangular and ok')
     else:print('data not fine')
 
-vspace=np.zeros(np.shape(u))
+vspace=np.zeros((n_elements,n_elements,n_elements))
 delta=2.*math.pi/np.shape(u)[0]
 x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
@@ -302,8 +310,30 @@ if not to_load:
     f.write(wri)
     f.write('\n')
     f.close()
-    
-    
+
+
+
+
+vspace_shape = np.shape(vspace)
+'''
+xvtk = np.zeros((vspace_shape[0],vspace_shape[1], vspace_shape[2]))
+yvtk = np.zeros((vspace_shape[0],vspace_shape[1], vspace_shape[2]))
+zvtk = np.zeros((vspace_shape[0],vspace_shape[1], vspace_shape[2]))
+for k in range(0,vspace_shape[0]):
+    for j in range(0,vspace_shape[1]):
+        for i in range(0,vspace_shape[2]):
+            xvtk[i,j,k] = i
+            yvtk[i,j,k] = j
+            zvtk[i,j,k] = i
+ '''          
+xvtk = np.arange(0, vspace_shape[0])
+yvtk = np.arange(0, vspace_shape[1])
+zvtk = np.arange(0, vspace_shape[2])
+
+
+gridToVTK("./calculated data/pillfile", xvtk, yvtk, zvtk, pointData = {'pillfile': vspace})
+
+
 
 
 #   The very end of program...no going behind this line   
