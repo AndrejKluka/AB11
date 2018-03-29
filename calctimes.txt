@@ -27,5 +27,25 @@ points =27000   order of method=5  method=Q         time taken=2.9923sec    time
 points =27000   order of method=5  method=Q         time taken=2.854sec    time per point=105.70370370370371^10-6  
 points =27000   order of method=5  method=Q         time taken=2.7784sec    time per point=102.90370370370371^10-6  
 points =27000   order of method=5  method=Q         time taken=2.797sec    time per point=103.5925925925926^10-6  
+<<<<<<< HEAD
 points =27000   order of method=5  method=Q         time taken=2.9738sec    time per point=110.14074074074074^10-6  
 points =216000   order of method=5  method=Q         time taken=23.3994sec    time per point=108.33055555555555^10-6  
+=======
+points =27000   order of method=5  method=Q         time taken=2.527sec    time per point=93.5925925925926^10-6  
+points =27000   order of method=5  method=Q         time taken=2.5334sec    time per point=93.82962962962962^10-6  
+points =27000   order of method=5  method=Q         time taken=2.526sec    time per point=93.55555555555554^10-6  
+points =3375000   order of method=5  method=Q         time taken=295.093sec    time per point=87.43496296296297^10-6  
+points =6967871   order of method=5  method=Q         time taken=614.0991sec    time per point=88.13296055567045^10-6  
+points =125000   order of method=5  method=Q         time taken=10.7632sec    time per point=86.1056^10-6  
+points =125000   order of method=5  method=Q         time taken=11.0838sec    time per point=88.6704^10-6  
+points =125000   order of method=5  method=Q         time taken=11.2295sec    time per point=89.836^10-6  
+points =125000   order of method=5  method=Q         time taken=10.9872sec    time per point=87.8976^10-6  
+points =125000   order of method=5  method=Q         time taken=10.603sec    time per point=84.824^10-6  
+points =216000   order of method=5  method=Q         time taken=18.7455sec    time per point=86.78472222222223^10-6  
+points =216000   order of method=5  method=Q         time taken=18.629sec    time per point=86.24537037037037^10-6  
+points =216000   order of method=5  method=Q         time taken=19.4461sec    time per point=90.02824074074076^10-6  
+points =216000   order of method=5  method=Q         time taken=19.5697sec    time per point=90.60046296296296^10-6  
+points =216000   order of method=5  method=Q         time taken=20.2997sec    time per point=93.9800925925926^10-6  
+points =778688   order of method=5  method=Q         time taken=70.5482sec    time per point=90.59880208761403^10-6  
+points =778688   order of method=5  method=Q         time taken=70.0583sec    time per point=89.96966692693351^10-6  
+>>>>>>> 4839c5139e84c9909f7ef775a834588ce3282498
