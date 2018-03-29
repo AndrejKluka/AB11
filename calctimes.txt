@@ -53,8 +53,17 @@ points =778688   order of method=5  method=Q         time taken=70.5482sec    ti
 points =778688   order of method=5  method=Q         time taken=70.0583sec    time per point=89.96966692693351^10-6  
 >>>>>>> 4839c5139e84c9909f7ef775a834588ce3282498
 points =778688   order of method=5  method=Q         time taken=68.9315sec    time per point=88.52261753102655^10-6  
+<<<<<<< HEAD
+points =857375   order of method=5  method=Lambda2   time taken=155.1844sec    time per point=180.9994459833795^10-6  
+=======
 >>>>>>> e77624ee55b61ba81f2d6230f11a9c43a27db611
 points =27000   order of method=5  method=Q         time taken=2.3707sec    time per point=87.80370370370369^10-6  
+<<<<<<< HEAD
 points =27000   order of method=5  method=Q         time taken=2.3905sec    time per point=88.53703703703704^10-6
 points =857375   order of method=5  method=Q         time taken=73.8028sec    time per point=86.0799533459688^10-6   
  
+=======
+points =27000   order of method=5  method=Q         time taken=2.3905sec    time per point=88.53703703703704^10-6  
+points =857375   order of method=5  method=Q         time taken=73.8028sec    time per point=86.0799533459688^10-6  
+>>>>>>> ade99701202c8022f27148bda7a6cca609837ba8
+>>>>>>> 4870801be5383d55a8a959f6f11604d86382c5bb
