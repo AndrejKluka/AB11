@@ -27,12 +27,12 @@ stop=time.clock()
 print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 #---------------------------------------------------------General setup for program run
-to_load=False          # if true will load already the last calculated Q or lambda dataset
+to_load=True          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=92         # number of elements on each side of cube calculated
-to_calc_Q=True          # if true will calc Q on cube with n_elements
-to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+n_elements=96         # number of elements on each side of cube calculated
+to_calc_Q=False          # if true will calc Q on cube with n_elements
+to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
 q_threshold=0.16          # threshold for marching cubes algorithm 
 order_der_method=5       # only 2 or 4 are implemented 3 is 2 but new
 data_num=0              # 0 for validation dataset, 1 for raw_data_1
@@ -311,24 +311,4 @@ yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
 
-gridToVTK("./calculated data/" + data_set[0] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) , xvtk, yvtk, zvtk, pointData = {'pillfile': vspace})
-
-'''
-xvtk = np.zeros((vspace_shape[0],vspace_shape[1], vspace_shape[2]))
-yvtk = np.zeros((vspace_shape[0],vspace_shape[1], vspace_shape[2]))
-zvtk = np.zeros((vspace_shape[0],vspace_shape[1], vspace_shape[2]))
-for k in range(0,vspace_shape[0]):
-    for j in range(0,vspace_shape[1]):
-        for i in range(0,vspace_shape[2]):
-            xvtk[i,j,k] = i
-            yvtk[i,j,k] = j
-            zvtk[i,j,k] = i
- '''   
-
-''' sort of useless pieces of code:
-    
-a={}
-a['vspace']=vspace
-scipy.io.savemat('vspacemat',a)
-
-'''
+gridToVTK("./calculated data/" + data_set[0] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) , xvtk, yvtk, zvtk, pointData = {method: vspace})
