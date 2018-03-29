@@ -67,3 +67,5 @@ points =27000   order of method=5  method=Q         time taken=2.3905sec    time
 points =857375   order of method=5  method=Q         time taken=73.8028sec    time per point=86.0799533459688^10-6  
 >>>>>>> ade99701202c8022f27148bda7a6cca609837ba8
 >>>>>>> 4870801be5383d55a8a959f6f11604d86382c5bb
+points =125000   order of method=5  method=Q         time taken=12.3741sec    time per point=98.9928^10-6  
+points =216000   order of method=5  method=Lambda2   time taken=43.0992sec    time per point=199.53333333333336^10-6  
