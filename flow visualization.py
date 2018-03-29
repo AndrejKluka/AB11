@@ -305,7 +305,14 @@ if not to_load:
 
 
 
-vspace_shape = np.shape(vspace)
+vspace_shape = np.shape(vspace)      
+xvtk = np.arange(0, vspace_shape[0])
+yvtk = np.arange(0, vspace_shape[1])
+zvtk = np.arange(0, vspace_shape[2])
+
+
+gridToVTK("./calculated data/" + data_set[0] + "-" + str(n_elements) , xvtk, yvtk, zvtk, pointData = {'pillfile': vspace})
+
 '''
 xvtk = np.zeros((vspace_shape[0],vspace_shape[1], vspace_shape[2]))
 yvtk = np.zeros((vspace_shape[0],vspace_shape[1], vspace_shape[2]))
@@ -316,14 +323,7 @@ for k in range(0,vspace_shape[0]):
             xvtk[i,j,k] = i
             yvtk[i,j,k] = j
             zvtk[i,j,k] = i
- '''          
-xvtk = np.arange(0, vspace_shape[0])
-yvtk = np.arange(0, vspace_shape[1])
-zvtk = np.arange(0, vspace_shape[2])
-
-
-gridToVTK("./calculated data/" + data_set[0] + "-" + str(n_elements) , xvtk, yvtk, zvtk, pointData = {'pillfile': vspace})
-
+ '''   
 
 ''' sort of useless pieces of code:
     
