@@ -30,15 +30,17 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
+<<<<<<< HEAD
 n_elements=192         # number of elements on each side of cube calculated
+=======
+n_elements=92         # number of elements on each side of cube calculated
+>>>>>>> e77624ee55b61ba81f2d6230f11a9c43a27db611
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 q_threshold=0.16          # threshold for marching cubes algorithm 
 order_der_method=5       # only 2 or 4 are implemented 3 is 2 but new
 data_num=0              # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
-
-
 data_set=['validation_Q_l2','raw_data_1']
 
 #   reading raw dataset and putting them into u,v,w arrays
@@ -49,6 +51,9 @@ data=scipy.io.loadmat(data_set_file, mdict=None, appendmat=True)
 u=data['u']
 v=data['v']
 w=data['w']
+
+ushape = u.shape
+
 
 if check_data:
     ok=True
@@ -66,7 +71,7 @@ if check_data:
     else:print('data not fine')
 
 #vspace=np.zeros(np.shape(u))
-vspace=np.zeros((n_elements, n_elements, n_elements))
+vspace=np.zeros((n_elements,n_elements,n_elements))
 delta=2.*math.pi/np.shape(u)[0]
 x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
@@ -300,27 +305,37 @@ if not to_load:
     f.write(wri)
     f.write('\n')
     f.close()
-    
-    
 
 
-#   The very end of program...no going behind this line   
-stop= time.clock()
-print ('\n',int((stop-start)*100)/100.,'sec -- finished')
 
-#--------------------------------calculate grid
-vspace_shape = np.shape(vspace)
-vtkgridx = np.zeros((vspace_shape[0],vspace_shape[1],vspace_shape[2]))
-vtkgridy = np.zeros((vspace_shape[0],vspace_shape[1],vspace_shape[2]))
-vtkgridz = np.zeros((vspace_shape[0],vspace_shape[1],vspace_shape[2]))
+
+vspace_shape = np.shape(vspace)      
+xvtk = np.arange(0, vspace_shape[0])
+yvtk = np.arange(0, vspace_shape[1])
+zvtk = np.arange(0, vspace_shape[2])
+
+
+gridToVTK("./calculated data/" + data_set[0] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) , xvtk, yvtk, zvtk, pointData = {'pillfile': vspace})
+
+'''
+xvtk = np.zeros((vspace_shape[0],vspace_shape[1], vspace_shape[2]))
+yvtk = np.zeros((vspace_shape[0],vspace_shape[1], vspace_shape[2]))
+zvtk = np.zeros((vspace_shape[0],vspace_shape[1], vspace_shape[2]))
 for k in range(0,vspace_shape[0]):
     for j in range(0,vspace_shape[1]):
         for i in range(0,vspace_shape[2]):
+<<<<<<< HEAD
             vtkgridx[i,j,k] = i
             vtkgridy[i,j,k] = j
             vtkgridz[i,j,k] = k
 #            vspace[i,j,k] = i
 gridToVTK("./calculated data/" + data_set[0] +"-"+ str(n_elements), vtkgridx, vtkgridy, vtkgridz, pointData = {'Q': vspace})
+=======
+            xvtk[i,j,k] = i
+            yvtk[i,j,k] = j
+            zvtk[i,j,k] = i
+ '''   
+>>>>>>> e77624ee55b61ba81f2d6230f11a9c43a27db611
 
 ''' sort of useless pieces of code:
     
