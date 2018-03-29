@@ -23,6 +23,7 @@ import scipy
 import numpy as np
 from skimage import measure
 import math
+<<<<<<< HEAD
 stop=time.clock()
 print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
