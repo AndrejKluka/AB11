@@ -23,7 +23,6 @@ import scipy
 import numpy as np
 from skimage import measure
 import math
-<<<<<<< HEAD
 stop=time.clock()
 print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
@@ -31,20 +30,12 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-<<<<<<< HEAD
 n_elements=192         # number of elements on each side of cube calculated
-=======
-n_elements=60         # number of elements on each side of cube calculated
->>>>>>> 7f7f7bd2bd159abc623274b35c41b9ad13301d05
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 q_threshold=0.16          # threshold for marching cubes algorithm 
 order_der_method=5       # only 2 or 4 are implemented 3 is 2 but new
-<<<<<<< HEAD
-data_num=1             # 0 for validation dataset, 1 for raw_data_1
-=======
 data_num=0              # 0 for validation dataset, 1 for raw_data_1
->>>>>>> 7f7f7bd2bd159abc623274b35c41b9ad13301d05
 check_data=False        # check only first time you are using dataset
 
 
@@ -330,11 +321,6 @@ for k in range(0,vspace_shape[0]):
             vtkgridz[i,j,k] = k
 #            vspace[i,j,k] = i
 gridToVTK("./calculated data/" + data_set[0] +"-"+ str(n_elements), vtkgridx, vtkgridy, vtkgridz, pointData = {'Q': vspace})
-
-<<<<<<< HEAD
-gridToVTK("./calculated data/" + data_set[0] + "-" + str(n_elements) , xvtk, yvtk, zvtk, pointData = {'pillfile': vspace})
-=======
->>>>>>> 7f7f7bd2bd159abc623274b35c41b9ad13301d05
 
 ''' sort of useless pieces of code:
     
