@@ -30,9 +30,10 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=60        # number of elements on each side of cube calculated
-to_calc_Q=False          # if true will calc Q on cube with n_elements
-to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
+n_elements=96        # number of elements on each side of cube calculated
+to_calc_Q=True          # if true will calc Q on cube with n_elements
+to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+to_calc_vorticity = True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
 order_der_method=5       # only 2 or 4 are implemented 3 is 2 but new
 data_num=0              # 0 for validation dataset, 1 for raw_data_1
@@ -68,6 +69,7 @@ if check_data:
 
 #vspace=np.zeros(np.shape(u))
 vspace=np.zeros((n_elements,n_elements,n_elements))
+vorticity_space = np.zeros((n_elements,n_elements,n_elements))
 delta=2.*math.pi/np.shape(u)[0]
 x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
@@ -228,6 +230,29 @@ def Lambda2(point):
     w, v = np.linalg.eigh(A_matrix(S_matrix(D_matrix(point)),O_matrix(D_matrix(point))))
     return w[1]
 
+def vorticity(point):
+    if order_der_method==4:
+        i = vel_der_ord4(w,'y',point) - vel_der_ord4(v,'z',point)
+        j = vel_der_ord4(w,'x',point) - vel_der_ord4(u,'z',point)
+        k = vel_der_ord4(v,'x',point) - vel_der_ord4(u,'y',point)
+    elif order_der_method==2:
+        i = vel_der_ord2(w,'y',point) - vel_der_ord2(v,'z',point)
+        j = vel_der_ord2(w,'x',point) - vel_der_ord2(u,'z',point)
+        k = vel_der_ord2(v,'x',point) - vel_der_ord2(u,'y',point)
+    elif order_der_method==3:
+        i = vel_der_ord2new(w,'y',point) - vel_der_ord2new(v,'z',point)
+        j = vel_der_ord2new(w,'x',point) - vel_der_ord2new(u,'z',point)
+        k = vel_der_ord2new(v,'x',point) - vel_der_ord2new(u,'y',point)
+    elif order_der_method==5:
+        i = vel_der_ord4new(w,'y',point) - vel_der_ord4new(v,'z',point)
+        j = vel_der_ord4new(w,'x',point) - vel_der_ord4new(u,'z',point)
+        k = vel_der_ord4new(v,'x',point) - vel_der_ord4new(u,'y',point)
+    elif order_der_method==6:
+        i = vel_der_ord6new(w,'y',point) - vel_der_ord6new(v,'z',point)
+        j = vel_der_ord6new(w,'x',point) - vel_der_ord6new(u,'z',point)
+        k = vel_der_ord6new(v,'x',point) - vel_der_ord6new(u,'y',point)
+    strength = math.sqrt(i**2 + j**2 + k**2) 
+    return strength
 
 if to_load:
     stop1 = time.clock()
@@ -253,7 +278,16 @@ else:
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Lambda2 calculation')
         highest_vorticity=np.amin(vspace)
     calc_time=int((time.clock()-stop1)*10000)/10000.
-    np.save(calculated_data_file,vspace)     
+    np.save(calculated_data_file,vspace)  
+if to_calc_vorticity:
+    stop2 = time.clock()
+    for i in range(n_elements):
+            for j in range(n_elements):
+                for k in range(n_elements):
+                    vorticity_space[i,j,k]=vorticity(np.array([i,j,k]))
+    print ('\n',int((time.clock()-stop2)*10000)/10000.,'sec  vorticity strength calculation')
+    highest_vorticity=np.amax(vorticity_space)
+
  
    
     
@@ -295,7 +329,6 @@ if to_matplot:
 if not to_load:
     if to_calc_Q: method='Q       '
     elif to_calc_Lambda2: method='Lambda2 '
-    
     wri=str('points ='+str(n_elements**3)+'   order of method='+str(order_der_method)+'  method='+method+'  time taken='+str(calc_time)+'sec    time per point='+str(calc_time/(n_elements**3.)*1000000)+'^10-6  ' )
     f=open('calctimes.txt','a')
     f.write(wri)
@@ -311,4 +344,4 @@ yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
 
-gridToVTK("./calculated data/" + data_set[0] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace})
+gridToVTK("./calculated data/" + data_set[0] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity": vorticity_space})
