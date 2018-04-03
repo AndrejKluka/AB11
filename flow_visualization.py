@@ -33,13 +33,13 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=60        # number of elements on each side of cube calculated
+n_elements=192        # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
 order_der_method=2     # only 2 or 4 are implemented 3 is 2 but new
-data_num=0              # 0 for validation dataset, 1 for raw_data_1
+data_num=1              # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
 
 
@@ -245,23 +245,23 @@ def Lambda2(point):
 def vorticity(point):
     if order_der_method==4:
         i = vel_der_ord4(w,'y',point) - vel_der_ord4(v,'z',point)
-        j = vel_der_ord4(w,'x',point) - vel_der_ord4(u,'z',point)
+        j = -(vel_der_ord4(w,'x',point) - vel_der_ord4(u,'z',point))
         k = vel_der_ord4(v,'x',point) - vel_der_ord4(u,'y',point)
     elif order_der_method==2:
         i = vel_der_ord2(w,'y',point) - vel_der_ord2(v,'z',point)
-        j = vel_der_ord2(w,'x',point) - vel_der_ord2(u,'z',point)
+        j = -(vel_der_ord2(w,'x',point) - vel_der_ord2(u,'z',point))
         k = vel_der_ord2(v,'x',point) - vel_der_ord2(u,'y',point)
     elif order_der_method==3:
         i = vel_der_ord2new(w,'y',point) - vel_der_ord2new(v,'z',point)
-        j = vel_der_ord2new(w,'x',point) - vel_der_ord2new(u,'z',point)
+        j = -(vel_der_ord2new(w,'x',point) - vel_der_ord2new(u,'z',point))
         k = vel_der_ord2new(v,'x',point) - vel_der_ord2new(u,'y',point)
     elif order_der_method==5:
         i = vel_der_ord4new(w,'y',point) - vel_der_ord4new(v,'z',point)
-        j = vel_der_ord4new(w,'x',point) - vel_der_ord4new(u,'z',point)
+        j = -(vel_der_ord4new(w,'x',point) - vel_der_ord4new(u,'z',point))
         k = vel_der_ord4new(v,'x',point) - vel_der_ord4new(u,'y',point)
     elif order_der_method==6:
         i = vel_der_ord6new(w,'y',point) - vel_der_ord6new(v,'z',point)
-        j = vel_der_ord6new(w,'x',point) - vel_der_ord6new(u,'z',point)
+        j = -(vel_der_ord6new(w,'x',point) - vel_der_ord6new(u,'z',point))
         k = vel_der_ord6new(v,'x',point) - vel_der_ord6new(u,'y',point)
     strength = math.sqrt(i**2 + j**2 + k**2) 
     return strength
