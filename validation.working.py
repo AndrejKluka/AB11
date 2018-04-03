@@ -115,26 +115,26 @@ def vel_der_ord6new(vcomp,axis,p): #p is for point
         elif p[2]==z_max-2: return (45*(vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])-9*(vcomp[p[0]+2*s[0],p[1]+2*s[1],p[2]+2*s[2]]-vcomp[p[0]-2*s[0],p[1]-2*s[1],p[2]-2*s[2]])+vcomp[p[0]+3*s[0],p[1]+3*s[1],0]-vcomp[p[0]-3*s[0],p[1]-3*s[1],p[2]-3*s[2]])/60./delta
     else: print ('wrong axis')   
     return (45*(vcomp[p[0]+s[0],p[1]+s[1]]-vcomp[p[0]-s[0],p[1]-s[1]])-9*(vcomp[p[0]+2*s[0],p[1]+2*s[1]]-vcomp[p[0]-2*s[0],p[1]-2*s[1]])+vcomp[p[0]+3*s[0],p[1]+3*s[1],]-vcomp[p[0]-3*s[0],p[1]-3*s[1]])/60./delta
+
 M=500
 errorlist1=[]
 errorlist2=[]
 errorlist3=[]
 steplist=[]
+
 for N in range(6,M+1):
     delta=2*pi/N
     u1=np.empty([N,3])
     u2=np.empty([N,3])
+    
     for n in range(N):
         u1[n,0]=n*delta
         u2[n,0]=n*delta
         u2[n,1]=pi/2
         u2[n,2]=pi/2
-    
-    
+        
     u_sin=np.sin(u1) 
-    realder=np.cos(u2)
-    
-    
+    realder=np.cos(u2)    
     
     approximant2=np.empty([N,3])
     approximant4=np.empty([N,3])
@@ -157,8 +157,6 @@ for N in range(6,M+1):
         approximant6[i,0]=d
         
         
-        
-    
     error2ord=abs(realder-approximant2)
     error4ord=abs(realder-approximant4)
     error6ord=abs(realder-approximant6)
@@ -185,7 +183,7 @@ for i in range(len(steplist)):
 coeff1=np.polyfit(steplist,errorlist1,1)
 coeff2=np.polyfit(steplist,errorlist2,1)
 coeff3=np.polyfit(steplist,errorlist3,1)
-print coeff1,coeff2,coeff3
+print (coeff1,coeff2,coeff3)
 
 plt.subplot(131)
 plt.plot(steplist,errorlist1)

@@ -19,7 +19,6 @@ from os import path
 import scipy.io
 import scipy
 import numpy as np
-from skimage import measure
 import math
 
 stop= time.clock()
