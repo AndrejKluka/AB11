@@ -86,3 +86,4 @@ points =216000   order of method=3  method=Q         time taken=15.5162sec    ti
 points =857375   order of method=3  method=Q         time taken=63.134sec    time per point=73.6363901443^10-6  
 points =6967871   order of method=3  method=Q         time taken=526.9447sec    time per point=75.6249218736^10-6  
 >>>>>>> fad333a87cf0a560ce3c4a5240f91948587bb8d5
+points =884736   order of method=3  method=Q         time taken=51.338sec    time per point=58.02634910300926^10-6  
