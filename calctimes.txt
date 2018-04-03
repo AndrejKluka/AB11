@@ -105,3 +105,6 @@ points =216000   order of method=2  method=Q  time taken=13.2519sec    time per 
 =======
 >>>>>>> b90b806c20cfc7f31c574ee1e7942ba5afec9682
 >>>>>>> b8ecdaf4b34739df412adca3b198829e923fb6bd
+points =778688   order of method=2  method=Lambda2  time taken=84.9927sec    time per point=109.14859353168407^10-6  
+points =857375   order of method=2  method=Lambda2  time taken=104.1143sec    time per point=121.43379501385041^10-6  
+points =857375   order of method=2  method=Q  time taken=48.1425sec    time per point=56.151042426009624^10-6  
