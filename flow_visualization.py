@@ -33,13 +33,13 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=96        # number of elements on each side of cube calculated
+n_elements=60        # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
-order_der_method=3     # only 2 or 4 are implemented 3 is 2 but new
-data_num=1              # 0 for validation dataset, 1 for raw_data_1
+order_der_method=2     # only 2 or 4 are implemented 3 is 2 but new
+data_num=0              # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
 
 
@@ -340,8 +340,8 @@ if to_matplot:
 
 #   Saving calculation times to calctimes.txt
 if not to_load:
-    if to_calc_Q: method='Q       '
-    elif to_calc_Lambda2: method='Lambda2 '
+    if to_calc_Q: method='Q'
+    elif to_calc_Lambda2: method='Lambda2'
     wri=str('points ='+str(n_elements**3)+'   order of method='+str(order_der_method)+'  method='+method+'  time taken='+str(calc_time)+'sec    time per point='+str(calc_time/(n_elements**3.)*1000000)+'^10-6  ' )
     f=open('calctimes.txt','a')
     f.write(wri)
@@ -357,4 +357,4 @@ zvtk = np.arange(0, vspace_shape[2])
 
 
 
-gridToVTK("./calculated data/" + data_set[0] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity": vorticity_space})
+gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity": vorticity_space})
