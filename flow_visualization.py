@@ -211,6 +211,11 @@ def D_matrix(point):
                     [vel_der_ord6new(w,'x',point), vel_der_ord6new(w,'y',point), vel_der_ord6new(w,'z',point)]])
     return D
     
+
+
+
+
+
 def S_matrix(Dmatrix):
     return (Dmatrix+np.transpose(Dmatrix))/2.    
     
@@ -221,6 +226,7 @@ def O_matrix(Dmatrix):
 def A_matrix(matS,matO):
     return np.dot(matS,matS)+np.dot(matO,matO)
     
+
 def norm(matrix):
     mat=np.dot(matrix,np.transpose(matrix))
     return (mat[0,0]+mat[1,1]+mat[2,2])**0.5
@@ -283,6 +289,7 @@ else:
                     vspace[i,j,k]=Lambda2(np.array([i,j,k]))
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Lambda2 calculation')
         highest_vorticity=np.amin(vspace)
+    
     calc_time=int((time.clock()-stop1)*10000)/10000.
     np.save(calculated_data_file,vspace)  
 if to_calc_vorticity:
