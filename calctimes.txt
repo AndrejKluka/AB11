@@ -73,3 +73,6 @@ points =216000   order of method=5  method=Lambda2   time taken=42.0231sec    ti
 points =216000   order of method=5  method=Lambda2   time taken=39.7184sec    time per point=183.8814814814815^10-6  
 points =216000   order of method=5  method=Lambda2   time taken=36.904sec    time per point=170.85185185185185^10-6  
 points =216000   order of method=5  method=Lambda2   time taken=37.8619sec    time per point=175.28657407407405^10-6  
+points =216000   order of method=5  method=Lambda2   time taken=36.283sec    time per point=167.97685185185185^10-6  
+points =216000   order of method=5  method=Lambda2   time taken=35.4697sec    time per point=164.21157407407406^10-6  
+points =216000   order of method=5  method=Lambda2   time taken=36.2069sec    time per point=167.62453703703702^10-6  
