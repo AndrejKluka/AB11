@@ -29,9 +29,9 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=60         # number of elements on each side of cube calculated
-to_calc_Q=False         # if true will calc Q on cube with n_elements
-to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
+n_elements=50        # number of elements on each side of cube calculated
+to_calc_Q=True         # if true will calc Q on cube with n_elements
+to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 q_threshold=0.16 
       
 data_num=1              # 0 for validation dataset, 1 for raw_data_1
@@ -225,7 +225,7 @@ if to_calc_Q:
         for j in range(n_elements):
             for k in range(n_elements):
                 order_der_method=3
-                matrix1=D_matrix(np.array([i,j,k]))
+                #matrix1=D_matrix(np.array([i,j,k]))
                 vspace1[i,j,k]=calc_Q(np.array([i,j,k]))
     stop2=time.clock()            
     print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation, 2nd order')            
@@ -234,7 +234,7 @@ if to_calc_Q:
         for j in range(n_elements):
             for k in range(n_elements):
                 order_der_method=5
-                matrix2=D_matrix(np.array([i,j,k]))
+               # matrix2=D_matrix(np.array([i,j,k]))
                 vspace2[i,j,k]=calc_Q(np.array([i,j,k]))
     stop3=time.clock()            
     print ('\n',int((time.clock()-stop2)*10000)/10000.,'sec  Q criterion calculation,4th order')
@@ -242,7 +242,7 @@ if to_calc_Q:
         for j in range(n_elements):
             for k in range(n_elements):
                 order_der_method=6
-                matrix3=D_matrix(np.array([i,j,k]))
+                #matrix3=D_matrix(np.array([i,j,k]))
                 vspace3[i,j,k]=calc_Q(np.array([i,j,k]))
     stop4=time.clock()            
                  
@@ -256,7 +256,7 @@ elif to_calc_Lambda2:
         for j in range(n_elements):
             for k in range(n_elements):
                 order_der_method=3
-                matrix1=D_matrix(np.array([i,j,k]))
+                #matrix1=D_matrix(np.array([i,j,k]))
                 vspace1[i,j,k]=Lambda2(np.array([i,j,k]))
     print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation, 2nd order')
                 
@@ -265,7 +265,7 @@ elif to_calc_Lambda2:
         for j in range(n_elements):
             for k in range(n_elements):
                 order_der_method=5
-                matrix2=D_matrix(np.array([i,j,k]))
+                #matrix2=D_matrix(np.array([i,j,k]))
                 vspace2[i,j,k]=Lambda2(np.array([i,j,k]))
     print ('\n',int((time.clock()-stop2)*10000)/10000.,'sec  Q criterion calculation,4th order')
     stop3=time.clock()  
@@ -273,7 +273,7 @@ elif to_calc_Lambda2:
         for j in range(n_elements):
             for k in range(n_elements):
                 order_der_method=6
-                matrix3=D_matrix(np.array([i,j,k]))
+                #matrix3=D_matrix(np.array([i,j,k]))
                 vspace3[i,j,k]=Lambda2(np.array([i,j,k]))
     stop4=time.clock() 
     print ('\n',int((time.clock()-stop3)*10000)/10000.,'sec  Q criterion calculation, 6th order')
@@ -291,4 +291,13 @@ abs26=abs(vspace3-vspace1)
 abs46=abs(vspace3-vspace2)
 print (np.sum(abs(matrix1)),np.sum(abs(matrix2)),np.sum(abs(matrix3)))
 print (np.sum(abs24)/n_elements**3,np.sum(abs26)/n_elements**3, np.sum(abs46)/n_elements**3)   
-print(np.sum(abs(vspace2))/n_elements**3,np.sum(abs(vspace3))/n_elements**3,np.sum(abs(vspace1))/n_elements**3)
+print(np.sum(abs(vspace1))/n_elements**3,np.sum(abs(vspace2))/n_elements**3,np.sum(abs(vspace3))/n_elements**3)
+
+
+print ((np.sum(abs(vspace2))/n_elements**3)/(np.sum(abs(vspace1))/n_elements**3),"per 4th/2nd")
+print ((np.sum(abs(vspace3))/n_elements**3)/(np.sum(abs(vspace1))/n_elements**3),"per 6th/2nd")
+print ((np.sum(abs(vspace3))/n_elements**3)/(np.sum(abs(vspace2))/n_elements**3),"per 6th/4nd")
+
+print ((int((time.clock()-stop2)*10000)/10000.)/(int((time.clock()-stop1)*10000)/10000.),"4th over 2nd")
+print ((int((time.clock()-stop3)*10000)/10000.)/(int((time.clock()-stop1)*10000)/10000.))
+print ((int((time.clock()-stop3)*10000)/10000.)/(int((time.clock()-stop2)*10000)/10000.))
