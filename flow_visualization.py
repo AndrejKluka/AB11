@@ -26,18 +26,36 @@ import math
 stop=time.clock()
 print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
+
+
+
 #---------------------------------------------------------General setup for program run
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
+<<<<<<< HEAD:flow visualization.py
 n_elements=96        # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
+=======
+<<<<<<< HEAD:flow visualization.py
+n_elements=191        # number of elements on each side of cube calculated
+to_calc_Q=True          # if true will calc Q on cube with n_elements
+to_calc_Lambda2=False  # if true will calc lambda2 on cube with n_elements
+=======
+n_elements=30         # number of elements on each side of cube calculated
+to_calc_Q=True          # if true will calc Q on cube with n_elements
+to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+>>>>>>> a80b8c744c31f2ab883cae448b377e5f9354fe0b:flow_visualization.py
+>>>>>>> fad333a87cf0a560ce3c4a5240f91948587bb8d5:flow_visualization.py
 q_threshold=0.16          # threshold for marching cubes algorithm 
-order_der_method=5       # only 2 or 4 are implemented 3 is 2 but new
-data_num=0              # 0 for validation dataset, 1 for raw_data_1
+order_der_method=3     # only 2 or 4 are implemented 3 is 2 but new
+data_num=1              # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
+
+
+
 data_set=['validation_Q_l2','raw_data_1']
 
 #   reading raw dataset and putting them into u,v,w arrays
@@ -337,11 +355,14 @@ if not to_load:
 
 
 
-
 vspace_shape = np.shape(vspace)      
 xvtk = np.arange(0, vspace_shape[0])
 yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
+<<<<<<< HEAD:flow visualization.py
 
 gridToVTK("./calculated data/" + data_set[0] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity": vorticity_space})
+=======
+gridToVTK("./calculated data/" + data_set[0] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace})
+>>>>>>> fad333a87cf0a560ce3c4a5240f91948587bb8d5:flow_visualization.py
