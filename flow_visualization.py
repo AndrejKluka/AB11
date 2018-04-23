@@ -34,25 +34,12 @@ idk=False
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-<<<<<<< HEAD
 n_elements=192        # number of elements on each side of cube calculated
-=======
-
-n_elements=192        # number of elements on each side of cube calculated
-
->>>>>>> 456b1fc484c88bec2612a7d200c32cab4390e9b2
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
-<<<<<<< HEAD
 order_der_method=5       # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
-=======
-
-
-order_der_method=3       # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
-
->>>>>>> 456b1fc484c88bec2612a7d200c32cab4390e9b2
 data_num=1              # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
 
@@ -232,26 +219,26 @@ def D_matrix6loop(point):
 
     
 def vorticity(point):
-    if order_der_method==4:
+    if order_der_method==5:
         i = vel_der_ord4y(w,point) - vel_der_ord4z(v,point)
         j = -(vel_der_ord4x(w,point) - vel_der_ord4z(u,point))
         k = vel_der_ord4x(v,point) - vel_der_ord4y(u,point)
-    elif order_der_method==2:
-        i = vel_der_ord2y(w,point) - vel_der_ord2z(v,point)
-        j = -(vel_der_ord2x(w,point) - vel_der_ord2z(u,point))
-        k = vel_der_ord2x(v,point) - vel_der_ord2y(u,point)
-    elif order_der_method==3:
-        i = vel_der_ord2loopy(w,point) - vel_der_ord2loopz(v,point)
-        j = -(vel_der_ord2loopx(w,point) - vel_der_ord2loopz(u,point))
-        k = vel_der_ord2loopx(v,point) - vel_der_ord2loopy(u,point)
-    elif order_der_method==5:
-        i = vel_der_ord4loopy(w,point) - vel_der_ord4loopz(v,point)
-        j = -(vel_der_ord4loopx(w,point) - vel_der_ord4loopz(u,point))
-        k = vel_der_ord4loopx(v,point) - vel_der_ord4loopy(u,point)
-    elif order_der_method==6:
-        i = vel_der_ord6loopy(w,point) - vel_der_ord6loopz(v,point)
-        j = -(vel_der_ord6loopx(w,point) - vel_der_ord6loopz(u,point))
-        k = vel_der_ord6loopx(v,point) - vel_der_ord6loopy(u,point)
+#    elif order_der_method==2:
+#        i = vel_der_ord2y(w,point) - vel_der_ord2z(v,point)
+#        j = -(vel_der_ord2x(w,point) - vel_der_ord2z(u,point))
+#        k = vel_der_ord2x(v,point) - vel_der_ord2y(u,point)
+#    elif order_der_method==3:
+#        i = vel_der_ord2loopy(w,point) - vel_der_ord2loopz(v,point)
+#        j = -(vel_der_ord2loopx(w,point) - vel_der_ord2loopz(u,point))
+#        k = vel_der_ord2loopx(v,point) - vel_der_ord2loopy(u,point)
+#    elif order_der_method==4:
+#        i = vel_der_ord4loopy(w,point) - vel_der_ord4loopz(v,point)
+#        j = -(vel_der_ord4loopx(w,point) - vel_der_ord4loopz(u,point))
+#        k = vel_der_ord4loopx(v,point) - vel_der_ord4loopy(u,point)
+#    elif order_der_method==6:
+#        i = vel_der_ord6loopy(w,point) - vel_der_ord6loopz(v,point)
+#        j = -(vel_der_ord6loopx(w,point) - vel_der_ord6loopz(u,point))
+#        k = vel_der_ord6loopx(v,point) - vel_der_ord6loopy(u,point)
     strength = math.sqrt(i**2 + j**2 + k**2) 
     return strength, i , j , k 
 
