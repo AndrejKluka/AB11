@@ -33,13 +33,17 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
+<<<<<<< HEAD
 n_elements=192        # number of elements on each side of cube calculated
+=======
+n_elements=60        # number of elements on each side of cube calculated
+>>>>>>> af53fd5e4575f847e88dea98f175af822f3efb48
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
 order_der_method=2     # only 2 or 4 are implemented 3 is 2 but new
-data_num=1              # 0 for validation dataset, 1 for raw_data_1
+data_num=0              # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
 
 
@@ -76,6 +80,9 @@ if check_data:
 #vspace=np.zeros(np.shape(u))
 vspace=np.zeros((n_elements,n_elements,n_elements))
 vorticity_space = np.zeros((n_elements,n_elements,n_elements))
+vorticity_x = np.zeros((n_elements,n_elements,n_elements))
+vorticity_y = np.zeros((n_elements,n_elements,n_elements))
+vorticity_z = np.zeros((n_elements,n_elements,n_elements))
 delta=2.*math.pi/np.shape(u)[0]
 x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
@@ -264,7 +271,7 @@ def vorticity(point):
         j = -(vel_der_ord6new(w,'x',point) - vel_der_ord6new(u,'z',point))
         k = vel_der_ord6new(v,'x',point) - vel_der_ord6new(u,'y',point)
     strength = math.sqrt(i**2 + j**2 + k**2) 
-    return strength
+    return strength, i , j , k 
 
 if to_load:
     stop1 = time.clock()
@@ -297,9 +304,25 @@ if to_calc_vorticity:
     for i in range(n_elements):
             for j in range(n_elements):
                 for k in range(n_elements):
-                    vorticity_space[i,j,k]=vorticity(np.array([i,j,k]))
+                    vorticity_space[i,j,k]=vorticity(np.array([i,j,k]))[0]
+                    vorticity_x[i,j,k]=vorticity(np.array([i,j,k]))[1]
+                    vorticity_y[i,j,k]=vorticity(np.array([i,j,k]))[2]
+                    vorticity_z[i,j,k]=vorticity(np.array([i,j,k]))[3]
+                    
+                    
+                    
     print ('\n',int((time.clock()-stop2)*10000)/10000.,'sec  vorticity strength calculation')
     highest_vorticity=np.amax(vorticity_space)
+
+
+
+
+
+
+
+
+
+
 
  
    
@@ -357,4 +380,4 @@ zvtk = np.arange(0, vspace_shape[2])
 
 
 
-gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity": vorticity_space})
+gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
