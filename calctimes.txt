@@ -7,3 +7,11 @@ points =27000   order of method=6  method=Q         time taken=4.1308sec    time
 points =27000   order of method=6  method=Q         time taken=4.1486sec    time per point=153.65185185185183^10-6  
 points =27000   order of method=6  method=Q         time taken=4.0075sec    time per point=148.42592592592592^10-6 
  
+points =8000   order of method=3  method=Q  time taken=0.2965sec    time per point=37.0625^10-6  
+points =8000   order of method=5  method=Q  time taken=0.5243sec    time per point=65.5375^10-6  
+points =8000   order of method=6  method=Q  time taken=0.7073sec    time per point=88.4125^10-6  
+points =8000   order of method=6  method=Q  time taken=0.7506sec    time per point=93.825^10-6  
+points =8000   order of method=3  method=Q  time taken=0.3151sec    time per point=39.3875^10-6  
+points =8000   order of method=3  method=Q  time taken=0.3042sec    time per point=38.025000000000006^10-6  
+points =8000   order of method=5  method=Q  time taken=0.4568sec    time per point=57.1^10-6  
+points =8000   order of method=6  method=Q  time taken=0.6268sec    time per point=78.35000000000001^10-6  

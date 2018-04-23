@@ -34,17 +34,17 @@ idk=False
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=10        # number of elements on each side of cube calculated
+n_elements=20        # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = False  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
-order_der_method=5       # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
+order_der_method=6      # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
 data_num=1              # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
 
 #if order_der_method==2 or order_der_method==4:loop=False    
-loop=False
+loop=True
 #elif order_der_method==3 or order_der_method==5 or order_der_method==6:loop=True
 
 data_set=['validation_Q_l2','raw_data_1']
@@ -121,16 +121,10 @@ def vel_der_ord2z(vcomp,p):
     return (vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])/2./delta
 
 def vel_der_ord2loopx(vcomp,p):
-    if p[0]==0: return (vcomp[p[0]+1,p[1],p[2]] - vcomp[x_max,p[1],p[2]])/delta
-    elif p[0]==x_max: return (vcomp[0,p[1],p[2]] - vcomp[p[0]-1,p[1],p[2]])/delta
     return (vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])/2./delta
 def vel_der_ord2loopy(vcomp,p):
-    if p[1]==0: return (vcomp[p[0],p[1]+1,p[2]] - vcomp[y_max,p[1],p[2]])/delta
-    elif p[1]==y_max: return (vcomp[p[0],0,p[2]] - vcomp[p[0],p[1]-1,p[2]])/delta
     return (vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])/2./delta
 def vel_der_ord2loopz(vcomp,p):
-    if p[2]==0: return (vcomp[p[0],p[1],p[2]+1] - vcomp[z_max,p[1],p[2]])/delta
-    elif p[2]==z_max: return (vcomp[p[0],p[1],0] - vcomp[p[0],p[1],p[2]-1])/delta  
     return (vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])/2./delta
 
 
@@ -152,51 +146,19 @@ def vel_der_ord4z(vcomp,p):
     return (8*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-vcomp[p[0],p[1],p[2]+2]+vcomp[p[0],p[1],p[2]-2])/12./delta
 
 def vel_der_ord4loopx(vcomp,p):
-    if p[0]==0: return (8*(vcomp[p[0]+1,p[1],p[2]]-vcomp[x_max,p[1],p[2]])-vcomp[p[0]+2,p[1],p[2]]+vcomp[x_max-1,p[1],p[2]])/12./delta
-    elif p[0]==x_max: return (8*(vcomp[0,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-vcomp[1,p[1],p[2]]+vcomp[p[0]-2,p[1],p[2]])/12./delta
-    elif p[0]==1: return (8*(vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-vcomp[p[0]+2,p[1],p[2]]+vcomp[x_max,p[1],p[2]])/12./delta
-    elif p[0]==x_max-1: return (8*(vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-vcomp[0,p[1],p[2]]+vcomp[p[0]-2,p[1],p[2]])/12./delta
     return (8*(vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-vcomp[p[0]+2,p[1],p[2]]+vcomp[p[0]-2,p[1],p[2]])/12./delta
 def vel_der_ord4loopy(vcomp,p):
-    if p[1]==0: return (8*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],y_max,p[2]])-vcomp[p[0],p[1]+2,p[2]]+vcomp[p[0],y_max-1,p[2]])/12./delta
-    elif p[1]==y_max: return (8*(vcomp[p[0],0,p[2]]-vcomp[p[0],p[1]-1,p[2]])-vcomp[p[0],1,p[2]]+vcomp[p[0],p[1]-2,p[2]])/12./delta
-    elif p[1]==1: return (8*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-vcomp[p[0],p[1]+2,p[2]]+vcomp[p[0],y_max,p[2]])/12./delta
-    elif p[1]==y_max-1: return (8*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-vcomp[p[0],0,p[2]]+vcomp[p[0],p[1]-2,p[2]])/12./delta
     return (8*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-vcomp[p[0],p[1]+2,p[2]]+vcomp[p[0],p[1]-2,p[2]])/12./delta
 def vel_der_ord4loopz(vcomp,p):
-    if p[2]==0: return (8*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],z_max])-vcomp[p[0],p[1],p[2]+2]+vcomp[p[0],p[1],z_max-1])/12./delta
-    elif p[2]==z_max: return (8*(vcomp[p[0],p[1],0]-vcomp[p[0],p[1],p[2]-1])-vcomp[p[0],p[1],1]+vcomp[p[0],p[1],p[2]-2])/12./delta
-    elif p[2]==1: return (8*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-vcomp[p[0],p[1],p[2]+2]+vcomp[p[0],p[1],z_max])/12./delta
-    elif p[2]==z_max-1: return (8*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-vcomp[p[0],p[1],0]+vcomp[p[0],p[1],p[2]-2])/12./delta
     return (8*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-vcomp[p[0],p[1],p[2]+2]+vcomp[p[0],p[1],p[2]-2])/12./delta
     
 
 
 def vel_der_ord6loopx(vcomp,p):
-    if p[0]==0: return (45*(vcomp[p[0]+1,p[1],p[2]]-vcomp[x_max,p[1],p[2]])-9*(vcomp[p[0]+2,p[1],p[2]]-vcomp[x_max-1,p[1],p[2]])+vcomp[p[0]+3,p[1],p[2]]-vcomp[x_max-2,p[1],p[2]])/60./delta
-    elif p[0]==x_max: return (45*(vcomp[0,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-9*(vcomp[1,p[1],p[2]]-vcomp[p[0]-2,p[1],p[2]])+vcomp[2,p[1],p[2]]-vcomp[p[0]-3,p[1],p[2]])/60./delta
-    elif p[0]==1: return (45*(vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-9*(vcomp[p[0]+2,p[1],p[2]]-vcomp[x_max,p[1],p[2]])+vcomp[p[0]+3,p[1],p[2]]-vcomp[x_max-1,p[1],p[2]])/60./delta
-    elif p[0]==x_max-1: return(45*(vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-9*(vcomp[0,p[1],p[2]]-vcomp[p[0]-2,p[1],p[2]])+vcomp[1,p[1],p[2]]-vcomp[p[0]-3,p[1],p[2]])/60./delta
-    elif p[0]==2: return (45*(vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-9*(vcomp[p[0]+2,p[1],p[2]]-vcomp[p[0]-2,p[1],p[2]])+vcomp[p[0]+3,p[1],p[2]]-vcomp[x_max,p[1],p[2]])/60./delta
-    elif p[0]==x_max-2: return (45*(vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-9*(vcomp[p[0]+2,p[1],p[2]]-vcomp[p[0]-2,p[1],p[2]])+vcomp[0,p[1],p[2]]-vcomp[p[0]-3,p[1],p[2]])/60./delta
     return (45*(vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-9*(vcomp[p[0]+2,p[1],p[2]]-vcomp[p[0]-2,p[1],p[2]])+vcomp[p[0]+3,p[1],p[2]]-vcomp[p[0]-3,p[1],p[2]])/60./delta
-
 def vel_der_ord6loopy(vcomp,p):
-    if p[1]==0: return (45*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],y_max,p[2]])-9*(vcomp[p[0],p[1]+2,p[2]]-vcomp[p[0],y_max-1,p[2]])+vcomp[p[0],p[1]+3,p[2]]-vcomp[p[0],y_max-2,p[2]])/60./delta
-    elif p[1]==y_max: return (45*(vcomp[p[0],0,p[2]]-vcomp[p[0],p[1]-1,p[2]])-9*(vcomp[p[0],1,p[2]]-vcomp[p[0],p[1]-2,p[2]])+vcomp[p[0],2,p[2]]-vcomp[p[0],p[1]-3,p[2]])/60./delta
-    elif p[1]==1: return (45*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-9*(vcomp[p[0],p[1]+2,p[2]]-vcomp[p[0],y_max,p[2]])+vcomp[p[0],p[1]+3,p[2]]-vcomp[p[0],y_max-1,p[2]])/60./delta
-    elif p[1]==y_max-1: return (45*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-9*(vcomp[p[0],0,p[2]]-vcomp[p[0],p[1]-2,p[2]])+vcomp[p[0],1,p[2]]-vcomp[p[0],p[1]-3,p[2]])/60./delta
-    elif p[1]==2: return (45*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-9*(vcomp[p[0],p[1]+2,p[2]]-vcomp[p[0],p[1]-2,p[2]])+vcomp[p[0],p[1]+3,p[2]]-vcomp[p[0],y_max,p[2]])/60./delta
-    elif p[1]==y_max-2: return (45*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-9*(vcomp[p[0],p[1]+2,p[2]]-vcomp[p[0],p[1]-2,p[2]])+vcomp[p[0],0,p[2]]-vcomp[p[0],p[1]-3,p[2]])/60./delta
     return (45*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-9*(vcomp[p[0],p[1]+2,p[2]]-vcomp[p[0],p[1]-2,p[2]])+vcomp[p[0],p[1]+3,p[2]]-vcomp[p[0],p[1]-3,p[2]])/60./delta
-
 def vel_der_ord6loopz(vcomp,p):
-    if p[2]==0: return (45*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],z_max])-9*(vcomp[p[0],p[1],p[2]+2]-vcomp[p[0],p[1],z_max-1])+vcomp[p[0],p[1],p[2]+3]-vcomp[p[0],p[1],z_max-2])/60./delta
-    elif p[2]==z_max: return (45*(vcomp[p[0],p[1],0]-vcomp[p[0],p[1],p[2]-1])-9*(vcomp[p[0],p[1],1]-vcomp[p[0],p[1],p[2]-2])+vcomp[p[0],p[1],2]-vcomp[p[0],p[1],p[2]-3])/60./delta
-    elif p[2]==1: return (45*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-9*(vcomp[p[0],p[1],p[2]+2]-vcomp[p[0],p[1],z_max])+vcomp[p[0],p[1],p[2]+3]-vcomp[p[0],p[1],z_max-2])/60./delta
-    elif p[2]==z_max-1: return (45*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-9*(vcomp[p[0],p[1],1]-vcomp[p[0],p[1],p[2]-2])+vcomp[p[0],p[1],2]-vcomp[p[0],p[1],p[2]-3])/60./delta
-    elif p[2]==2: return (45*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-9*(vcomp[p[0],p[1],p[2]+2]-vcomp[p[0],p[1],p[2]-2])+vcomp[p[0],p[1],p[2]+3]-vcomp[p[0],p[1],z_max])/60./delta
-    elif p[2]==z_max-2: return (45*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-9*(vcomp[p[0],p[1],p[2]+2]-vcomp[p[0],p[1],p[2]-2])+vcomp[p[0],p[1],0]-vcomp[p[0],p[1],p[2]-3])/60./delta
     return (45*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-9*(vcomp[p[0],p[1],p[2]+2]-vcomp[p[0],p[1],p[2]-2])+vcomp[p[0],p[1],p[2]+3]-vcomp[p[0],p[1],p[2]-3])/60./delta
 
 
@@ -341,17 +303,17 @@ else:
     print ('start calc')
     stop1 = time.clock()
     if to_calc_Q:
-        for i in range(n_elements):
-            for j in range(n_elements):
-                for k in range(n_elements):
-                    vspace[i,j,k]=calc_Q(np.array([i,j,k]))
+        for i in range(3,n_elements+3):
+            for j in range(3,n_elements+3):
+                for k in range(3,n_elements+3):
+                    vspace[i-3,j-3,k-3]=calc_Q(np.array([i,j,k]))
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
         highest_vorticity=np.amax(vspace)
     elif to_calc_Lambda2:
-        for i in range(n_elements):
-            for j in range(n_elements):
-                for k in range(n_elements):
-                    vspace[i,j,k]=Lambda2(np.array([i,j,k]))
+        for i in range(3,n_elements+3):
+            for j in range(3,n_elements+3):
+                for k in range(3,n_elements+3):
+                    vspace[i-3,j-3,k-3]=Lambda2(np.array([i,j,k]))
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Lambda2 calculation')
         highest_vorticity=np.amin(vspace)
     
