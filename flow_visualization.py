@@ -39,11 +39,7 @@ to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
-<<<<<<< HEAD
-order_der_method=2     # only 2 or 4 are implemented 3 is 2 but new
-=======
 order_der_method=5       # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
->>>>>>> 0bc8cbf2594f7325e833f5ea5e27a22e15893ef5
 data_num=1              # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
 
