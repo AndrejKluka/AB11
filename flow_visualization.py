@@ -217,6 +217,31 @@ def D_matrix6loop(point):
                     [vel_der_ord6loopx(v,point), vel_der_ord6loopy(v,point), vel_der_ord6loopz(v,point)],\
                     [vel_der_ord6loopx(w,point), vel_der_ord6loopy(w,point), vel_der_ord6loopz(w,point)]]))
 
+    
+def vorticity(point):
+    if order_der_method==4:
+        i = vel_der_ord4y(w,point) - vel_der_ord4z(v,point)
+        j = -(vel_der_ord4x(w,point) - vel_der_ord4z(u,point))
+        k = vel_der_ord4x(v,point) - vel_der_ord4y(u,point)
+    elif order_der_method==2:
+        i = vel_der_ord2y(w,point) - vel_der_ord2z(v,point)
+        j = -(vel_der_ord2x(w,point) - vel_der_ord2z(u,point))
+        k = vel_der_ord2x(v,point) - vel_der_ord2y(u,point)
+    elif order_der_method==3:
+        i = vel_der_ord2loopy(w,point) - vel_der_ord2loopz(v,point)
+        j = -(vel_der_ord2loopx(w,point) - vel_der_ord2loopz(u,point))
+        k = vel_der_ord2loopx(v,point) - vel_der_ord2loopy(u,point)
+    elif order_der_method==5:
+        i = vel_der_ord4loopy(w,point) - vel_der_ord4loopz(v,point)
+        j = -(vel_der_ord4loopx(w,point) - vel_der_ord4loopz(u,point))
+        k = vel_der_ord4loopx(v,point) - vel_der_ord4loopy(u,point)
+    elif order_der_method==6:
+        i = vel_der_ord6loopy(w,point) - vel_der_ord6loopz(v,point)
+        j = -(vel_der_ord6loopx(w,point) - vel_der_ord6loopz(u,point))
+        k = vel_der_ord6loopx(v,point) - vel_der_ord6loopy(u,point)
+    strength = math.sqrt(i**2 + j**2 + k**2) 
+    return strength, i , j , k 
+
 
     
 if order_der_method==2:   D_matrix=D_matrix2 
@@ -297,30 +322,6 @@ def timed_calc_Q(point):
     QQ=Q(N1,N2)
     print ('\n',int((time.clock()-stop6)*10000000)/10.,'mikrosec  Q calculation')
     return QQ
-
-def vorticity(point):
-    if order_der_method==4:
-        i = vel_der_ord4(w,'y',point) - vel_der_ord4(v,'z',point)
-        j = -(vel_der_ord4(w,'x',point) - vel_der_ord4(u,'z',point))
-        k = vel_der_ord4(v,'x',point) - vel_der_ord4(u,'y',point)
-    elif order_der_method==2:
-        i = vel_der_ord2(w,'y',point) - vel_der_ord2(v,'z',point)
-        j = -(vel_der_ord2(w,'x',point) - vel_der_ord2(u,'z',point))
-        k = vel_der_ord2(v,'x',point) - vel_der_ord2(u,'y',point)
-    elif order_der_method==3:
-        i = vel_der_ord2new(w,'y',point) - vel_der_ord2new(v,'z',point)
-        j = -(vel_der_ord2new(w,'x',point) - vel_der_ord2new(u,'z',point))
-        k = vel_der_ord2new(v,'x',point) - vel_der_ord2new(u,'y',point)
-    elif order_der_method==5:
-        i = vel_der_ord4new(w,'y',point) - vel_der_ord4new(v,'z',point)
-        j = -(vel_der_ord4new(w,'x',point) - vel_der_ord4new(u,'z',point))
-        k = vel_der_ord4new(v,'x',point) - vel_der_ord4new(u,'y',point)
-    elif order_der_method==6:
-        i = vel_der_ord6new(w,'y',point) - vel_der_ord6new(v,'z',point)
-        j = -(vel_der_ord6new(w,'x',point) - vel_der_ord6new(u,'z',point))
-        k = vel_der_ord6new(v,'x',point) - vel_der_ord6new(u,'y',point)
-    strength = math.sqrt(i**2 + j**2 + k**2) 
-    return strength, i , j , k 
 
 
 #timed_calc_Q([10,10,10])
