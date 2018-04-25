@@ -169,3 +169,4 @@ points =6967871   order of method=2  method=Q  time taken=389.0764sec    time pe
 >>>>>>> 0257834e82bf645fa41e20f9583f4b087172dd2b
 >>>>>>> 0bc8cbf2594f7325e833f5ea5e27a22e15893ef5
 >>>>>>> c493d6bbcb0721648ab88c66b7eb23543fc5ec54
+points =6967871   order of method=3  method=Q  time taken=271.4416sec    time per point=38.9561747053^10-6  
