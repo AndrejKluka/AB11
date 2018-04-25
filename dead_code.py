@@ -20,6 +20,53 @@ q_threshold=0.16          # threshold for marching cubes algorithm
 
 
 
+xx=np.zeros((5,5,5))
+un=xx.astype(dtype=str)
+for i in range(5):
+    for j in range(5):
+        for k in range(5):
+            un[i,j,k]=str(str(i)+str(j)+str(k))
+print(un)
+
+
+
+
+nx=2
+ny=5
+nz=8
+mat=np.zeros((nx,ny,nz))
+for i in range(nx):
+    for j in range(ny):
+        for k in range(nz):
+            mat[i,j,k]=1*i+2*j+4*k  
+      
+mat1x=np.concatenate((mat,np.zeros((2,np.shape(mat)[1],np.shape(mat)[2]))),axis=0)            
+#print(mat1x)            
+mat2x=np.concatenate((np.zeros((2,np.shape(mat)[1],np.shape(mat)[2])),mat),axis=0)           
+derx=(mat1x-mat2x)/2.
+derx[1,:,:]=mat1x[1,:,:]-mat1x[0,:,:]
+derx[-2,:,:]=mat2x[-1,:,:]-mat2x[-2,:,:]
+finx=derx[1:-1,:,:]
+print(finx)
+
+mat1y=np.concatenate((mat,np.zeros((np.shape(mat)[0],2,np.shape(mat)[2]))),axis=1)            
+#print(mat1x)            
+mat2y=np.concatenate((np.zeros((np.shape(mat)[0],2,np.shape(mat)[2])),mat),axis=1)           
+dery=(mat1y-mat2y)/2.
+dery[:,1,:]=mat1y[:,1,:]-mat1y[:,0,:]
+dery[:,-2,:]=mat2y[:,-1,:]-mat2y[:,-2,:]
+finy=dery[:,1:-1,:]
+print(finy)
+
+mat1z=np.concatenate((mat,np.zeros((np.shape(mat)[0],np.shape(mat)[1],2))),axis=2)                     
+mat2z=np.concatenate((np.zeros((np.shape(mat)[0],np.shape(mat)[1],2)),mat),axis=2)          
+derz=(mat1z-mat2z)/2.
+derz[:,:,1]=mat1z[:,:,1]-mat1z[:,:,0]
+derz[:,:,-2]=mat2z[:,:,-1]-mat2z[:,:,-2]
+print(derz[:,:,1:-1])
+
+
+
 
 
 def D_matrix2(point):

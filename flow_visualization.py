@@ -19,7 +19,7 @@ idk=False
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=20        # number of elements on each side of cube calculated
+n_elements=10        # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = False  #if true calculate vorticity
@@ -58,7 +58,7 @@ if check_data:
     else:print('data not fine')
 
 #vspace=np.zeros(np.shape(u))
-vspace=np.zeros((n_elements,n_elements,n_elements))
+vspace=np.empty((n_elements,n_elements,n_elements))
 vorticity_space = np.zeros((n_elements,n_elements,n_elements))
 vorticity_x = np.zeros((n_elements,n_elements,n_elements))
 vorticity_y = np.zeros((n_elements,n_elements,n_elements))
@@ -82,6 +82,59 @@ elif n_elements>y_max:
     n_elements=y_max
 elif n_elements>z_max:
     n_elements=z_max
+    
+#calculating gradients with whole matrixes
+#stuff for concatenating matrixes
+
+#stuff for finite diff method
+
+
+def ord2_matx(mat):
+    mat1x=np.concatenate((mat,np.zeros((2,np.shape(mat)[1],np.shape(mat)[2]))),axis=0)                     
+    mat2x=np.concatenate((np.zeros((2,np.shape(mat)[1],np.shape(mat)[2])),mat),axis=0)           
+    derx=(mat1x-mat2x)/2.
+    derx[1,:,:]=mat1x[1,:,:]-mat1x[0,:,:]
+    derx[-2,:,:]=mat2x[-1,:,:]-mat2x[-2,:,:]
+    return derx[1:-1,:,:]
+
+def ord2_maty(mat):
+    mat1y=np.concatenate((mat,np.zeros((np.shape(mat)[0],2,np.shape(mat)[2]))),axis=1)                     
+    mat2y=np.concatenate((np.zeros((np.shape(mat)[0],2,np.shape(mat)[2])),mat),axis=1)           
+    dery=(mat1y-mat2y)/2.
+    dery[:,1,:]=mat1y[:,1,:]-mat1y[:,0,:]
+    dery[:,-2,:]=mat2y[:,-1,:]-mat2y[:,-2,:]
+    return dery[:,1:-1,:]
+    
+def ord2_matz(mat):
+    mat1z=np.concatenate((mat,np.zeros((np.shape(mat)[0],np.shape(mat)[1],2))),axis=2)                     
+    mat2z=np.concatenate((np.zeros((np.shape(mat)[0],np.shape(mat)[1],2)),mat),axis=2)           
+    derz=(mat1z-mat2z)/2.
+    derz[:,:,1]=mat1z[:,:,1]-mat1z[:,:,0]
+    derz[:,:,-2]=mat2z[:,:,-1]-mat2z[:,:,-2]
+    return derz[:,:,1:-1]
+'''n=3
+un=np.zeros((n,n,n))
+for i in range(n):
+    for j in range(n):
+        for k in range(n):
+            un[i,j,k]=i+j+k    
+print(un) 
+reun=np.reshape(un,(n,n,n,1))
+unx=np.concatenate((reun,reun*2), axis=3)
+uny=np.concatenate((reun*-1,reun*-2), axis=3)
+print(np.shape(uny))
+unn=np.concatenate((np.reshape(unx,(n,n,n,2,1)),np.reshape(uny,(n,n,n,2,1))), axis=4)
+print(np.shape(unn))
+print(unn)'''
+
+def full_D_matrix(u,v,w,order_of_method):
+    pass
+'''    
+def D_matrix2(point):
+    return(np.array([[vel_der_ord2x(u,point), vel_der_ord2y(u,point), vel_der_ord2z(u,point)],\
+                    [vel_der_ord2x(v,point), vel_der_ord2y(v,point), vel_der_ord2z(v,point)],\
+                    [vel_der_ord2x(w,point), vel_der_ord2y(w,point), vel_der_ord2z(w,point)]]))
+'''
 #extending velocity fields in all directions if the data repeats 
 def extend_matrix(matrix):
     zzx=np.concatenate((np.array(matrix[(np.shape(matrix)[0]-3):np.shape(matrix)[0],:,:]),matrix[:,:,:],np.array(matrix[0:3,:,:])), axis=0)
@@ -90,7 +143,7 @@ def extend_matrix(matrix):
     matrix=zzx
     zzx=np.concatenate((np.array(matrix[:,:,(np.shape(matrix)[2]-3):np.shape(matrix)[2]]),matrix[:,:,:],np.array(matrix[:,:,0:3])), axis=2)
     return(zzx)
-
+ 
 if to_loop:
     u=extend_matrix(u)
     v=extend_matrix(v)
