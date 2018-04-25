@@ -194,3 +194,4 @@ points =857375   order of method=3  method=Q  time taken=33.0059sec    time per 
 points =857375   order of method=3  method=Q  time taken=29.6109sec    time per point=34.53669631141566^10-6  
 points =857375   order of method=3  method=Lambda2  time taken=47.3072sec    time per point=55.17678961947806^10-6  
 >>>>>>> 687463f4bfbfb4a8ce081cded67271f006afd1dd
+points =857375   order of method=3  method=Lambda2  time taken=50.4366sec    time per point=58.826767750400926^10-6  
