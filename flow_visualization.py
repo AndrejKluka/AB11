@@ -34,22 +34,26 @@ idk=False
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-
-n_elements=192        # number of elements on each side of cube calculated
-
+n_elements=10        # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-to_calc_vorticity = True  #if true calculate vorticity
+to_calc_vorticity = False  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
+<<<<<<< HEAD
 
 
 order_der_method=2
        # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
 
+=======
+order_der_method=5       # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
+>>>>>>> 2d06b31f729d7ac3bfba5c7c316c00e5924ff595
 data_num=1              # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
 
-
+#if order_der_method==2 or order_der_method==4:loop=False    
+loop=False
+#elif order_der_method==3 or order_der_method==5 or order_der_method==6:loop=True
 
 data_set=['validation_Q_l2','raw_data_1']
 
@@ -93,19 +97,23 @@ z_max=np.shape(u)[2]-1
 if n_elements>x_max:
     n_elements=x_max
 #extending velocity fields in all directions if the data repeats 
-'''
-xx=np.zeros((5,5,5))
-un=xx.astype(dtype=str)
-for i in range(5):
-    for j in range(5):
-        for k in range(5):
-            un[i,j,k]=str(str(i)+str(j)+str(k))
-print(un)
+def extend_matrix(matrix):
+    zzx=np.concatenate((np.array(matrix[(np.shape(matrix)[0]-3):np.shape(matrix)[0],:,:]),matrix[:,:,:],np.array(matrix[0:3,:,:])), axis=0)
+    matrix=zzx
+    zzx=np.concatenate((np.array(matrix[:,(np.shape(matrix)[1]-3):np.shape(matrix)[1],:]),matrix[:,:,:],np.array(matrix[:,0:3,:])), axis=1)
+    matrix=zzx
+    zzx=np.concatenate((np.array(matrix[:,:,(np.shape(matrix)[2]-3):np.shape(matrix)[2]]),matrix[:,:,:],np.array(matrix[:,:,0:3])), axis=2)
+    return(zzx)
 
-i=0
-j=1
-k=3
-'''
+if loop:
+    u=extend_matrix(u)
+    v=extend_matrix(v)
+    w=extend_matrix(w)
+    
+    
+    
+
+
 #   Definitions  for calculations
 def vel_der_ord2x(vcomp,p):
     if p[0]==0: return (vcomp[p[0]+1,p[1],p[2]] - vcomp[p[0],p[1],p[2]])/delta
@@ -318,6 +326,7 @@ def D_matrix6loop(point):
 #
 
     
+<<<<<<< HEAD
 if order_der_method==2:   
     D_matrix=D_matrix2
     #vorticity=[D_matrix2[1], D_matrix2[2], D_matrix2[3], D_matrix2[4]]
@@ -333,6 +342,31 @@ elif order_der_method==5:
 elif order_der_method==6:
     D_matrix=D_matrix6loop[0]
     vorticity=[D_matrix6loop[1], D_matrix6loop[2], D_matrix6loop[3], D_matrix6loop[4]]
+=======
+def vorticity(point):
+    if order_der_method==5:
+        i = vel_der_ord4y(w,point) - vel_der_ord4z(v,point)
+        j = -(vel_der_ord4x(w,point) - vel_der_ord4z(u,point))
+        k = vel_der_ord4x(v,point) - vel_der_ord4y(u,point)
+#    elif order_der_method==2:
+#        i = vel_der_ord2y(w,point) - vel_der_ord2z(v,point)
+#        j = -(vel_der_ord2x(w,point) - vel_der_ord2z(u,point))
+#        k = vel_der_ord2x(v,point) - vel_der_ord2y(u,point)
+#    elif order_der_method==3:
+#        i = vel_der_ord2loopy(w,point) - vel_der_ord2loopz(v,point)
+#        j = -(vel_der_ord2loopx(w,point) - vel_der_ord2loopz(u,point))
+#        k = vel_der_ord2loopx(v,point) - vel_der_ord2loopy(u,point)
+#    elif order_der_method==4:
+#        i = vel_der_ord4loopy(w,point) - vel_der_ord4loopz(v,point)
+#        j = -(vel_der_ord4loopx(w,point) - vel_der_ord4loopz(u,point))
+#        k = vel_der_ord4loopx(v,point) - vel_der_ord4loopy(u,point)
+#    elif order_der_method==6:
+#        i = vel_der_ord6loopy(w,point) - vel_der_ord6loopz(v,point)
+#        j = -(vel_der_ord6loopx(w,point) - vel_der_ord6loopz(u,point))
+#        k = vel_der_ord6loopx(v,point) - vel_der_ord6loopy(u,point)
+    strength = math.sqrt(i**2 + j**2 + k**2) 
+    return strength, i , j , k 
+>>>>>>> 2d06b31f729d7ac3bfba5c7c316c00e5924ff595
 
 
    
@@ -525,5 +559,5 @@ xvtk = np.arange(0, vspace_shape[0])
 yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
-gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+#gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 

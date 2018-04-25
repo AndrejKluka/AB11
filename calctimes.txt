@@ -8,6 +8,7 @@ points =27000   order of method=6  method=Q         time taken=4.1486sec    time
 points =27000   order of method=6  method=Q         time taken=4.0075sec    time per point=148.42592592592592^10-6 
  
 <<<<<<< HEAD
+<<<<<<< HEAD
 points =27000   order of method=2  method=Q         time taken=1.73sec    time per point=64.07407407407408^10-6  
 points =27000   order of method=2  method=Q         time taken=1.7075sec    time per point=63.24074074074074^10-6  
 points =27000   order of method=2  method=Q         time taken=1.8608sec    time per point=68.91851851851852^10-6  
@@ -170,3 +171,5 @@ points =6967871   order of method=2  method=Q  time taken=389.0764sec    time pe
 >>>>>>> 0bc8cbf2594f7325e833f5ea5e27a22e15893ef5
 >>>>>>> c493d6bbcb0721648ab88c66b7eb23543fc5ec54
 points =6967871   order of method=3  method=Q  time taken=271.4416sec    time per point=38.9561747053^10-6  
+=======
+>>>>>>> 2d06b31f729d7ac3bfba5c7c316c00e5924ff595
