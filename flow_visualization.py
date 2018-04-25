@@ -39,24 +39,8 @@ to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
-<<<<<<< HEAD
-
-=======
-<<<<<<< HEAD
 order_der_method=3       # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
 data_num=0              # 0 for validation dataset, 1 for raw_data_1
-=======
-<<<<<<< HEAD
->>>>>>> b2dfcd54503513ad8d0b33e35227852e94bd96ae
-
-
-order_der_method=2
-       # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
-
-      # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
-
-data_num=1              # 0 for validation dataset, 1 for raw_data_1
->>>>>>> 3cf1d44a26dd1abebdc451f6a89e9da4d70e89e7
 check_data=False        # check only first time you are using dataset
 
 #if order_der_method==2 or order_der_method==4:loop=False    
@@ -69,10 +53,10 @@ data_set=['validation_Q_l2','raw_data_1']
 calculated_data_dir=path.join(path.dirname(__file__),'calculated data') 
 data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num])
 calculated_data_file=path.join(calculated_data_dir,'vspace-'+data_set[data_num]+'.npy')
-calculated_vorticity_file=path.join(calculated_data_dir,'vorticity-'+data_set[data_num]+'.npy') 
+'''calculated_vorticity_file=path.join(calculated_data_dir,'vorticity-'+data_set[data_num]+'.npy') 
 calculated_vorticityx_file=path.join(calculated_data_dir,'vorticity-x-'+data_set[data_num]+'.npy') 
 calculated_vorticityy_file=path.join(calculated_data_dir,'vorticity-y-'+data_set[data_num]+'.npy')
-calculated_vorticityz_file=path.join(calculated_data_dir,'vorticity-z-'+data_set[data_num]+'.npy')  
+calculated_vorticityz_file=path.join(calculated_data_dir,'vorticity-z-'+data_set[data_num]+'.npy') ''' 
  
 data=scipy.io.loadmat(data_set_file, mdict=None, appendmat=True)
 u=data['u']
@@ -338,17 +322,6 @@ def D_matrix6loop(point):
 #    strength = math.sqrt(i**2 + j**2 + k**2) 
 #    return strength, i , j , k 
 #
-
-    
-<<<<<<< HEAD
-
-=======
-<<<<<<< HEAD
-    
-    
-=======
-<<<<<<< HEAD
->>>>>>> b2dfcd54503513ad8d0b33e35227852e94bd96ae
 if order_der_method==2:   
     D_matrix=D_matrix2
     #vorticity=[D_matrix2[1], D_matrix2[2], D_matrix2[3], D_matrix2[4]]
@@ -364,36 +337,6 @@ elif order_der_method==5:
 elif order_der_method==6:
     D_matrix=D_matrix6loop[0]
     vorticity=[D_matrix6loop[1], D_matrix6loop[2], D_matrix6loop[3], D_matrix6loop[4]]
-<<<<<<< HEAD
-
-=======
-=======
->>>>>>> 839713d4871d800cd8f30bc23fed8898079a7067
->>>>>>> b2dfcd54503513ad8d0b33e35227852e94bd96ae
-def vorticity(point):
-    if order_der_method==4:
-        i = vel_der_ord4y(w,point) - vel_der_ord4z(v,point)
-        j = -(vel_der_ord4x(w,point) - vel_der_ord4z(u,point))
-        k = vel_der_ord4x(v,point) - vel_der_ord4y(u,point)
-    elif order_der_method==2:
-        i = vel_der_ord2y(w,point) - vel_der_ord2z(v,point)
-        j = -(vel_der_ord2x(w,point) - vel_der_ord2z(u,point))
-        k = vel_der_ord2x(v,point) - vel_der_ord2y(u,point)
-    elif order_der_method==3:
-        i = vel_der_ord2loopy(w,point) - vel_der_ord2loopz(v,point)
-        j = -(vel_der_ord2loopx(w,point) - vel_der_ord2loopz(u,point))
-        k = vel_der_ord2loopx(v,point) - vel_der_ord2loopy(u,point)
-    elif order_der_method==4:
-        i = vel_der_ord4loopy(w,point) - vel_der_ord4loopz(v,point)
-        j = -(vel_der_ord4loopx(w,point) - vel_der_ord4loopz(u,point))
-        k = vel_der_ord4loopx(v,point) - vel_der_ord4loopy(u,point)
-    elif order_der_method==6:
-        i = vel_der_ord6loopy(w,point) - vel_der_ord6loopz(v,point)
-        j = -(vel_der_ord6loopx(w,point) - vel_der_ord6loopz(u,point))
-        k = vel_der_ord6loopx(v,point) - vel_der_ord6loopy(u,point)
-    strength = math.sqrt(i**2 + j**2 + k**2) 
-    return strength, i , j , k 
-
 
    
 def S_matrixold(Dmatrix):
@@ -439,7 +382,7 @@ Q=Qold #old is better
     
 def calc_Q(point):
     D=D_matrix(point)
-    return Q(norm(O_matrix(D)),norm(S_matrix(D)))
+    return Q(norm(O_matrix(D[0])),norm(S_matrix(D[0]))),D[1], D[2], D[3], D[4]   #q value, vorticity strenght, vorticity i,j,k
 
 def Lambda2(point):
     w, v = np.linalg.eigh(A_matrix(S_matrix(D_matrix(point)),O_matrix(D_matrix(point))))
@@ -473,25 +416,34 @@ def timed_calc_Q(point):
 if to_load:
     stop1 = time.clock()
     vspace=np.load(calculated_data_file)
-    vorticity_space=np.load(calculated_vorticity_file)
+    ''''vorticity_space=np.load(calculated_vorticity_file)
     vorticity_x=np.load(calculated_vorticityx_file)
     vorticity_y=np.load(calculated_vorticityy_file)
-    vorticity_z=np.load(calculated_vorticityz_file)
+    vorticity_z=np.load(calculated_vorticityz_file)''''
     calc_time=int((time.clock()-stop1)*10000)/10000.
     print ('\n',calc_time,'sec  loaded calculation')
     highest_vorticity=np.amax(vspace) # need to be careful, here I assume that I load calculated Q values and no L2
 else:
     print ('start calc')
     stop1 = time.clock()
-    if to_calc_Q:
+    if to_calc_Q and to_calc_vorticity:
         for i in range(n_elements):
             for j in range(n_elements):
                 for k in range(n_elements):
-                    vspace[i,j,k]=calc_Q(np.array([i,j,k]))
-                    vorticity_space[i,j,k]=vorticity(np.array([i,j,k]))[1]
-                    vorticity_x[i,j,k]=vorticity(np.array([i,j,k]))[2]
-                    vorticity_y[i,j,k]=vorticity(np.array([i,j,k]))[3]
-                    vorticity_z[i,j,k]=vorticity(np.array([i,j,k]))[4]
+                    Qandvorticity=calc_Q(np.array([i,j,k]))
+                    vspace[i,j,k]=Qandvorticity[0]
+                    vorticity_space[i,j,k]=Qandvorticity[1]
+                    vorticity_x[i,j,k]=Qandvorticity[2]
+                    vorticity_y[i,j,k]=Qandvorticity[3]
+                    vorticity_z[i,j,k]=Qandvorticity[4]
+        print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
+        highest_vorticity=np.amax(vspace)
+    elif to_calc_Q:
+        for i in range(n_elements):           
+            for j in range(n_elements):
+                for k in range(n_elements):
+                    Qandvorticity=calc_Q(np.array([i,j,k]))
+                    vspace[i,j,k]=Qandvorticity[0]
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
         highest_vorticity=np.amax(vspace)
     elif to_calc_Lambda2:
@@ -503,35 +455,7 @@ else:
         highest_vorticity=np.amin(vspace)
     
     calc_time=int((time.clock()-stop1)*10000)/10000.
-    np.save(calculated_data_file,vspace)  
-if to_calc_vorticity:
-    stop2 = time.clock()
-    for i in range(n_elements):
-            for j in range(n_elements):
-                for k in range(n_elements):
-<<<<<<< HEAD
-                    vorticity_space[i,j,k]=vorticity(np.array([i,j,k]))[0]
-                    vorticity_x[i,j,k]=vorticity(np.array([i,j,k]))[1]
-                    vorticity_y[i,j,k]=vorticity(np.array([i,j,k]))[2]
-                    vorticity_z[i,j,k]=vorticity(np.array([i,j,k]))[3]              
-    np.save(calculated_vorticity_file,vorticity_space)
-    np.save(calculated_vorticityx_file,vorticity_x)
-    np.save(calculated_vorticityy_file,vorticity_y)
-    np.save(calculated_vorticityz_file,vorticity_z)                  
-=======
-                    vorticity_space[i,j,k]=vorticity(np.array([i,j,k]))[1]
-                    vorticity_x[i,j,k]=vorticity(np.array([i,j,k]))[2]
-                    vorticity_y[i,j,k]=vorticity(np.array([i,j,k]))[3]
-                    vorticity_z[i,j,k]=vorticity(np.array([i,j,k]))[4]
-                    
-                    
->>>>>>> 3cf1d44a26dd1abebdc451f6a89e9da4d70e89e7
-                    
-    print ('\n',int((time.clock()-stop2)*10000)/10000.,'sec  vorticity strength calculation')
-
-
-
-
+    np.save(calculated_data_file,vspace)   
  
    
     
