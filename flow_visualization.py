@@ -7,6 +7,7 @@ from os import path
 import scipy.io
 import scipy
 import numpy as np
+from pyevtk.hl import gridToVTK
 
 import math
 stop=time.clock()
@@ -20,7 +21,7 @@ to_load=False          # if true will load already the last calculated Q or lamb
 to_save=False
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=60        # number of elements on each side of cube calculated
+n_elements=90       # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = False  #if true calculate vorticity
@@ -462,5 +463,5 @@ xvtk = np.arange(0, vspace_shape[0])
 yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
-#gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 
