@@ -21,13 +21,39 @@ to_load=False          # if true will load already the last calculated Q or lamb
 to_save=False
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
+<<<<<<< HEAD
 n_elements=96       # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
 order_der_method=6      #2,4,6 are with looping in 2,4,6 orders respectetively
 to_loop=True            # True if the data loops 
+=======
+<<<<<<< HEAD
+n_elements=100      # number of elements on each side of cube calculated
+to_calc_Q=False        # if true will calc Q on cube with n_elements
+to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
+to_calc_vorticity = True  #if true calculate vorticity
+order_der_method=6      #2,4,6 are with looping in 2,4,6 orders respectetively
+to_loop=False           # True if the data loops 
+=======
+<<<<<<< HEAD
+n_elements=200        # number of elements on each side of cube calculated
+=======
+n_elements=90       # number of elements on each side of cube calculated
+>>>>>>> d833190854599f52e30612666bcb63e25f793d1c
+to_calc_Q=True          # if true will calc Q on cube with n_elements
+to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+to_calc_vorticity = False  #if true calculate vorticity
+order_der_method=2      #2,4,6 are with looping in 2,4,6 orders respectetively
+to_loop=False            # True if the data loops 
+<<<<<<< HEAD
+data_num=2              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+=======
+>>>>>>> 80212b5fa80474c1dc381865ac724120fde2fee6
+>>>>>>> 1ba05b20d49ddb8f00ceec076f7a4f0b3ddc85d0
 data_num=0              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+>>>>>>> d833190854599f52e30612666bcb63e25f793d1c
 check_data=False        # check only first time you are using dataset
  
 
@@ -214,7 +240,7 @@ def vel_der_ord6x(vcomp,p):
     elif p[0]==x_max: return (vcomp[p[0],p[1],p[2]] - vcomp[p[0]-1,p[1],p[2]])/delta
     elif p[0]==1 or p[0]==x_max-1: return (vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])/2./delta
     elif p[0]==2 or p[0]==x_max-2: return (8*(vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-vcomp[p[0]+2,p[1],p[2]]+vcomp[p[0]-2,p[1],p[2]])/12./delta
-    return (45*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-9*(vcomp[p[0],p[1]+2,p[2]]-vcomp[p[0],p[1]-2,p[2]])+vcomp[p[0],p[1]+3,p[2]]-vcomp[p[0],p[1]-3,p[2]])/60./delta
+    return (45*(vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-9*(vcomp[p[0]+2,p[1],p[2]]-vcomp[p[0]-2,p[1],p[2]])+vcomp[p[0]+3,p[1],p[2]]-vcomp[p[0]-3,p[1],p[2]])/60./delta
 def vel_der_ord6y(vcomp,p):
     if p[1]==0: return (vcomp[p[0],p[1]+1,p[2]] - vcomp[p[0],p[1],p[2]])/delta
     elif p[1]==y_max: return (vcomp[p[0],p[1],p[2]] - vcomp[p[0],p[1]-1,p[2]])/delta
@@ -226,7 +252,7 @@ def vel_der_ord6z(vcomp,p):
     elif p[2]==z_max: return (vcomp[p[0],p[1],p[2]] - vcomp[p[0],p[1],p[2]-1])/delta
     elif p[2]==1 or p[2]==z_max-1: return (vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])/2./delta
     elif p[2]==2 or p[2]==x_max-2: return (8*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-vcomp[p[0],p[1],p[2]+2]+vcomp[p[0],p[1],p[2]-2])/12./delta
-    return (45*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-9*(vcomp[p[0],p[1]+2,p[2]]-vcomp[p[0],p[1]-2,p[2]])+vcomp[p[0],p[1]+3,p[2]]-vcomp[p[0],p[1]-3,p[2]])/60./delta
+    return (45*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-9*(vcomp[p[0],p[1],p[2]+2]-vcomp[p[0],p[1],p[2]-2])+vcomp[p[0],p[1],p[2]+3]-vcomp[p[0],p[1],p[2]-3])/60./delta
 
 #   velocity gradient matrix   
 def D_matrix2(point):
