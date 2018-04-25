@@ -181,3 +181,8 @@ points =6967871   order of method=3  method=Q  time taken=271.4416sec    time pe
 =======
 >>>>>>> 2d06b31f729d7ac3bfba5c7c316c00e5924ff595
 >>>>>>> 3cf1d44a26dd1abebdc451f6a89e9da4d70e89e7
+points =857375   order of method=2  method=Q  time taken=31.5744sec    time per point=36.82682606793993^10-6  
+points =857375   order of method=2  method=Q  time taken=33.345sec    time per point=38.89196675900277^10-6  
+points =857375   order of method=2  method=Q  time taken=37.1383sec    time per point=43.31628517276571^10-6  
+points =857375   order of method=2  method=Q  time taken=34.2812sec    time per point=39.983904359236035^10-6  
+points =857375   order of method=2  method=Q  time taken=44.3717sec    time per point=51.752966904796615^10-6  

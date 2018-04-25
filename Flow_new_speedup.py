@@ -7,7 +7,7 @@ import plotly.plotly as py
 import plotly
 from plotly.graph_objs import *
 import plotly.figure_factory
-##from pyevtk.hl import gridToVTK
+from pyevtk.hl import gridToVTK
 #import matplotlib.pyplot
 #graveyard pf unused module for now
 #from mpl_toolkits.mplot3d import Axes3D
@@ -46,7 +46,7 @@ q_threshold=0.16          # threshold for marching cubes algorithm
 order_der_method=2
        # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
 
-data_num=1              # 0 for validation dataset, 1 for raw_data_1
+data_num=0              # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
 
 
@@ -81,17 +81,19 @@ if check_data:
     else:print('data not fine')
 
 #vspace=np.zeros(np.shape(u))
-vspace=np.zeros((n_elements,n_elements,n_elements))
-vorticity_space = np.zeros((n_elements,n_elements,n_elements))
-vorticity_x = np.zeros((n_elements,n_elements,n_elements))
-vorticity_y = np.zeros((n_elements,n_elements,n_elements))
-vorticity_z = np.zeros((n_elements,n_elements,n_elements))
+
 delta=2.*math.pi/np.shape(u)[0]
 x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
 z_max=np.shape(u)[2]-1
 if n_elements>x_max:
     n_elements=x_max
+   
+vspace=np.zeros((n_elements,n_elements,n_elements))
+vorticity_space = np.zeros((n_elements,n_elements,n_elements))
+vorticity_x = np.zeros((n_elements,n_elements,n_elements))
+vorticity_y = np.zeros((n_elements,n_elements,n_elements))
+vorticity_z = np.zeros((n_elements,n_elements,n_elements))
 #extending velocity fields in all directions if the data repeats 
 '''
 xx=np.zeros((5,5,5))
@@ -291,7 +293,7 @@ def D_matrix6loop(point):
                     [xv, yv, zv],\
                     [xw,yw , zw]])), strength, i, j, k
     
-    
+#print (D_matrix(np.array([i,j,k])))
 #def vorticity(point):
 #    if order_der_method==4:
 #        i = vel_der_ord4y(w,point) - vel_der_ord4z(v,point)
@@ -378,8 +380,8 @@ def Qnew(normO,normS):
 Q=Qold #old is better
     
 def calc_Q(point):
-    D=D_matrix(point)[0]
-    return Q(norm(O_matrix(D)),norm(S_matrix(D))),D_matrix[1], D_matrix[2], D_matrix[3], D_matrix[4]   #q value, vorticity strenght, vorticity i,j,k
+    D=D_matrix(point)
+    return Q(norm(O_matrix(D[0])),norm(S_matrix(D[0]))),D[1], D[2], D[3], D[4]   #q value, vorticity strenght, vorticity i,j,k
 
 def Lambda2(point):
     w, v = np.linalg.eigh(A_matrix(S_matrix(D_matrix(point)),O_matrix(D_matrix(point))))
@@ -431,14 +433,14 @@ else:
                     vorticity_z[i,j,k]=Qandvorticity[4]
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
         highest_vorticity=np.amax(vspace)
-    elif to calc_Q:
+    elif to_calc_Q:
         for i in range(n_elements):
             for j in range(n_elements):
                 for k in range(n_elements):
                     Qandvorticity=calc_Q(np.array([i,j,k]))
                     vspace[i,j,k]=Qandvorticity[0]
-         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
-         highest_vorticity=np.amax(vspace)
+        print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
+        highest_vorticity=np.amax(vspace)
     elif to_calc_Lambda2:
         for i in range(n_elements):
             for j in range(n_elements):
@@ -461,8 +463,8 @@ else:
                     
                     
                     
-    print ('\n',int((time.clock()-stop2)*10000)/10000.,'sec  vorticity strength calculation')
-    highest_vorticity=np.amax(vorticity_space)
+  #  print ('\n',int((time.clock()-stop2)*10000)/10000.,'sec  vorticity strength calculation')
+   # highest_vorticity=np.amax(vorticity_space)
 
 
 
@@ -520,14 +522,6 @@ if not to_load:
     f.write(wri)
     f.write('\n')
     f.close()
-
-
-if idk:
-    vspace_shape = np.shape(vspace)      
-    xvtk = np.arange(0, vspace_shape[0])
-    yvtk = np.arange(0, vspace_shape[1])
-    zvtk = np.arange(0, vspace_shape[2])
-
 
 vspace_shape = np.shape(vspace)      
 xvtk = np.arange(0, vspace_shape[0])
