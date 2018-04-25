@@ -17,7 +17,7 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 #---------------------------------------------------------General setup for program run
 to_load=False          # if true will load already the last calculated Q or lambda dataset
-to_safe=False
+to_save=False
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
 n_elements=10        # number of elements on each side of cube calculated
