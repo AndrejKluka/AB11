@@ -279,3 +279,4 @@ points =857375   order of method=6  method=Lambda2  time taken=83.0065sec    tim
 >>>>>>> d833190854599f52e30612666bcb63e25f793d1c
 >>>>>>> 80212b5fa80474c1dc381865ac724120fde2fee6
 >>>>>>> 1ba05b20d49ddb8f00ceec076f7a4f0b3ddc85d0
+points =857375   order of method=6  method=Q  time taken=63.3656sec    time per point=73.90651698498323^10-6  
