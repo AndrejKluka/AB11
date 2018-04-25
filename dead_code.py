@@ -176,7 +176,73 @@ if to_matplot:
     plt.show()
 
 
+def D_matrix2loop(point):
+    return(np.array([[vel_der_ord2loopx(u,point), vel_der_ord2loopy(u,point), vel_der_ord2loopz(u,point)],\
+                    [vel_der_ord2loopx(v,point), vel_der_ord2loopy(v,point), vel_der_ord2loopz(v,point)],\
+                    [vel_der_ord2loopx(w,point), vel_der_ord2loopy(w,point), vel_der_ord2loopz(w,point)]]))
+    
+def D_matrix2(point):
+    return(np.array([[vel_der_ord2x(u,point), vel_der_ord2y(u,point), vel_der_ord2z(u,point)],\
+                    [vel_der_ord2x(v,point), vel_der_ord2y(v,point), vel_der_ord2z(v,point)],\
+                    [vel_der_ord2x(w,point), vel_der_ord2y(w,point), vel_der_ord2z(w,point)]]))
+    
+def D_matrix4loop(point):
+    return(np.array([[vel_der_ord4loopx(u,point), vel_der_ord4loopy(u,point), vel_der_ord4loopz(u,point)],\
+                    [vel_der_ord4loopx(v,point), vel_der_ord4loopy(v,point), vel_der_ord4loopz(v,point)],\
+                    [vel_der_ord4loopx(w,point), vel_der_ord4loopy(w,point), vel_der_ord4loopz(w,point)]]))
+    
+def D_matrix4(point):
+    return(np.array([[vel_der_ord4x(u,point), vel_der_ord4y(u,point), vel_der_ord4z(u,point)],\
+                    [vel_der_ord4x(v,point), vel_der_ord4y(v,point), vel_der_ord4z(v,point)],\
+                    [vel_der_ord4x(w,point), vel_der_ord4y(w,point), vel_der_ord4z(w,point)]]))
 
+def D_matrix6loop(point):
+    return(np.array([[vel_der_ord6loopx(u,point), vel_der_ord6loopy(u,point), vel_der_ord6loopz(u,point)],\
+                    [vel_der_ord6loopx(v,point), vel_der_ord6loopy(v,point), vel_der_ord6loopz(v,point)],\
+                    [vel_der_ord6loopx(w,point), vel_der_ord6loopy(w,point), vel_der_ord6loopz(w,point)]]))
+
+def D_matrix6(point):
+    return(np.array([[vel_der_ord6x(u,point), vel_der_ord6y(u,point), vel_der_ord6z(u,point)],\
+                    [vel_der_ord6x(v,point), vel_der_ord6y(v,point), vel_der_ord6z(v,point)],\
+                    [vel_der_ord6x(w,point), vel_der_ord6y(w,point), vel_der_ord6z(w,point)]]))
+    
+#def vorticity(point):
+#    if order_der_method==4:
+#        i = vel_der_ord4y(w,point) - vel_der_ord4z(v,point)
+#        j = -(vel_der_ord4x(w,point) - vel_der_ord4z(u,point))
+#        k = vel_der_ord4x(v,point) - vel_der_ord4y(u,point)
+#    elif order_der_method==2:
+#        i = vel_der_ord2y(w,point) - vel_der_ord2z(v,point)
+#        j = -(vel_der_ord2x(w,point) - vel_der_ord2z(u,point))
+#        k = vel_der_ord2x(v,point) - vel_der_ord2y(u,point)
+#    elif order_der_method==3:
+#        i = vel_der_ord2loopy(w,point) - vel_der_ord2loopz(v,point)
+#        j = -(vel_der_ord2loopx(w,point) - vel_der_ord2loopz(u,point))
+#        k = vel_der_ord2loopx(v,point) - vel_der_ord2loopy(u,point)
+#    elif order_der_method==5:
+#        i = vel_der_ord4loopy(w,point) - vel_der_ord4loopz(v,point)
+#        j = -(vel_der_ord4loopx(w,point) - vel_der_ord4loopz(u,point))
+#        k = vel_der_ord4loopx(v,point) - vel_der_ord4loopy(u,point)
+#    elif order_der_method==6:
+#        i = vel_der_ord6loopy(w,point) - vel_der_ord6loopz(v,point)
+#        j = -(vel_der_ord6loopx(w,point) - vel_der_ord6loopz(u,point))
+#        k = vel_der_ord6loopx(v,point) - vel_der_ord6loopy(u,point)
+#    strength = math.sqrt(i**2 + j**2 + k**2) 
+#    return strength, i , j , k 
+#
+    
+    if to_calc_Q:
+        for i in range(3,n_elements+3):
+            for j in range(3,n_elements+3):
+                for k in range(3,n_elements+3):
+                    vspace[i-3,j-3,k-3]=calc_Q(np.array([i,j,k]))
+        print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
+        highest_vorticity=np.amax(vspace)
+    elif to_calc_Lambda2:
+        for i in range(3,n_elements+3):
+            for j in range(3,n_elements+3):
+                for k in range(3,n_elements+3):
+                    vspace[i-3,j-3,k-3]=Lambda2(np.array([i,j,k]))
 
 
 
