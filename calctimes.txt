@@ -187,3 +187,4 @@ points =857375   order of method=2  method=Q  time taken=37.1383sec    time per 
 points =857375   order of method=2  method=Q  time taken=34.2812sec    time per point=39.983904359236035^10-6  
 points =857375   order of method=2  method=Q  time taken=44.3717sec    time per point=51.752966904796615^10-6  
 points =857375   order of method=2  method=Q  time taken=32.5037sec    time per point=37.91071584779123^10-6  
+points =857375   order of method=3  method=Q  time taken=31.3408sec    time per point=36.55436652573262^10-6  

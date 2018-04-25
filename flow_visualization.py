@@ -34,7 +34,7 @@ idk=False
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=10        # number of elements on each side of cube calculated
+n_elements=100        # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
@@ -324,19 +324,18 @@ def D_matrix6loop(point):
 #
 if order_der_method==2:   
     D_matrix=D_matrix2
-    #vorticity=[D_matrix2[1], D_matrix2[2], D_matrix2[3], D_matrix2[4]]
+    
 elif order_der_method==3:  
-    D_matrix=D_matrix2loop[0]
-    vorticity=[D_matrix2loop[1], D_matrix2loop[2], D_matrix2loop[3], D_matrix2loop[4]]
+    D_matrix=D_matrix2loop
+    
 elif order_der_method==4: 
-    D_matrix=D_matrix4[0] 
-    vorticity=[D_matrix4[1], D_matrix4[2], D_matrix4[3], D_matrix4[4]]
+    D_matrix=D_matrix4
+    
 elif order_der_method==5: 
-    D_matrix=D_matrix4loop[0] ,
-    vorticity=[D_matrix4loop[1], D_matrix4loop[2], D_matrix4loop[3], D_matrix4loop[4]]
+    D_matrix=D_matrix4loop
+    
 elif order_der_method==6:
-    D_matrix=D_matrix6loop[0]
-    vorticity=[D_matrix6loop[1], D_matrix6loop[2], D_matrix6loop[3], D_matrix6loop[4]]
+    D_matrix=D_matrix6loop
 
    
 def S_matrixold(Dmatrix):
@@ -416,10 +415,10 @@ def timed_calc_Q(point):
 if to_load:
     stop1 = time.clock()
     vspace=np.load(calculated_data_file)
-    ''''vorticity_space=np.load(calculated_vorticity_file)
+    '''vorticity_space=np.load(calculated_vorticity_file)
     vorticity_x=np.load(calculated_vorticityx_file)
     vorticity_y=np.load(calculated_vorticityy_file)
-    vorticity_z=np.load(calculated_vorticityz_file)''''
+    vorticity_z=np.load(calculated_vorticityz_file)'''
     calc_time=int((time.clock()-stop1)*10000)/10000.
     print ('\n',calc_time,'sec  loaded calculation')
     highest_vorticity=np.amax(vspace) # need to be careful, here I assume that I load calculated Q values and no L2
