@@ -21,12 +21,12 @@ to_load=False          # if true will load already the last calculated Q or lamb
 to_save=False
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=90       # number of elements on each side of cube calculated
+n_elements=96       # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-to_calc_vorticity = False  #if true calculate vorticity
+to_calc_vorticity = True  #if true calculate vorticity
 order_der_method=6      #2,4,6 are with looping in 2,4,6 orders respectetively
-to_loop=False            # True if the data loops 
+to_loop=True            # True if the data loops 
 data_num=0              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
 check_data=False        # check only first time you are using dataset
  
