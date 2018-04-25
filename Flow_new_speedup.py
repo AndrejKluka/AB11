@@ -379,7 +379,7 @@ Q=Qold #old is better
     
 def calc_Q(point):
     D=D_matrix(point)[0]
-    return Q(norm(O_matrix(D)),norm(S_matrix(D))),D_matrix[1], D_matrix[2], D_matrix[3], D_matrix[4]   #q value, vorticity strenght, vorticity i,j,k
+    return Q(norm(O_matrix(D)),norm(S_matrix(D))) ,D_matrix[1], D_matrix[2], D_matrix[3], D_matrix[4]   #q value, vorticity strenght, vorticity i,j,k
 
 def Lambda2(point):
     w, v = np.linalg.eigh(A_matrix(S_matrix(D_matrix(point)),O_matrix(D_matrix(point))))
@@ -431,14 +431,15 @@ else:
                     vorticity_z[i,j,k]=Qandvorticity[4]
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
         highest_vorticity=np.amax(vspace)
-    elif to calc_Q:
-        for i in range(n_elements):
+    elif to_calc_Q:
+        for i in range(n_elements):           
             for j in range(n_elements):
                 for k in range(n_elements):
                     Qandvorticity=calc_Q(np.array([i,j,k]))
                     vspace[i,j,k]=Qandvorticity[0]
-         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
-         highest_vorticity=np.amax(vspace)
+        print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
+        highest_vorticity=np.amax(vspace)
+        
     elif to_calc_Lambda2:
         for i in range(n_elements):
             for j in range(n_elements):
