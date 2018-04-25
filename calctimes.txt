@@ -255,3 +255,9 @@ points =857375   order of method=3  method=Lambda2  time taken=50.4366sec    tim
 points =216000   order of method=6  method=Q  time taken=15.7566sec    time per point=72.94722222222222^10-6  
 points =216000   order of method=6  method=Q  time taken=15.1861sec    time per point=70.30601851851851^10-6  
 points =729000   order of method=6  method=Q  time taken=52.3242sec    time per point=71.77530864197531^10-6  
+points =729000   order of method=6  method=Q  time taken=56.9716sec    time per point=78.15034293552812^10-6  
+points =729000   order of method=4  method=Q  time taken=43.1039sec    time per point=59.12743484224966^10-6  
+points =729000   order of method=4  method=Lambda2  time taken=57.1898sec    time per point=78.44965706447188^10-6  
+points =857375   order of method=4  method=Lambda2  time taken=66.1579sec    time per point=77.16331826796909^10-6  
+points =857375   order of method=2  method=Lambda2  time taken=48.3887sec    time per point=56.4381979880449^10-6  
+points =857375   order of method=6  method=Lambda2  time taken=83.0065sec    time per point=96.81469601982796^10-6  
