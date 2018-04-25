@@ -20,13 +20,13 @@ to_load=False          # if true will load already the last calculated Q or lamb
 to_safe=False
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=10        # number of elements on each side of cube calculated
+n_elements=60        # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = False  #if true calculate vorticity
 order_der_method=6      #2,4,6 are with looping in 2,4,6 orders respectetively
 to_loop=False            # True if the data loops 
-data_num=1              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+data_num=0              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
 check_data=False        # check only first time you are using dataset
  
 
@@ -319,7 +319,22 @@ def D_matrix6loop(point):
                     [xw,yw , zw]])), strength, i, j, k
     
 def D_matrix6(point):    
-    pass
+    xu=vel_der_ord6x(u,point)
+    xv=vel_der_ord6x(v,point)
+    xw=vel_der_ord6x(w,point)
+    yu=vel_der_ord6y(u,point)
+    yv=vel_der_ord6y(v,point)
+    yw=vel_der_ord6y(w,point)
+    zu=vel_der_ord6z(u,point)    
+    zv=vel_der_ord6z(v,point)
+    zw=vel_der_ord6z(w,point)
+    i=yw-zv
+    j=-xw+zu
+    k=xv-yu
+    strength= math.sqrt(i**2 + j**2 + k**2)
+    return(np.array([[xu, yu,zu],\
+                    [xv, yv, zv],\
+                    [xw,yw , zw]])), strength, i, j, k
 
 if to_loop:        
     if order_der_method==2:   D_matrix=D_matrix2loop 
