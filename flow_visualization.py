@@ -34,16 +34,18 @@ idk=False
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=192        # number of elements on each side of cube calculated
+n_elements=10        # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-to_calc_vorticity = True  #if true calculate vorticity
+to_calc_vorticity = False  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
 order_der_method=5       # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
 data_num=1              # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
 
-
+#if order_der_method==2 or order_der_method==4:loop=False    
+loop=False
+#elif order_der_method==3 or order_der_method==5 or order_der_method==6:loop=True
 
 data_set=['validation_Q_l2','raw_data_1']
 
@@ -87,19 +89,23 @@ z_max=np.shape(u)[2]-1
 if n_elements>x_max:
     n_elements=x_max
 #extending velocity fields in all directions if the data repeats 
-'''
-xx=np.zeros((5,5,5))
-un=xx.astype(dtype=str)
-for i in range(5):
-    for j in range(5):
-        for k in range(5):
-            un[i,j,k]=str(str(i)+str(j)+str(k))
-print(un)
+def extend_matrix(matrix):
+    zzx=np.concatenate((np.array(matrix[(np.shape(matrix)[0]-3):np.shape(matrix)[0],:,:]),matrix[:,:,:],np.array(matrix[0:3,:,:])), axis=0)
+    matrix=zzx
+    zzx=np.concatenate((np.array(matrix[:,(np.shape(matrix)[1]-3):np.shape(matrix)[1],:]),matrix[:,:,:],np.array(matrix[:,0:3,:])), axis=1)
+    matrix=zzx
+    zzx=np.concatenate((np.array(matrix[:,:,(np.shape(matrix)[2]-3):np.shape(matrix)[2]]),matrix[:,:,:],np.array(matrix[:,:,0:3])), axis=2)
+    return(zzx)
 
-i=0
-j=1
-k=3
-'''
+if loop:
+    u=extend_matrix(u)
+    v=extend_matrix(v)
+    w=extend_matrix(w)
+    
+    
+    
+
+
 #   Definitions  for calculations
 def vel_der_ord2x(vcomp,p):
     if p[0]==0: return (vcomp[p[0]+1,p[1],p[2]] - vcomp[p[0],p[1],p[2]])/delta
@@ -431,5 +437,5 @@ xvtk = np.arange(0, vspace_shape[0])
 yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
-gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+#gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 
