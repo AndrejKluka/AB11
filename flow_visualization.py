@@ -35,9 +35,9 @@ to_load=False          # if true will load already the last calculated Q or lamb
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
 n_elements=100        # number of elements on each side of cube calculated
-to_calc_Q=True          # if true will calc Q on cube with n_elements
-to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-to_calc_vorticity = True  #if true calculate vorticity
+to_calc_Q=False          # if true will calc Q on cube with n_elements
+to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
+to_calc_vorticity =True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
 order_der_method=3       # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
 data_num=0              # 0 for validation dataset, 1 for raw_data_1
@@ -384,8 +384,9 @@ def calc_Q(point):
     return Q(norm(O_matrix(D[0])),norm(S_matrix(D[0]))),D[1], D[2], D[3], D[4]   #q value, vorticity strenght, vorticity i,j,k
 
 def Lambda2(point):
-    w, v = np.linalg.eigh(A_matrix(S_matrix(D_matrix(point)),O_matrix(D_matrix(point))))
-    return w[1]
+    D=D_matrix(point)
+    w, v = np.linalg.eigh(A_matrix(S_matrix(D[0]),O_matrix(D[0])))
+    return w[1], D[1], D[2], D[3], D[4]
 
 def timed_calc_Q(point):
     stop0=time.clock()
@@ -444,15 +445,28 @@ else:
                     Qandvorticity=calc_Q(np.array([i,j,k]))
                     vspace[i,j,k]=Qandvorticity[0]
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
-        highest_vorticity=np.amax(vspace)
-    elif to_calc_Lambda2:
+        highest_vorticity=np.amax(vspace)        
+    elif to_calc_Lambda2 and to_calc_vorticity: 
         for i in range(n_elements):
             for j in range(n_elements):
                 for k in range(n_elements):
-                    vspace[i,j,k]=Lambda2(np.array([i,j,k]))
+                    Lambdaandvorticity=Lambda2(np.array([i,j,k]))
+                    vspace[i,j,k]=Lambdaandvorticity[0]
+                    vorticity_space[i,j,k]=Lambdaandvorticity[1]
+                    vorticity_x[i,j,k]=Lambdaandvorticity[2]
+                    vorticity_y[i,j,k]=Lambdaandvorticity[3]
+                    vorticity_z[i,j,k]=Lambdaandvorticity[4]
+                    
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Lambda2 calculation')
         highest_vorticity=np.amin(vspace)
-    
+    elif to_calc_Lambda2:
+        for i in range(n_elements):
+             for j in range(n_elements):
+                 for k in range(n_elements):
+                     Lambdaandvorticity=Lambda2(np.array([i,j,k]))
+                     vspace[i,j,k]=Lambdaandvorticity[0]
+        print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Lambda2 calculation')
+        highest_vorticity=np.amin(vspace)
     calc_time=int((time.clock()-stop1)*10000)/10000.
     np.save(calculated_data_file,vspace)   
  
