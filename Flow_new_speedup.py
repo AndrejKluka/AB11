@@ -34,26 +34,22 @@ idk=False
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=10        # number of elements on each side of cube calculated
+
+n_elements=192        # number of elements on each side of cube calculated
+
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-to_calc_vorticity = False  #if true calculate vorticity
+to_calc_vorticity = True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
-<<<<<<< HEAD
 
 
 order_der_method=2
        # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
 
-=======
-order_der_method=5       # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
->>>>>>> 2d06b31f729d7ac3bfba5c7c316c00e5924ff595
 data_num=1              # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
 
-#if order_der_method==2 or order_der_method==4:loop=False    
-loop=False
-#elif order_der_method==3 or order_der_method==5 or order_der_method==6:loop=True
+
 
 data_set=['validation_Q_l2','raw_data_1']
 
@@ -97,23 +93,19 @@ z_max=np.shape(u)[2]-1
 if n_elements>x_max:
     n_elements=x_max
 #extending velocity fields in all directions if the data repeats 
-def extend_matrix(matrix):
-    zzx=np.concatenate((np.array(matrix[(np.shape(matrix)[0]-3):np.shape(matrix)[0],:,:]),matrix[:,:,:],np.array(matrix[0:3,:,:])), axis=0)
-    matrix=zzx
-    zzx=np.concatenate((np.array(matrix[:,(np.shape(matrix)[1]-3):np.shape(matrix)[1],:]),matrix[:,:,:],np.array(matrix[:,0:3,:])), axis=1)
-    matrix=zzx
-    zzx=np.concatenate((np.array(matrix[:,:,(np.shape(matrix)[2]-3):np.shape(matrix)[2]]),matrix[:,:,:],np.array(matrix[:,:,0:3])), axis=2)
-    return(zzx)
+'''
+xx=np.zeros((5,5,5))
+un=xx.astype(dtype=str)
+for i in range(5):
+    for j in range(5):
+        for k in range(5):
+            un[i,j,k]=str(str(i)+str(j)+str(k))
+print(un)
 
-if loop:
-    u=extend_matrix(u)
-    v=extend_matrix(v)
-    w=extend_matrix(w)
-    
-    
-    
-
-
+i=0
+j=1
+k=3
+'''
 #   Definitions  for calculations
 def vel_der_ord2x(vcomp,p):
     if p[0]==0: return (vcomp[p[0]+1,p[1],p[2]] - vcomp[p[0],p[1],p[2]])/delta
@@ -326,52 +318,21 @@ def D_matrix6loop(point):
 #
 
     
-<<<<<<< HEAD
-    
-    
-=======
-<<<<<<< HEAD
 if order_der_method==2:   
     D_matrix=D_matrix2
-    #vorticity=[D_matrix2[1], D_matrix2[2], D_matrix2[3], D_matrix2[4]]
+    
 elif order_der_method==3:  
-    D_matrix=D_matrix2loop[0]
-    vorticity=[D_matrix2loop[1], D_matrix2loop[2], D_matrix2loop[3], D_matrix2loop[4]]
+    D_matrix=D_matrix2loop
+    
 elif order_der_method==4: 
-    D_matrix=D_matrix4[0] 
-    vorticity=[D_matrix4[1], D_matrix4[2], D_matrix4[3], D_matrix4[4]]
+    D_matrix=D_matrix4
+    
 elif order_der_method==5: 
-    D_matrix=D_matrix4loop[0] ,
-    vorticity=[D_matrix4loop[1], D_matrix4loop[2], D_matrix4loop[3], D_matrix4loop[4]]
+    D_matrix=D_matrix4loop
+    
 elif order_der_method==6:
-    D_matrix=D_matrix6loop[0]
-    vorticity=[D_matrix6loop[1], D_matrix6loop[2], D_matrix6loop[3], D_matrix6loop[4]]
-=======
->>>>>>> 839713d4871d800cd8f30bc23fed8898079a7067
-def vorticity(point):
-    if order_der_method==4:
-        i = vel_der_ord4y(w,point) - vel_der_ord4z(v,point)
-        j = -(vel_der_ord4x(w,point) - vel_der_ord4z(u,point))
-        k = vel_der_ord4x(v,point) - vel_der_ord4y(u,point)
-#    elif order_der_method==2:
-#        i = vel_der_ord2y(w,point) - vel_der_ord2z(v,point)
-#        j = -(vel_der_ord2x(w,point) - vel_der_ord2z(u,point))
-#        k = vel_der_ord2x(v,point) - vel_der_ord2y(u,point)
-#    elif order_der_method==3:
-#        i = vel_der_ord2loopy(w,point) - vel_der_ord2loopz(v,point)
-#        j = -(vel_der_ord2loopx(w,point) - vel_der_ord2loopz(u,point))
-#        k = vel_der_ord2loopx(v,point) - vel_der_ord2loopy(u,point)
-#    elif order_der_method==4:
-#        i = vel_der_ord4loopy(w,point) - vel_der_ord4loopz(v,point)
-#        j = -(vel_der_ord4loopx(w,point) - vel_der_ord4loopz(u,point))
-#        k = vel_der_ord4loopx(v,point) - vel_der_ord4loopy(u,point)
-#    elif order_der_method==6:
-#        i = vel_der_ord6loopy(w,point) - vel_der_ord6loopz(v,point)
-#        j = -(vel_der_ord6loopx(w,point) - vel_der_ord6loopz(u,point))
-#        k = vel_der_ord6loopx(v,point) - vel_der_ord6loopy(u,point)
-    strength = math.sqrt(i**2 + j**2 + k**2) 
-    return strength, i , j , k 
->>>>>>> 2d06b31f729d7ac3bfba5c7c316c00e5924ff595
+    D_matrix=D_matrix6loop
+    
 
 
    
@@ -417,8 +378,8 @@ def Qnew(normO,normS):
 Q=Qold #old is better
     
 def calc_Q(point):
-    D=D_matrix(point)
-    return Q(norm(O_matrix(D)),norm(S_matrix(D)))
+    D=D_matrix(point)[0]
+    return Q(norm(O_matrix(D)),norm(S_matrix(D))),D_matrix[1], D_matrix[2], D_matrix[3], D_matrix[4]   #q value, vorticity strenght, vorticity i,j,k
 
 def Lambda2(point):
     w, v = np.linalg.eigh(A_matrix(S_matrix(D_matrix(point)),O_matrix(D_matrix(point))))
@@ -458,17 +419,26 @@ if to_load:
 else:
     print ('start calc')
     stop1 = time.clock()
-    if to_calc_Q:
+    if to_calc_Q and to_calc_vorticity:
         for i in range(n_elements):
             for j in range(n_elements):
                 for k in range(n_elements):
-                    vspace[i,j,k]=calc_Q(np.array([i,j,k]))
-                    vorticity_space[i,j,k]=vorticity(np.array([i,j,k]))[1]
-                    vorticity_x[i,j,k]=vorticity(np.array([i,j,k]))[2]
-                    vorticity_y[i,j,k]=vorticity(np.array([i,j,k]))[3]
-                    vorticity_z[i,j,k]=vorticity(np.array([i,j,k]))[4]
+                    Qandvorticity=calc_Q(np.array([i,j,k]))
+                    vspace[i,j,k]=Qandvorticity[0]
+                    vorticity_space[i,j,k]=Qandvorticity[1]
+                    vorticity_x[i,j,k]=Qandvorticity[2]
+                    vorticity_y[i,j,k]=Qandvorticity[3]
+                    vorticity_z[i,j,k]=Qandvorticity[4]
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
         highest_vorticity=np.amax(vspace)
+    elif to calc_Q:
+        for i in range(n_elements):
+            for j in range(n_elements):
+                for k in range(n_elements):
+                    Qandvorticity=calc_Q(np.array([i,j,k]))
+                    vspace[i,j,k]=Qandvorticity[0]
+         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
+         highest_vorticity=np.amax(vspace)
     elif to_calc_Lambda2:
         for i in range(n_elements):
             for j in range(n_elements):
@@ -479,20 +449,27 @@ else:
     
     calc_time=int((time.clock()-stop1)*10000)/10000.
     np.save(calculated_data_file,vspace)  
-if to_calc_vorticity:
-    stop2 = time.clock()
-    for i in range(n_elements):
-            for j in range(n_elements):
-                for k in range(n_elements):
-                    vorticity_space[i,j,k]=vorticity(np.array([i,j,k]))[1]
-                    vorticity_x[i,j,k]=vorticity(np.array([i,j,k]))[2]
-                    vorticity_y[i,j,k]=vorticity(np.array([i,j,k]))[3]
-                    vorticity_z[i,j,k]=vorticity(np.array([i,j,k]))[4]
+#if to_calc_vorticity:
+#    stop2 = time.clock()
+#    for i in range(n_elements):
+#            for j in range(n_elements):
+#                for k in range(n_elements):
+#                    vorticity_space[i,j,k]=vorticity(np.array([i,j,k]))[1]
+#                    vorticity_x[i,j,k]=vorticity(np.array([i,j,k]))[2]
+#                    vorticity_y[i,j,k]=vorticity(np.array([i,j,k]))[3]
+#                    vorticity_z[i,j,k]=vorticity(np.array([i,j,k]))[4]
                     
                     
                     
     print ('\n',int((time.clock()-stop2)*10000)/10000.,'sec  vorticity strength calculation')
     highest_vorticity=np.amax(vorticity_space)
+
+
+
+
+
+
+
 
 
 
@@ -557,5 +534,5 @@ xvtk = np.arange(0, vspace_shape[0])
 yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
-#gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 
