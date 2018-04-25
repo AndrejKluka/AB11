@@ -218,8 +218,10 @@ def D_matrix6loop(point):
                     [vel_der_ord6loopx(w,point), vel_der_ord6loopy(w,point), vel_der_ord6loopz(w,point)]]))
 
     
+    
+    
 def vorticity(point):
-    if order_der_method==5:
+    if order_der_method==4:
         i = vel_der_ord4y(w,point) - vel_der_ord4z(v,point)
         j = -(vel_der_ord4x(w,point) - vel_der_ord4z(u,point))
         k = vel_der_ord4x(v,point) - vel_der_ord4y(u,point)
@@ -365,13 +367,6 @@ if to_calc_vorticity:
                     
     print ('\n',int((time.clock()-stop2)*10000)/10000.,'sec  vorticity strength calculation')
     highest_vorticity=np.amax(vorticity_space)
-
-
-
-
-
-
-
 
 
 
