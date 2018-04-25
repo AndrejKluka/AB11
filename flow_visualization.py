@@ -7,7 +7,7 @@ import plotly.plotly as py
 import plotly
 from plotly.graph_objs import *
 import plotly.figure_factory
-##from pyevtk.hl import gridToVTK
+from pyevtk.hl import gridToVTK
 #import matplotlib.pyplot
 #graveyard pf unused module for now
 #from mpl_toolkits.mplot3d import Axes3D
@@ -39,7 +39,15 @@ to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+order_der_method=3       # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
+data_num=0              # 0 for validation dataset, 1 for raw_data_1
+=======
+<<<<<<< HEAD
+>>>>>>> b2dfcd54503513ad8d0b33e35227852e94bd96ae
 
 
 order_der_method=2
@@ -48,6 +56,7 @@ order_der_method=2
       # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
 
 data_num=1              # 0 for validation dataset, 1 for raw_data_1
+>>>>>>> 3cf1d44a26dd1abebdc451f6a89e9da4d70e89e7
 check_data=False        # check only first time you are using dataset
 
 #if order_der_method==2 or order_der_method==4:loop=False    
@@ -59,7 +68,12 @@ data_set=['validation_Q_l2','raw_data_1']
 #   reading raw dataset and putting them into u,v,w arrays
 calculated_data_dir=path.join(path.dirname(__file__),'calculated data') 
 data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num])
-calculated_data_file=path.join(calculated_data_dir,'vspace-'+data_set[data_num]+'.npy') 
+calculated_data_file=path.join(calculated_data_dir,'vspace-'+data_set[data_num]+'.npy')
+calculated_vorticity_file=path.join(calculated_data_dir,'vorticity-'+data_set[data_num]+'.npy') 
+calculated_vorticityx_file=path.join(calculated_data_dir,'vorticity-x-'+data_set[data_num]+'.npy') 
+calculated_vorticityy_file=path.join(calculated_data_dir,'vorticity-y-'+data_set[data_num]+'.npy')
+calculated_vorticityz_file=path.join(calculated_data_dir,'vorticity-z-'+data_set[data_num]+'.npy')  
+ 
 data=scipy.io.loadmat(data_set_file, mdict=None, appendmat=True)
 u=data['u']
 v=data['v']
@@ -84,17 +98,18 @@ if check_data:
     else:print('data not fine')
 
 #vspace=np.zeros(np.shape(u))
-vspace=np.zeros((n_elements,n_elements,n_elements))
-vorticity_space = np.zeros((n_elements,n_elements,n_elements))
-vorticity_x = np.zeros((n_elements,n_elements,n_elements))
-vorticity_y = np.zeros((n_elements,n_elements,n_elements))
-vorticity_z = np.zeros((n_elements,n_elements,n_elements))
 delta=2.*math.pi/np.shape(u)[0]
 x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
 z_max=np.shape(u)[2]-1
 if n_elements>x_max:
     n_elements=x_max
+    
+vspace=np.zeros((n_elements,n_elements,n_elements))
+vorticity_space = np.zeros((n_elements,n_elements,n_elements))
+vorticity_x = np.zeros((n_elements,n_elements,n_elements))
+vorticity_y = np.zeros((n_elements,n_elements,n_elements))
+vorticity_z = np.zeros((n_elements,n_elements,n_elements))
 #extending velocity fields in all directions if the data repeats 
 def extend_matrix(matrix):
     zzx=np.concatenate((np.array(matrix[(np.shape(matrix)[0]-3):np.shape(matrix)[0],:,:]),matrix[:,:,:],np.array(matrix[0:3,:,:])), axis=0)
@@ -325,7 +340,15 @@ def D_matrix6loop(point):
 #
 
     
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+    
+    
+=======
+<<<<<<< HEAD
+>>>>>>> b2dfcd54503513ad8d0b33e35227852e94bd96ae
 if order_der_method==2:   
     D_matrix=D_matrix2
     #vorticity=[D_matrix2[1], D_matrix2[2], D_matrix2[3], D_matrix2[4]]
@@ -341,9 +364,14 @@ elif order_der_method==5:
 elif order_der_method==6:
     D_matrix=D_matrix6loop[0]
     vorticity=[D_matrix6loop[1], D_matrix6loop[2], D_matrix6loop[3], D_matrix6loop[4]]
+<<<<<<< HEAD
 
+=======
+=======
+>>>>>>> 839713d4871d800cd8f30bc23fed8898079a7067
+>>>>>>> b2dfcd54503513ad8d0b33e35227852e94bd96ae
 def vorticity(point):
-    if order_der_method==5:
+    if order_der_method==4:
         i = vel_der_ord4y(w,point) - vel_der_ord4z(v,point)
         j = -(vel_der_ord4x(w,point) - vel_der_ord4z(u,point))
         k = vel_der_ord4x(v,point) - vel_der_ord4y(u,point)
@@ -445,6 +473,10 @@ def timed_calc_Q(point):
 if to_load:
     stop1 = time.clock()
     vspace=np.load(calculated_data_file)
+    vorticity_space=np.load(calculated_vorticity_file)
+    vorticity_x=np.load(calculated_vorticityx_file)
+    vorticity_y=np.load(calculated_vorticityy_file)
+    vorticity_z=np.load(calculated_vorticityz_file)
     calc_time=int((time.clock()-stop1)*10000)/10000.
     print ('\n',calc_time,'sec  loaded calculation')
     highest_vorticity=np.amax(vspace) # need to be careful, here I assume that I load calculated Q values and no L2
@@ -477,22 +509,25 @@ if to_calc_vorticity:
     for i in range(n_elements):
             for j in range(n_elements):
                 for k in range(n_elements):
+<<<<<<< HEAD
+                    vorticity_space[i,j,k]=vorticity(np.array([i,j,k]))[0]
+                    vorticity_x[i,j,k]=vorticity(np.array([i,j,k]))[1]
+                    vorticity_y[i,j,k]=vorticity(np.array([i,j,k]))[2]
+                    vorticity_z[i,j,k]=vorticity(np.array([i,j,k]))[3]              
+    np.save(calculated_vorticity_file,vorticity_space)
+    np.save(calculated_vorticityx_file,vorticity_x)
+    np.save(calculated_vorticityy_file,vorticity_y)
+    np.save(calculated_vorticityz_file,vorticity_z)                  
+=======
                     vorticity_space[i,j,k]=vorticity(np.array([i,j,k]))[1]
                     vorticity_x[i,j,k]=vorticity(np.array([i,j,k]))[2]
                     vorticity_y[i,j,k]=vorticity(np.array([i,j,k]))[3]
                     vorticity_z[i,j,k]=vorticity(np.array([i,j,k]))[4]
                     
                     
+>>>>>>> 3cf1d44a26dd1abebdc451f6a89e9da4d70e89e7
                     
     print ('\n',int((time.clock()-stop2)*10000)/10000.,'sec  vorticity strength calculation')
-    highest_vorticity=np.amax(vorticity_space)
-
-
-
-
-
-
-
 
 
 
@@ -543,13 +578,6 @@ if not to_load:
     f.write(wri)
     f.write('\n')
     f.close()
-
-
-if idk:
-    vspace_shape = np.shape(vspace)      
-    xvtk = np.arange(0, vspace_shape[0])
-    yvtk = np.arange(0, vspace_shape[1])
-    zvtk = np.arange(0, vspace_shape[2])
 
 
 vspace_shape = np.shape(vspace)      

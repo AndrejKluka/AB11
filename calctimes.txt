@@ -169,7 +169,15 @@ points =6967871   order of method=2  method=Q  time taken=389.0764sec    time pe
 =======
 >>>>>>> 0257834e82bf645fa41e20f9583f4b087172dd2b
 >>>>>>> 0bc8cbf2594f7325e833f5ea5e27a22e15893ef5
+<<<<<<< HEAD
+points =857375   order of method=3  method=Q  time taken=34.9569sec    time per point=40.772007581280064^10-6  
+=======
 >>>>>>> c493d6bbcb0721648ab88c66b7eb23543fc5ec54
+<<<<<<< HEAD
+points =6967871   order of method=5  method=Q  time taken=383.8539sec    time per point=55.0891226315757^10-6  
+=======
 points =6967871   order of method=3  method=Q  time taken=271.4416sec    time per point=38.9561747053^10-6  
+>>>>>>> 839713d4871d800cd8f30bc23fed8898079a7067
 =======
 >>>>>>> 2d06b31f729d7ac3bfba5c7c316c00e5924ff595
+>>>>>>> 3cf1d44a26dd1abebdc451f6a89e9da4d70e89e7
