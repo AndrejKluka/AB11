@@ -284,11 +284,11 @@ elif to_calc_Lambda2:
 calc_time=int((time.clock()-stop1)*10000)/10000.
 
 
-
+    
 abs24=abs(vspace2-vspace1)
 abs26=abs(vspace3-vspace1)
 abs46=abs(vspace3-vspace2)
-print (np.sum(abs(matrix1)),np.sum(abs(matrix2)),np.sum(abs(matrix3)))
+#print (np.sum(abs(matrix1)),np.sum(abs(matrix2)),np.sum(abs(matrix3)))
 print (np.sum(abs24)/n_elements**3,np.sum(abs26)/n_elements**3, np.sum(abs46)/n_elements**3)   
 print(np.sum(abs(vspace1))/n_elements**3,np.sum(abs(vspace2))/n_elements**3,np.sum(abs(vspace3))/n_elements**3)
 
