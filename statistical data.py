@@ -1,12 +1,9 @@
 from __future__ import print_function
 from os import path
-
 import scipy.io
 import numpy as np
 import time
-
 from math import *
-
 import pprint
 import pylab
 import matplotlib
@@ -42,60 +39,104 @@ print("Mean of u:", m)
 print("Mean of v:", n)
 print("Mean of w:", q)
 
-###------------------------------------------------------------#
+#------------------------------------------------------------#
 
 print("Variance of u:", np.var(u[0][0]))
 print("Variance of v:", np.var(v[0][0]))
 print("Variance of w:", np.var(w[0][0]))
 
 
-###------------------------------------------------------------#
-n = 0.95
-print (u[1][1][1], u[1][1])
-a=0
-b=0
-c=0
-start1 = time.time()
-def corru():
-     countu=0
-     for h in (0,191):
-         for k in range(0,191):
-             for j in range(0,191):
-                 for a in range(0,191):
-                     for b in range(0,191):
-                         for c in range(0,191):
-                             if not (a==h and b==k and c==j):                   
-                                 correlation = np.corrcoef(u[h][k][j],u[a][b][c])
-                                 if correlation[1][0] < n:
-                                     countu = countu + 1
-                                     
-     return (countu)
-print (corru())
-print("Time taken to compute:", time.time() - start1)                
-###
-###def corrv():
-###      countv=0
-###      for k in range(0,191):
-###            correlation = np.corrcoef(v[k][k],v[k+1][k+1])
-###            if correlation[1][0] < n:
-###                  ##countv += 1
-###                  print(k)
-###      return (countv)
-###
-###def corrw():
-###      countw=0
-###      for l in range(0,191):
-###            correlation = np.corrcoef(w[l][l],w[l+1][l+1])
-###            if correlation[1][0] < n:
-###                  countw = countw + 1
-###                  print(l)
-###      return (countw)
-###
-###
-###
-###print(corru())
-###print(corrv())
-###print(corrw())
+#------------------------------------------------------------#
+n = 0.85
+array1 = [u[0][0][0],v[0][0][0],w[0][0][0]]
+correlationu = []
+correlationv = []
+correlationw = []
+corrsum = 0
+
+##for j in range(0,191):
+##    for p in range(0,191):
+##        for r in range(0,191):
+##            corrmatrix = correlation(array1,[u[j][p][r],v[j][p][r],w[j][p][r]])
+##            correlation.append(corrmatrix[1][0])
+##            corrsum = corrsum + corrmatrix[1][0]
+##            corrmean = corrsum/191**3
+
+
+for i in range(0,192):
+      for j in range(0,192):
+            corrmatrixu = np.correlate(array1, [u[j][i][i],v[j][i][i],w[j][i][i]])
+            corrmatrixu = list(corrmatrixu)
+            correlationu.append(corrmatrixu)
+            correlationarrayu = np.array(correlationu)
+            uterm1 = correlationu[0]
+            finalcorrelationu = correlationarrayu/uterm1
+
+      for p in range(0,192):
+            corrmatrixv = np.correlate(array1, [u[i][p][i],v[i][p][i],w[i][p][i]])
+            corrmatrixv = list(corrmatrixv)
+            correlationv.append(corrmatrixv)
+            correlationarrayv = np.array(correlationv)
+            vterm1 = correlationv[0]
+            finalcorrelationv = correlationarrayv/vterm1
+      for r in range(0,192):
+            corrmatrixw = np.correlate(array1, [u[i][i][r],v[i][i][r],w[i][i][r]])
+            corrmatrixw = list(corrmatrixw)
+            correlationw.append(corrmatrixw)
+            correlationarrayw = np.array(correlationw)
+            wterm1 = correlationw[0]
+            finalcorrelationw = correlationarrayw/wterm1
+
+
+
+
+meancorrelation = (finalcorrelationu + finalcorrelationv + finalcorrelationw)/3
+
+print(finalcorrelationu)
+print("Done with correlation of u")
+
+print(finalcorrelationv)
+print("Done with correlation of v")
+
+print(correlationw)
+print("Done with correlation of w")
+
+print (meancorrelation)
+
+
+
+plt.plot(meancorrelation)
+plt.show()
+print("Done with plotting")
+
+
+
+
+                  
+
+##def corrv():
+##      countv=0
+##      for k in range(0,191):
+##            correlation = np.corrcoef(v[k][k],v[k+1][k+1])
+##            if correlation[1][0] < n:
+##                  ##countv += 1
+##                  print(k)
+##      return (countv)
+##
+##def corrw():
+##      countw=0
+##      for l in range(0,191):
+##            correlation = np.corrcoef(w[l][l],w[l+1][l+1])
+##            if correlation[1][0] < n:
+##                  countw = countw + 1
+##                  print(l)
+##      return (countw)
+##
+##
+##
+##print(corru())
+##print(corrv())
+##print(corrw())
 ##
 ##def countu():
 ##      count_u=0
@@ -127,15 +168,15 @@ print("Time taken to compute:", time.time() - start1)
 ##totcount = count_u + count_v + count_w
 ##percent = (totcount*100.)/(191.*3)
 ##print("Percentage uncorrelated", percent)
-##
-####plt.scatter(u[0][0],v[0][0])
-####plt.show()
-##
-##
-##
-####print(np.corrcoef(u[191][191],u[189][189]))
-##
+
+##h = u[0:191][0][0]
+##print (np.correlate(h,h, "full"))
+##plt.plot(h)
+##plt.show()
+
+
+
+##print(np.corrcoef(u[191][191][191],u[189][189][189]))
+
 end = time.time()
 print("Time taken to compute:", end - start)
-
-print (u[0][0][1])
