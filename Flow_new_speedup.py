@@ -43,10 +43,10 @@ to_calc_vorticity = True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
 
 
-order_der_method=2
+order_der_method=5
        # 2,4 are without looping, 3,5,6 are with looping in 2,4,6 orders respectetively
 
-data_num=0              # 0 for validation dataset, 1 for raw_data_1
+data_num=1             # 0 for validation dataset, 1 for raw_data_1
 check_data=False        # check only first time you are using dataset
 
 
