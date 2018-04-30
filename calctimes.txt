@@ -261,3 +261,6 @@ points =216000   order of method=6  method=Q  time taken=15.7566sec    time per 
 points =216000   order of method=6  method=Q  time taken=15.1861sec    time per point=70.30601851851851^10-6  
 points =729000   order of method=6  method=Q  time taken=52.3242sec    time per point=71.77530864197531^10-6  
 >>>>>>> d833190854599f52e30612666bcb63e25f793d1c
+points =729000   order of method=2  method=Q  time taken=27.5597sec    time per point=37.804801097393685^10-6  
+points =729000   order of method=2  method=Q  time taken=30.9048sec    time per point=42.39341563786009^10-6  
+points =8000000   order of method=2  method=Q  time taken=346.9026sec    time per point=43.362825^10-6  
