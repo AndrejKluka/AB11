@@ -7,6 +7,7 @@ from os import path
 import scipy.io
 import scipy
 import numpy as np
+from pyevtk.hl import gridToVTK
 
 import math
 stop=time.clock()
@@ -212,7 +213,7 @@ def vel_der_ord6x(vcomp,p):
     elif p[0]==x_max: return (vcomp[p[0],p[1],p[2]] - vcomp[p[0]-1,p[1],p[2]])/delta
     elif p[0]==1 or p[0]==x_max-1: return (vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])/2./delta
     elif p[0]==2 or p[0]==x_max-2: return (8*(vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-vcomp[p[0]+2,p[1],p[2]]+vcomp[p[0]-2,p[1],p[2]])/12./delta
-    return (45*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-9*(vcomp[p[0],p[1]+2,p[2]]-vcomp[p[0],p[1]-2,p[2]])+vcomp[p[0],p[1]+3,p[2]]-vcomp[p[0],p[1]-3,p[2]])/60./delta
+    return (45*(vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-9*(vcomp[p[0]+2,p[1],p[2]]-vcomp[p[0]-2,p[1],p[2]])+vcomp[p[0]+3,p[1],p[2]]-vcomp[p[0]-3,p[1],p[2]])/60./delta
 def vel_der_ord6y(vcomp,p):
     if p[1]==0: return (vcomp[p[0],p[1]+1,p[2]] - vcomp[p[0],p[1],p[2]])/delta
     elif p[1]==y_max: return (vcomp[p[0],p[1],p[2]] - vcomp[p[0],p[1]-1,p[2]])/delta
@@ -224,7 +225,7 @@ def vel_der_ord6z(vcomp,p):
     elif p[2]==z_max: return (vcomp[p[0],p[1],p[2]] - vcomp[p[0],p[1],p[2]-1])/delta
     elif p[2]==1 or p[2]==z_max-1: return (vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])/2./delta
     elif p[2]==2 or p[2]==x_max-2: return (8*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-vcomp[p[0],p[1],p[2]+2]+vcomp[p[0],p[1],p[2]-2])/12./delta
-    return (45*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-9*(vcomp[p[0],p[1]+2,p[2]]-vcomp[p[0],p[1]-2,p[2]])+vcomp[p[0],p[1]+3,p[2]]-vcomp[p[0],p[1]-3,p[2]])/60./delta
+    return (45*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-9*(vcomp[p[0],p[1],p[2]+2]-vcomp[p[0],p[1],p[2]-2])+vcomp[p[0],p[1],p[2]+3]-vcomp[p[0],p[1],p[2]-3])/60./delta
 
 #   velocity gradient matrix   
 def D_matrix2l(point):
@@ -318,7 +319,22 @@ def D_matrix6loop(point):
                     [xw,yw , zw]])), strength, i, j, k
     
 def D_matrix6(point):    
-    pass
+    xu=vel_der_ord6x(u,point)
+    xv=vel_der_ord6x(v,point)
+    xw=vel_der_ord6x(w,point)
+    yu=vel_der_ord6y(u,point)
+    yv=vel_der_ord6y(v,point)
+    yw=vel_der_ord6y(w,point)
+    zu=vel_der_ord6z(u,point)    
+    zv=vel_der_ord6z(v,point)
+    zw=vel_der_ord6z(w,point)
+    i=yw-zv
+    j=-xw+zu
+    k=xv-yu
+    strength= math.sqrt(i**2 + j**2 + k**2)
+    return(np.array([[xu, yu,zu],\
+                    [xv, yv, zv],\
+                    [xw,yw , zw]])), strength, i, j, k
 
 def D_matrix2(point):
     return(np.array([[vel_der_ord2x(u,point), vel_der_ord2y(u,point), vel_der_ord2z(u,point)],\
@@ -475,5 +491,5 @@ xvtk = np.arange(0, vspace_shape[0])
 yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
-#gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 
