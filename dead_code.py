@@ -28,7 +28,20 @@ for i in range(5):
             un[i,j,k]=str(str(i)+str(j)+str(k))
 print(un)
 
-
+'''n=3
+un=np.zeros((n,n,n))
+for i in range(n):
+    for j in range(n):
+        for k in range(n):
+            un[i,j,k]=i+j+k    
+print(un) 
+reun=np.reshape(un,(n,n,n,1))
+unx=np.concatenate((reun,reun*2), axis=3)
+uny=np.concatenate((reun*-1,reun*-2), axis=3)
+print(np.shape(uny))
+unn=np.concatenate((np.reshape(unx,(n,n,n,2,1)),np.reshape(uny,(n,n,n,2,1))), axis=4)
+print(np.shape(unn))
+print(unn)'''
 
 
 nx=2
