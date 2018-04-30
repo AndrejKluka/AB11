@@ -21,14 +21,13 @@ to_load=False          # if true will load already the last calculated Q or lamb
 to_save=False
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=200       # number of elements on each side of cube calculated
-to_calc_Q=False          # if true will calc Q on cube with n_elements
+n_elements=100      # number of elements on each side of cube calculated
+to_calc_Q=True        # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-to_calc_vorticity = False  #if true calculate vorticity
-order_der_method=2      #2,4,6 are with looping in 2,4,6 orders respectetively
-to_loop=False            # True if the data loops 
-data_num=1              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
-
+to_calc_vorticity = True  #if true calculate vorticity
+order_der_method=6      #2,4,6 are with looping in 2,4,6 orders respectetively
+to_loop=False           # True if the data loops 
+data_num=0              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
 check_data=False        # check only first time you are using dataset
  
 
@@ -90,6 +89,57 @@ vorticity_space = np.zeros((n_elements,n_elements,n_elements))
 vorticity_x = np.zeros((n_elements,n_elements,n_elements))
 vorticity_y = np.zeros((n_elements,n_elements,n_elements))
 vorticity_z = np.zeros((n_elements,n_elements,n_elements))
+    
+#calculating gradients with whole matrixes
+#stuff for concatenating matrixes
+
+#stuff for finite diff method
+def ord2_matx(mat):
+    mat1x=np.concatenate((mat,np.zeros((2,np.shape(mat)[1],np.shape(mat)[2]))),axis=0)                     
+    mat2x=np.concatenate((np.zeros((2,np.shape(mat)[1],np.shape(mat)[2])),mat),axis=0)           
+    derx=(mat1x-mat2x)/2.
+    derx[1,:,:]=mat1x[1,:,:]-mat1x[0,:,:]
+    derx[-2,:,:]=mat2x[-1,:,:]-mat2x[-2,:,:]
+    return derx[1:-1,:,:]
+
+def ord2_maty(mat):
+    mat1y=np.concatenate((mat,np.zeros((np.shape(mat)[0],2,np.shape(mat)[2]))),axis=1)                     
+    mat2y=np.concatenate((np.zeros((np.shape(mat)[0],2,np.shape(mat)[2])),mat),axis=1)           
+    dery=(mat1y-mat2y)/2.
+    dery[:,1,:]=mat1y[:,1,:]-mat1y[:,0,:]
+    dery[:,-2,:]=mat2y[:,-1,:]-mat2y[:,-2,:]
+    return dery[:,1:-1,:]
+    
+def ord2_matz(mat):
+    mat1z=np.concatenate((mat,np.zeros((np.shape(mat)[0],np.shape(mat)[1],2))),axis=2)                     
+    mat2z=np.concatenate((np.zeros((np.shape(mat)[0],np.shape(mat)[1],2)),mat),axis=2)           
+    derz=(mat1z-mat2z)/2.
+    derz[:,:,1]=mat1z[:,:,1]-mat1z[:,:,0]
+    derz[:,:,-2]=mat2z[:,:,-1]-mat2z[:,:,-2]
+    return derz[:,:,1:-1]
+'''n=3
+un=np.zeros((n,n,n))
+for i in range(n):
+    for j in range(n):
+        for k in range(n):
+            un[i,j,k]=i+j+k    
+print(un) 
+reun=np.reshape(un,(n,n,n,1))
+unx=np.concatenate((reun,reun*2), axis=3)
+uny=np.concatenate((reun*-1,reun*-2), axis=3)
+print(np.shape(uny))
+unn=np.concatenate((np.reshape(unx,(n,n,n,2,1)),np.reshape(uny,(n,n,n,2,1))), axis=4)
+print(np.shape(unn))
+print(unn)'''
+
+def full_D_matrix(u,v,w,order_of_method):
+    pass
+'''    
+def D_matrix2(point):
+    return(np.array([[vel_der_ord2x(u,point), vel_der_ord2y(u,point), vel_der_ord2z(u,point)],\
+                    [vel_der_ord2x(v,point), vel_der_ord2y(v,point), vel_der_ord2z(v,point)],\
+                    [vel_der_ord2x(w,point), vel_der_ord2y(w,point), vel_der_ord2z(w,point)]]))
+'''
 
 #extending velocity fields in all directions if the data repeats 
 def extend_matrix(matrix):
@@ -104,56 +154,6 @@ if to_loop:
     u=extend_matrix(u)
     v=extend_matrix(v)
     w=extend_matrix(w)
-    
-#calculating gradients with whole matrixes
-#stuff for finite diff method
-def ord2_full_mat(mat):
-    mat1x=np.concatenate((mat,np.zeros((2,np.shape(mat)[1],np.shape(mat)[2]))),axis=0)                     
-    mat2x=np.concatenate((np.zeros((2,np.shape(mat)[1],np.shape(mat)[2])),mat),axis=0)           
-    derx=(mat1x-mat2x)/2.
-    derx[1,:,:]=mat1x[1,:,:]-mat1x[0,:,:]
-    derx[-2,:,:]=mat2x[-1,:,:]-mat2x[-2,:,:]
-
-    mat1y=np.concatenate((mat,np.zeros((np.shape(mat)[0],2,np.shape(mat)[2]))),axis=1)                     
-    mat2y=np.concatenate((np.zeros((np.shape(mat)[0],2,np.shape(mat)[2])),mat),axis=1)           
-    dery=(mat1y-mat2y)/2.
-    dery[:,1,:]=mat1y[:,1,:]-mat1y[:,0,:]
-    dery[:,-2,:]=mat2y[:,-1,:]-mat2y[:,-2,:]
-
-    mat1z=np.concatenate((mat,np.zeros((np.shape(mat)[0],np.shape(mat)[1],2))),axis=2)                     
-    mat2z=np.concatenate((np.zeros((np.shape(mat)[0],np.shape(mat)[1],2)),mat),axis=2)           
-    derz=(mat1z-mat2z)/2.
-    derz[:,:,1]=mat1z[:,:,1]-mat1z[:,:,0]
-    derz[:,:,-2]=mat2z[:,:,-1]-mat2z[:,:,-2]
-    return derx[1:-1,:,:]/delta, dery[:,1:-1,:]/delta, derz[:,:,1:-1]/delta
-
-def ord4_full_mat(mat):
-    pass
-
-def ord6_full_mat(mat):
-    pass
-  
-
-
-#stuff for concatenating matrixes
-def full_D_matrix(u,v,w,order_of_method):
-    if order_of_method==2:
-        method=ord2_full_mat
-    if order_of_method==4:
-        method=ord4_full_mat
-    if order_of_method==6:
-        method=ord6_full_mat
-    deru=method(u)
-    derv=method(v)
-    derw=method(w)
-    f_line=np.concatenate((np.reshape(deru[0],(np.shape(deru[0])[0],np.shape(deru[0])[1],np.shape(deru[0])[2],1)), np.reshape(derv[0],(np.shape(derv[0])[0],np.shape(derv[0])[1],np.shape(derv[0])[2],1)), np.reshape(derw[0],(np.shape(derw[0])[0],np.shape(derw[0])[1],np.shape(derw[0])[2],1))),axis=3)
-    s_line=np.concatenate((np.reshape(deru[1],(np.shape(deru[1])[0],np.shape(deru[1])[1],np.shape(deru[1])[2],1)), np.reshape(derv[1],(np.shape(derv[1])[0],np.shape(derv[1])[1],np.shape(derv[1])[2],1)), np.reshape(derw[1],(np.shape(derw[1])[0],np.shape(derw[1])[1],np.shape(derw[1])[2],1))),axis=3)
-    t_line=np.concatenate((np.reshape(deru[2],(np.shape(deru[2])[0],np.shape(deru[2])[1],np.shape(deru[2])[2],1)), np.reshape(derv[2],(np.shape(derv[2])[0],np.shape(derv[2])[1],np.shape(derv[2])[2],1)), np.reshape(derw[2],(np.shape(derw[2])[0],np.shape(derw[2])[1],np.shape(derw[2])[2],1))),axis=3)
-
-    gradient_tensor=np.concatenate(( np.reshape(f_line,(np.shape(f_line)[0],np.shape(f_line)[1],np.shape(f_line)[2],3,1)),  np.reshape(s_line,(np.shape(s_line)[0],np.shape(s_line)[1],np.shape(s_line)[2],3,1)),  np.reshape(t_line,(np.shape(t_line)[0],np.shape(t_line)[1],np.shape(t_line)[2],3,1))), axis=4)
-
-    return gradient_tensor
-
     
     
 #   Definitions  for calculations
@@ -229,7 +229,7 @@ def vel_der_ord6z(vcomp,p):
     return (45*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-9*(vcomp[p[0],p[1],p[2]+2]-vcomp[p[0],p[1],p[2]-2])+vcomp[p[0],p[1],p[2]+3]-vcomp[p[0],p[1],p[2]-3])/60./delta
 
 #   velocity gradient matrix   
-def D_matrix2l(point):
+def D_matrix2(point):
     xu=vel_der_ord2x(u,point)
     xv=vel_der_ord2x(v,point)
     xw=vel_der_ord2x(w,point)
@@ -337,11 +337,6 @@ def D_matrix6(point):
                     [xv, yv, zv],\
                     [xw,yw , zw]])), strength, i, j, k
 
-def D_matrix2(point):
-    return(np.array([[vel_der_ord2x(u,point), vel_der_ord2y(u,point), vel_der_ord2z(u,point)],\
-                    [vel_der_ord2x(v,point), vel_der_ord2y(v,point), vel_der_ord2z(v,point)],\
-                    [vel_der_ord2x(w,point), vel_der_ord2y(w,point), vel_der_ord2z(w,point)]]))
-    
 if to_loop:        
     if order_der_method==2:   D_matrix=D_matrix2loop 
     elif order_der_method==4:    D_matrix=D_matrix4loop   
@@ -448,36 +443,12 @@ else:
 
 if to_save: np.save(calculated_data_file,vspace)  
 
-
-'''
-n_elements=125
-vspace=np.zeros((n_elements,n_elements,n_elements,3,3))
-print('okee')
-
-stop1 = time.clock()    
-jaa=full_D_matrix(u[0:n_elements,0:n_elements,0:n_elements],v[0:n_elements,0:n_elements,0:n_elements],w[0:n_elements,0:n_elements,0:n_elements],2)
-print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  new D')
-print(np.shape(jaa))
-
-
-stop1 = time.clock()
-for i in range(n_elements):
-    for j in range(n_elements):
-        for k in range(n_elements):  
-            vspace[i,j,k]=D_matrix2((i,j,k))
-print(np.shape(vspace))
-print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  old D')
-'''
-
-
-
-
+   
 
 
 
 #   Saving calculation times to calctimes.txt
-
-if to_load:
+if not to_load:
     if to_calc_Q: method='Q'
     elif to_calc_Lambda2: method='Lambda2'
     wri=str('points ='+str(n_elements**3)+'   order of method='+str(order_der_method)+'  method='+method+'  time taken='+str(calc_time)+'sec    time per point='+str(calc_time/(n_elements**3.)*1000000)+'^10-6  ' )
