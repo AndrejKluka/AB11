@@ -21,28 +21,19 @@ to_load=False          # if true will load already the last calculated Q or lamb
 to_save=False
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-<<<<<<< HEAD
 
-n_elements=191        # number of elements on each side of cube calculated
-to_calc_Q=True          # if true will calc Q on cube with n_elements
-to_calc_Lambda2=False  # if true will calc lambda2 on cube with n_elements
 
-n_elements=30         # number of elements on each side of cube calculated
-to_calc_Q=True          # if true will calc Q on cube with n_elements
-to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-
-q_threshold=0.16          # threshold for marching cubes algorithm 
-order_der_method=3     # only 2 or 4 are implemented 3 is 2 but new
-data_num=1              # 0 for validation dataset, 1 for raw_data_1
-=======
-n_elements=100      # number of elements on each side of cube calculated
+n_elements_x=255       #in x-direction
+n_elements_y=255        # in y-direction
+n_elements_z=767   # number of elements on each side of cube calculated- z-direction
+q_threshold=0.16          # threshold for marching cubes algorithm     
 to_calc_Q=True        # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
-order_der_method=6      #2,4,6 are with looping in 2,4,6 orders respectetively
-to_loop=False           # True if the data loops 
-data_num=0              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
->>>>>>> a2c2e3733ce51aa3a4b30b4161b64bcdd3c3074a
+order_der_method=2     #2,4,6 are with looping in 2,4,6 orders respectetively
+to_loop=False         # True if the data loops 
+data_num=2              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+
 check_data=False        # check only first time you are using dataset
  
 
@@ -84,26 +75,27 @@ x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
 z_max=np.shape(u)[2]-1
 
+
 maxx=x_max
 if y_max>maxx:
     maxx=y_max
 elif z_max>maxx:
     maxx=z_max
 delta=2.*math.pi/maxx
-    
-    
-if n_elements>x_max:
-    n_elements=x_max
-elif n_elements>y_max:
-    n_elements=y_max
-elif n_elements>z_max:
-    n_elements=z_max
 
-vspace=np.zeros((n_elements,n_elements,n_elements))
-vorticity_space = np.zeros((n_elements,n_elements,n_elements))
-vorticity_x = np.zeros((n_elements,n_elements,n_elements))
-vorticity_y = np.zeros((n_elements,n_elements,n_elements))
-vorticity_z = np.zeros((n_elements,n_elements,n_elements))
+   
+if n_elements_x>x_max:
+    n_elements_x=x_max
+elif n_elements_y>y_max:
+    n_elements_y=y_max
+elif n_elements_z>z_max:
+    n_elements_z=z_max
+
+vspace=np.zeros((n_elements_x,n_elements_y,n_elements_z))
+vorticity_space = np.zeros((n_elements_x,n_elements_y,n_elements_z))
+vorticity_x = np.zeros((n_elements_x,n_elements_y,n_elements_z))
+vorticity_y = np.zeros((n_elements_x,n_elements_y,n_elements_z))
+vorticity_z = np.zeros((n_elements_x,n_elements_y,n_elements_z))
     
 #calculating gradients with whole matrixes
 #stuff for concatenating matrixes
@@ -413,9 +405,9 @@ else:
     print ('start calc')
     stop1 = time.clock()
     if to_calc_Q and to_calc_vorticity:
-        for i in range(n_elements):
-            for j in range(n_elements):
-                for k in range(n_elements):
+        for i in range(n_elements_x):
+            for j in range(n_elements_y):
+                for k in range(n_elements_z):
                     Qandvorticity=calc_Q(np.array([i,j,k]))
                     vspace[i,j,k]=Qandvorticity[0]
                     vorticity_space[i,j,k]=Qandvorticity[1]
@@ -425,17 +417,17 @@ else:
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
         highest_vorticity=np.amax(vspace)
     elif to_calc_Q:
-        for i in range(n_elements):           
-            for j in range(n_elements):
-                for k in range(n_elements):
+        for i in range(n_elements_x):           
+            for j in range(n_elements_y):
+                for k in range(n_elements_z):
                     Qandvorticity=calc_Q(np.array([i,j,k]))
                     vspace[i,j,k]=Qandvorticity[0]
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
         highest_vorticity=np.amax(vspace)        
     elif to_calc_Lambda2 and to_calc_vorticity: 
-        for i in range(n_elements):
-            for j in range(n_elements):
-                for k in range(n_elements):
+        for i in range(n_elements_x):
+            for j in range(n_elements_y):
+                for k in range(n_elements_z):
                     Lambdaandvorticity=Lambda2(np.array([i,j,k]))
                     vspace[i,j,k]=Lambdaandvorticity[0]
                     vorticity_space[i,j,k]=Lambdaandvorticity[1]
@@ -446,9 +438,9 @@ else:
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Lambda2 calculation')
         highest_vorticity=np.amin(vspace)
     elif to_calc_Lambda2:
-        for i in range(n_elements):
-             for j in range(n_elements):
-                 for k in range(n_elements):
+        for i in range(n_elements_x):
+             for j in range(n_elements_y):
+                 for k in range(n_elements_z):
                      Lambdaandvorticity=Lambda2(np.array([i,j,k]))
                      vspace[i,j,k]=Lambdaandvorticity[0]
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Lambda2 calculation')
