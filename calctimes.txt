@@ -251,6 +251,12 @@ points =857375   order of method=3  method=Lambda2  time taken=47.3072sec    tim
 points =857375   order of method=3  method=Lambda2  time taken=50.4366sec    time per point=58.826767750400926^10-6  
 =======
 >>>>>>> 8a44d8927001302a9d0d47c2f8068a23f4d7b7b2
+<<<<<<< HEAD
+points =8000   order of method=4  method=Q  time taken=0.5348sec    time per point=66.85000000000001^10-6  
+points =8000   order of method=2  method=Q  time taken=0.3583sec    time per point=44.787499999999994^10-6  
+points =8000   order of method=2  method=Q  time taken=0.3609sec    time per point=45.1125^10-6  
+points =8000   order of method=2  method=Q  time taken=0.3717sec    time per point=46.4625^10-6  
+=======
 >>>>>>> 8ecb4338c1e69a163054f8dbea5c92524f0753e1
 <<<<<<< HEAD
 points =1000   order of method=4  method=Q  time taken=0.055sec    time per point=55.0^10-6  
@@ -277,12 +283,34 @@ points =857375   order of method=2  method=Lambda2  time taken=48.3887sec    tim
 points =857375   order of method=6  method=Lambda2  time taken=83.0065sec    time per point=96.81469601982796^10-6  
 =======
 >>>>>>> d833190854599f52e30612666bcb63e25f793d1c
+<<<<<<< HEAD
+points =729000   order of method=2  method=Q  time taken=27.5597sec    time per point=37.804801097393685^10-6  
+points =729000   order of method=2  method=Q  time taken=30.9048sec    time per point=42.39341563786009^10-6  
+points =8000000   order of method=2  method=Q  time taken=346.9026sec    time per point=43.362825^10-6  
+=======
 >>>>>>> 80212b5fa80474c1dc381865ac724120fde2fee6
 >>>>>>> 1ba05b20d49ddb8f00ceec076f7a4f0b3ddc85d0
 points =857375   order of method=6  method=Q  time taken=63.3656sec    time per point=73.90651698498323^10-6  
+<<<<<<< HEAD
 points =857375   order of method=6  method=Q  time taken=64.7705sec    time per point=75.54512319580112^10-6  
 points =857375   order of method=2  method=Q  time taken=31.1938sec    time per point=36.382912961073046^10-6  
 points =857375   order of method=2  method=Q  time taken=30.7716sec    time per point=35.89047966175827^10-6  
 points =857375   order of method=2  method=Q  time taken=34.1595sec    time per point=39.841959469310396^10-6  
 points =857375   order of method=2  method=Q  time taken=30.5917sec    time per point=35.6806531564368^10-6  
 points =857375   order of method=2  method=Q  time taken=1998.7941sec    time per point=2331.2950575885698^10-6  
+=======
+<<<<<<< HEAD
+>>>>>>> 0821414311416c53e6fac4cb3aa64abe7c5421bd
+=======
+points =857375   order of method=2  method=Q  time taken=34.2676sec    time per point=39.96804198862808^10-6  
+>>>>>>> 22e5135d4a0536f49817efd6ca955e4e6ba612ee
+>>>>>>> d5d4d9ab516bdb36268066961fafe7d16c517db1
+<<<<<<< HEAD
+points =857375   order of method=6  method=Q  time taken=100.9222sec    time per point=117.71068668902173^10-6  
+=======
+points =857375   order of method=3  method=Lambda2  time taken=47.3513sec    time per point=55.22822568887593^10-6  
+points =857375   order of method=3  method=Lambda2  time taken=51.4492sec    time per point=60.00781455022598^10-6  
+points =857375   order of method=3  method=Q  time taken=32.2712sec    time per point=37.639539291441906^10-6  
+points =857375   order of method=3  method=Q  time taken=31.4641sec    time per point=36.698177576906254^10-6  
+>>>>>>> 4ede6f88c67ec7c59a75ed8d076ec9347ab95ade
+>>>>>>> d6ca2909bc4508f4e73b76914409935e1fa84462
