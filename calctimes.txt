@@ -297,3 +297,4 @@ points =857375   order of method=6  method=Q  time taken=63.3656sec    time per 
 points =857375   order of method=2  method=Q  time taken=34.2676sec    time per point=39.96804198862808^10-6  
 >>>>>>> 22e5135d4a0536f49817efd6ca955e4e6ba612ee
 >>>>>>> d5d4d9ab516bdb36268066961fafe7d16c517db1
+points =857375   order of method=6  method=Q  time taken=100.9222sec    time per point=117.71068668902173^10-6  
