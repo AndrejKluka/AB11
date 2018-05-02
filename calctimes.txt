@@ -1200,3 +1200,14 @@ points =857375   order of method=2  method=Q  time taken=6.1186sec    time per p
 points =857375   order of method=2  method=Q  time taken=6.324sec    time per point=7.37600233270156^10-6  
 points =857375   order of method=2  method=Q  time taken=6.1722sec    time per point=7.198950284298003^10-6  
 points =857375   order of method=2  method=Q  time taken=6.3203sec    time per point=7.37168683481557^10-6  
+points =1   order of method=6  method=Q  time taken=0.27sec    time per point=270000.0^10-6  
+points =1   order of method=2  method=Q  time taken=0.0002sec    time per point=200.0^10-6  
+points =1   order of method=2  method=Q  time taken=0.0056sec    time per point=5600.0^10-6  
+points =1   order of method=2  method=Q  time taken=0.0005sec    time per point=500.0^10-6  
+points =1   order of method=2  method=Q  time taken=0.0003sec    time per point=300.0^10-6  
+points =1   order of method=2  method=Q  time taken=0.0004sec    time per point=400.0^10-6  
+points =1   order of method=2  method=Q  time taken=0.0006sec    time per point=600.0^10-6  
+points =1   order of method=2  method=Q  time taken=0.0002sec    time per point=200.0^10-6  
+points =1   order of method=2  method=Q  time taken=0.0007sec    time per point=700.0^10-6  
+points =1   order of method=2  method=Q  time taken=0.0005sec    time per point=500.0^10-6  
+points =1   order of method=2  method=Q  time taken=0.2773sec    time per point=277300.0^10-6  
