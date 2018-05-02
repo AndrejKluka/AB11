@@ -20,6 +20,19 @@ q_threshold=0.16          # threshold for marching cubes algorithm
 
 
 
+
+
+
+@@@put back
+
+@@@
+
+
+
+
+
+
+
 xx=np.zeros((5,5,5))
 un=xx.astype(dtype=str)
 for i in range(5):
@@ -119,7 +132,17 @@ dery[:,-1,:]=mat[:,-1,:]-mat[:,-2,:]
 print(dery)
 print(np.shape(dery))
 '''
-
+    
+def Lambda2fucked(Dfield):
+    Ofield=O_matrix(Dfield)
+    Sfield=S_matrix(Dfield)
+    Lambda=np.empty((np.shape(Dfield)[0],np.shape(Dfield)[1],np.shape(Dfield)[2]))
+    for i in range(np.shape(Dfield)[0]):
+        for j in range(np.shape(Dfield)[1]):
+            for k in range(np.shape(Dfield)[2]):
+                w,v=np.linalg.eigh(np.dot(Sfield[i,j,k],Sfield[i,j,k])+np.dot(Ofield[i,j,k],Ofield[i,j,k]))
+                Lambda[i,j,k]=w[1]
+    return Lambda
     
 def vorticity(point):
     if order_der_method==5:
