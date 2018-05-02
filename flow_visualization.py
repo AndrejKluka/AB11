@@ -108,31 +108,76 @@ if to_loop:
 #calculating gradients with whole matrixes
 #stuff for finite diff method
 def ord2_full_mat(mat):
-    mat1x=np.concatenate((mat,np.zeros((2,np.shape(mat)[1],np.shape(mat)[2]))),axis=0)                     
-    mat2x=np.concatenate((np.zeros((2,np.shape(mat)[1],np.shape(mat)[2])),mat),axis=0)           
-    derx=(mat1x-mat2x)/2.
-    derx[1,:,:]=mat1x[1,:,:]-mat1x[0,:,:]
-    derx[-2,:,:]=mat2x[-1,:,:]-mat2x[-2,:,:]
-
-    mat1y=np.concatenate((mat,np.zeros((np.shape(mat)[0],2,np.shape(mat)[2]))),axis=1)                     
-    mat2y=np.concatenate((np.zeros((np.shape(mat)[0],2,np.shape(mat)[2])),mat),axis=1)           
-    dery=(mat1y-mat2y)/2.
-    dery[:,1,:]=mat1y[:,1,:]-mat1y[:,0,:]
-    dery[:,-2,:]=mat2y[:,-1,:]-mat2y[:,-2,:]
-
-    mat1z=np.concatenate((mat,np.zeros((np.shape(mat)[0],np.shape(mat)[1],2))),axis=2)                     
-    mat2z=np.concatenate((np.zeros((np.shape(mat)[0],np.shape(mat)[1],2)),mat),axis=2)           
-    derz=(mat1z-mat2z)/2.
-    derz[:,:,1]=mat1z[:,:,1]-mat1z[:,:,0]
-    derz[:,:,-2]=mat2z[:,:,-1]-mat2z[:,:,-2]
-    return derx[1:-1,:,:]/delta, dery[:,1:-1,:]/delta, derz[:,:,1:-1]/delta
+    derx=np.zeros((np.shape(mat)))
+    derx[1:-1,:,:]=(mat[2:,:,:]-mat[:-2,:,:])/2
+    derx[0,:,:]=mat[1,:,:]-mat[0,:,:]
+    derx[-1,:,:]=mat[-1,:,:]-mat[-2,:,:]
+    
+    dery=np.zeros((np.shape(mat)))
+    dery[:,1:-1,:]=(mat[:,2:,:]-mat[:,:-2,:])/2
+    dery[:,0,:]=mat[:,1,:]-mat[:,0,:]
+    dery[:,-1,:]=mat[:,-1,:]-mat[:,-2,:]
+    
+    derz=np.zeros((np.shape(mat)))
+    derz[:,:,1:-1]=(mat[:,:,2:]-mat[:,:,:-2])/2
+    derz[:,:,0]=mat[:,:,1]-mat[:,:,0]
+    derz[:,:,-1]=mat[:,:,-1]-mat[:,:,-2]
+    return derx/delta, dery/delta, derz/delta
 
 def ord4_full_mat(mat):
-    pass
+    derx=np.zeros((np.shape(mat)))
+    derx[2:-2,:,:]=(8*(mat[3:-1,:,:]-mat[1:-3,:,:])-mat[4:,:,:]+mat[:-4,:,:])/12
+    derx[0,:,:]=mat[1,:,:]-mat[0,:,:]
+    derx[1,:,:]=(mat[2,:,:]-mat[0,:,:])/2
+    derx[-2,:,:]=(mat[-1,:,:]-mat[-3,:,:])/2
+    derx[-1,:,:]=mat[-1,:,:]-mat[-2,:,:]
+    
+    dery=np.zeros((np.shape(mat)))
+    dery[:,2:-2,:]=(8*(mat[:,3:-1,:]-mat[:,1:-3,:])-mat[:,4:,:]+mat[:,:-4,:])/12
+    dery[:,0,:]=mat[:,1,:]-mat[:,0,:]
+    dery[:,1,:]=(mat[:,2,:]-mat[:,0,:])/2
+    dery[:,-2,:]=(mat[:,-1,:]-mat[:,-3,:])/2
+    dery[:,-1,:]=mat[:,-1,:]-mat[:,-2,:]
+    
+    derz=np.zeros((np.shape(mat)))
+    derz[:,:,2:-2]=(8*(mat[:,:,3:-1]-mat[:,:,1:-3])-mat[:,:,4:]+mat[:,:,:-4])/12
+    derz[:,:,0]=mat[:,:,1]-mat[:,:,0]
+    derz[:,:,1]=(mat[:,:,2]-mat[:,:,0])/2
+    derz[:,:,-2]=(mat[:,:,-1]-mat[:,:,-3])/2
+    derz[:,:,-1]=mat[:,:,-1]-mat[:,:,-2]
+    
+    return derx/delta, dery/delta, derz/delta
 
 def ord6_full_mat(mat):
-    pass
-  
+    derx=np.zeros((np.shape(mat)))
+    derx[3:-3,:,:]=(45*(mat[4:-2,:,:]-mat[2:-4,:,:])-9*(mat[5:-1,:,:]-mat[1:-5,:,:])+mat[6:,:,:]-mat[:-6,:,:])/60
+    derx[0,:,:]=mat[1,:,:]-mat[0,:,:]
+    derx[1,:,:]=(mat[2,:,:]-mat[0,:,:])/2
+    derx[2,:,:]=(8*(mat[3,:,:]-mat[1,:,:])-mat[4,:,:]+mat[0,:,:])/12
+    derx[-3,:,:]=(8*(mat[-2,:,:]-mat[-4,:,:])-mat[-1,:,:]+mat[-5,:,:])/12
+    derx[-2,:,:]=(mat[-1,:,:]-mat[-3,:,:])/2
+    derx[-1,:,:]=mat[-1,:,:]-mat[-2,:,:]
+    
+    dery=np.zeros((np.shape(mat)))
+    dery[:,3:-3,:]=(45*(mat[:,4:-2,:]-mat[:,2:-4,:])-9*(mat[:,5:-1,:]-mat[:,1:-5,:])+mat[:,6:,:]-mat[:,:-6,:])/60
+    dery[:,0,:]=mat[:,1,:]-mat[:,0,:]
+    dery[:,1,:]=(mat[:,2,:]-mat[:,0,:])/2
+    dery[:,2,:]=(8*(mat[:,3,:]-mat[:,1,:])-mat[:,4,:]+mat[:,0,:])/12
+    dery[:,-3,:]=(8*(mat[:,-2,:]-mat[:,-4,:])-mat[:,-1,:]+mat[:,-5,:])/12
+    dery[:,-2,:]=(mat[:,-1,:]-mat[:,-3,:])/2
+    dery[:,-1,:]=mat[:,-1,:]-mat[:,-2,:]
+    
+    derz=np.zeros((np.shape(mat)))
+    derz[:,:,3:-3]=(45*(mat[:,:,4:-2]-mat[:,:,2:-4])-9*(mat[:,:,5:-1]-mat[:,:,1:-5])+mat[:,:,6:]-mat[:,:,:-6])/60
+    derz[:,:,0]=mat[:,:,1]-mat[:,:,0]
+    derz[:,:,1]=(mat[:,:,2]-mat[:,:,0])/2
+    derz[:,:,2]=(8*(mat[:,:,3]-mat[:,:,1])-mat[:,:,4]+mat[:,:,0])/12
+    derz[:,:,-3]=(8*(mat[:,:,-2]-mat[:,:,-4])-mat[:,:,-1]+mat[:,:,-5])/12
+    derz[:,:,-2]=(mat[:,:,-1]-mat[:,:,-3])/2
+    derz[:,:,-1]=mat[:,:,-1]-mat[:,:,-2]
+    
+    return derx/delta, dery/delta, derz/delta
+
 
 
 #stuff for concatenating matrixes
@@ -229,7 +274,7 @@ def vel_der_ord6z(vcomp,p):
     return (45*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-9*(vcomp[p[0],p[1],p[2]+2]-vcomp[p[0],p[1],p[2]-2])+vcomp[p[0],p[1],p[2]+3]-vcomp[p[0],p[1],p[2]-3])/60./delta
 
 #   velocity gradient matrix   
-def D_matrix2l(point):
+def D_matrix2(point):
     xu=vel_der_ord2x(u,point)
     xv=vel_der_ord2x(v,point)
     xw=vel_der_ord2x(w,point)
@@ -246,6 +291,7 @@ def D_matrix2l(point):
     return(np.array([[xu, yu,zu],\
                     [xv, yv, zv],\
                     [xw,yw , zw]])), strength, i, j, k
+    
 def D_matrix2loop(point):
     xu=vel_der_ord2loopx(u,point)
     xv=vel_der_ord2loopx(v,point)
@@ -263,7 +309,7 @@ def D_matrix2loop(point):
     return(np.array([[xu, yu,zu],\
                     [xv, yv, zv],\
                     [xw,yw , zw]])), strength, i, j, k
-    
+   
 def D_matrix4(point):
     xu=vel_der_ord4x(u,point)
     xv=vel_der_ord4x(v,point)
@@ -318,7 +364,7 @@ def D_matrix6loop(point):
     return(np.array([[xu, yu,zu],\
                     [xv, yv, zv],\
                     [xw,yw , zw]])), strength, i, j, k
-    
+   
 def D_matrix6(point):    
     xu=vel_der_ord6x(u,point)
     xv=vel_der_ord6x(v,point)
@@ -337,11 +383,7 @@ def D_matrix6(point):
                     [xv, yv, zv],\
                     [xw,yw , zw]])), strength, i, j, k
 
-def D_matrix2(point):
-    return(np.array([[vel_der_ord2x(u,point), vel_der_ord2y(u,point), vel_der_ord2z(u,point)],\
-                    [vel_der_ord2x(v,point), vel_der_ord2y(v,point), vel_der_ord2z(v,point)],\
-                    [vel_der_ord2x(w,point), vel_der_ord2y(w,point), vel_der_ord2z(w,point)]]))
-    
+
 if to_loop:        
     if order_der_method==2:   D_matrix=D_matrix2loop 
     elif order_der_method==4:    D_matrix=D_matrix4loop   
@@ -450,12 +492,12 @@ if to_save: np.save(calculated_data_file,vspace)
 
 
 '''
-n_elements=125
+n_elements=80
 vspace=np.zeros((n_elements,n_elements,n_elements,3,3))
 print('okee')
 
 stop1 = time.clock()    
-jaa=full_D_matrix(u[0:n_elements,0:n_elements,0:n_elements],v[0:n_elements,0:n_elements,0:n_elements],w[0:n_elements,0:n_elements,0:n_elements],2)
+jaa=full_D_matrix(u[0:n_elements,0:n_elements,0:n_elements],v[0:n_elements,0:n_elements,0:n_elements],w[0:n_elements,0:n_elements,0:n_elements],6)
 print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  new D')
 print(np.shape(jaa))
 
@@ -464,12 +506,11 @@ stop1 = time.clock()
 for i in range(n_elements):
     for j in range(n_elements):
         for k in range(n_elements):  
-            vspace[i,j,k]=D_matrix2((i,j,k))
+            vspace[i,j,k]=D_matrix6((i,j,k))
 print(np.shape(vspace))
 print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  old D')
+#print(np.sum(vspace[:-3,:-3,:-3]-jaa[:-3,:-3,:-3]))
 '''
-
-
 
 
 
