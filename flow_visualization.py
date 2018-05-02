@@ -7,7 +7,7 @@ from os import path
 import scipy.io
 import scipy
 import numpy as np
-from pyevtk.hl import gridToVTK
+#from pyevtk.hl import gridToVTK
 
 import math
 stop=time.clock()
@@ -23,16 +23,16 @@ to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
 
 
-n_elements_x=192       #in x-direction
-n_elements_y=192        # in y-direction
-n_elements_z=192   # number of elements on each side of cube calculated- z-direction
+n_elements_x=95       #in x-direction
+n_elements_y=95        # in y-direction
+n_elements_z=95   # number of elements on each side of cube calculated- z-direction
 q_threshold=0.16          # threshold for marching cubes algorithm     
 to_calc_Q=True        # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
-order_der_method=4     #2,4,6 are with looping in 2,4,6 orders respectetively
+order_der_method=2     #2,4,6 are with looping in 2,4,6 orders respectetively
 to_loop=False         # True if the data loops 
-data_num=1              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+data_num=0              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
 
 check_data=False        # check only first time you are using dataset
  
@@ -414,7 +414,11 @@ else:
                     vorticity_x[i,j,k]=Qandvorticity[2]
                     vorticity_y[i,j,k]=Qandvorticity[3]
                     vorticity_z[i,j,k]=Qandvorticity[4]
+                    if (i,j,k) == (10,10,10):
+                        print (vspace, Qandvorticity[0])
+                        break
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
+        
         highest_vorticity=np.amax(vspace)
     elif to_calc_Q:
         for i in range(n_elements_x):           
@@ -455,20 +459,20 @@ if to_save: np.save(calculated_data_file,vspace)
 
 
 #   Saving calculation times to calctimes.txt
-if not to_load:
-    if to_calc_Q: method='Q'
-    elif to_calc_Lambda2: method='Lambda2'
-    wri=str('points ='+str(n_elements**3)+'   order of method='+str(order_der_method)+'  method='+method+'  time taken='+str(calc_time)+'sec    time per point='+str(calc_time/(n_elements**3.)*1000000)+'^10-6  ' )
-    f=open('calctimes.txt','a')
-    f.write(wri)
-    f.write('\n')
-    f.close()
+#if not to_load:
+#    if to_calc_Q: method='Q'
+#    elif to_calc_Lambda2: method='Lambda2'
+#    wri=str('points ='+str(n_elements**3)+'   order of method='+str(order_der_method)+'  method='+method+'  time taken='+str(calc_time)+'sec    time per point='+str(calc_time/(n_elements**3.)*1000000)+'^10-6  ' )
+#    f=open('calctimes.txt','a')
+#    f.write(wri)
+#    f.write('\n')
+#    f.close()
 
 
-vspace_shape = np.shape(vspace)      
-xvtk = np.arange(0, vspace_shape[0])
-yvtk = np.arange(0, vspace_shape[1])
-zvtk = np.arange(0, vspace_shape[2])
-
-gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+#vspace_shape = np.shape(vspace)      
+#xvtk = np.arange(0, vspace_shape[0])
+#yvtk = np.arange(0, vspace_shape[1])
+#zvtk = np.arange(0, vspace_shape[2])
+#
+#gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 
