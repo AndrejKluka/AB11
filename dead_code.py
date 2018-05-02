@@ -113,6 +113,28 @@ def D_matrix6(point):
                     [vel_der_ord6x(w,point), vel_der_ord6y(w,point), vel_der_ord6z(w,point)]]))
  
     
+    
+            print(axis[0][i],axis[0][i+1],axis[1][j],axis[1][j+1],axis[2][k],axis[2][k+1]) 
+            print(start,end)
+            print(axis_orig[0][i],axis_orig[0][i+1],axis_orig[1][j],axis_orig[1][j+1],axis_orig[2][k],axis_orig[2][k+1])
+            print(i,j,k)
+            print(start, end)
+            
+            
+            print('\n')    
+            
+            
+'''
+vspace=np.zeros((n_elements,n_elements,n_elements))
+print('start of calc')
+
+stop1 = time.clock()    
+jaa=full_D_matrix(u[0:n_elements,0:n_elements,0:n_elements],v[0:n_elements,0:n_elements,0:n_elements],w[0:n_elements,0:n_elements,0:n_elements],6)
+zz=calc_Qfull(jaa)
+print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  new D')
+print(np.shape(zz))
+'''
+
 '''
 n=8
 mat=np.zeros((n,n,n))

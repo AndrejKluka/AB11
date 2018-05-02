@@ -5,6 +5,7 @@ from os import path
 import scipy.io
 import scipy
 import numpy as np
+import copy
 #from pyevtk.hl import gridToVTK
 
 import math
@@ -14,20 +15,18 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 ''' To do list '''
 #see why lambda 2 is all positive
 #Think about adding some smart loading
+#download pyevtk.hl, paraview and make it save
 #add script for paraview thingy and automate
-#make it calculate whole datasets
+#make it calculate bigger datasets
 
 
 #---------------------------------------------------------General setup for program run
-to_save=False
-n_elements_x=100       #in x-direction
-n_elements_y=100        # in y-direction
-n_elements_z=100   # number of elements on each side of cube calculated- z-direction    
-to_calc_Q=False        # if true will calc Q on cube with n_elements
-to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+to_save=False  
+to_calc_Q=False       # if true will calc Q on cube with n_elements
+to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
 data_num=1              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
-
-
+#15.3111 sec
+#37.3022 sec
 data_set=['validation_Q_l2','raw_data_1','data_001']
 
 #   reading raw dataset and putting them into u,v,w arrays
@@ -41,27 +40,13 @@ x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
 z_max=np.shape(u)[2]-1
 
-
 maxx=x_max
 if y_max>maxx:
     maxx=y_max
 elif z_max>maxx:
     maxx=z_max
 delta=2.*math.pi/maxx
-   
-if n_elements_x>x_max:
-    n_elements_x=x_max
-elif n_elements_y>y_max:
-    n_elements_y=y_max
-elif n_elements_z>z_max:
-    n_elements_z=z_max
 
-vspace=np.zeros((n_elements_x,n_elements_y,n_elements_z))
-vorticity_space = np.zeros((n_elements_x,n_elements_y,n_elements_z))
-vorticity_x = np.zeros((n_elements_x,n_elements_y,n_elements_z))
-vorticity_y = np.zeros((n_elements_x,n_elements_y,n_elements_z))
-vorticity_z = np.zeros((n_elements_x,n_elements_y,n_elements_z))
-    
 #calculating gradients with whole matrixes
 def ord6_full_mat(mat):
     derx=np.zeros((np.shape(mat)))
@@ -95,12 +80,7 @@ def ord6_full_mat(mat):
 
 #stuff for concatenating matrixes
 def full_D_matrix(u,v,w,order_of_method):
-    if order_of_method==2:
-        method=ord2_full_mat
-    if order_of_method==4:
-        method=ord4_full_mat
-    if order_of_method==6:
-        method=ord6_full_mat
+    method=ord6_full_mat
     deru=method(u)
     derv=method(v)
     derw=method(w)
@@ -115,7 +95,7 @@ def full_D_matrix(u,v,w,order_of_method):
     return gradient_tensor, strength, i ,j ,k
 
 def S_matrix(D):
-    s=np.zeros(np.shape(D))#[0],np.shape(D)[1],np.shape(D)[2],3,3)
+    s=np.zeros(np.shape(D)) #[0],np.shape(D)[1],np.shape(D)[2],3,3)
     s[:,:,:,0,1]=(D[:,:,:,0,1]+D[:,:,:,1,0])/2.
     s[:,:,:,1,0]=(D[:,:,:,0,1]+D[:,:,:,1,0])/2.
     s[:,:,:,0,2]=(D[:,:,:,0,2]+D[:,:,:,2,0])/2.
@@ -125,7 +105,7 @@ def S_matrix(D):
     return(s)       
 
 def O_matrix(D):
-    s=np.zeros(np.shape(D))#[0],np.shape(D)[1],np.shape(D)[2],3,3)
+    s=np.zeros(np.shape(D)) #[0],np.shape(D)[1],np.shape(D)[2],3,3)
     s[:,:,:,0,1]=(D[:,:,:,0,1]-D[:,:,:,1,0])/2.
     s[:,:,:,1,0]=(D[:,:,:,0,1]-D[:,:,:,1,0])/2.
     s[:,:,:,0,2]=(D[:,:,:,0,2]-D[:,:,:,2,0])/2.
@@ -141,42 +121,74 @@ def norm_full(field):
     return s
 
 def calc_Qfull(Dfield):
-    qspace=0.5*(norm_full(O_matrix(Dfield[0]))**2.-norm_full(S_matrix(Dfield[0]))**2.)
-    return qspace, Dfield[1], Dfield[2], Dfield[3], Dfield[4]
+    qspace=0.5*(norm_full(O_matrix(Dfield))**2.-norm_full(S_matrix(Dfield))**2.)
+    return qspace
 
 def Lambda2full(Dfield):
-    Ofield=O_matrix(Dfield[0])
-    Sfield=S_matrix(Dfield[0])
+    Ofield=O_matrix(Dfield)
+    Sfield=S_matrix(Dfield)
     A=np.matmul(Sfield,Sfield)+np.matmul(Ofield,Ofield)
     lambda2_space=np.linalg.eigh(A)[0][:,:,:,1]
-    return lambda2_space, Dfield[1], Dfield[2], Dfield[3], Dfield[4]
+    return lambda2_space
     
 
+vspace=np.empty((u.shape),dtype='float32')
+vorticity_strength = np.empty((u.shape),dtype='float32')
+vorticity_x = np.empty((u.shape),dtype='float32')
+vorticity_y = np.empty((u.shape),dtype='float32')
+vorticity_z = np.empty((u.shape),dtype='float32')
 
-n_elements=130
-vspace=np.zeros((n_elements,n_elements,n_elements))
-print('okee')
-
-stop1 = time.clock()    
-jaa=full_D_matrix(u[0:n_elements,0:n_elements,0:n_elements],v[0:n_elements,0:n_elements,0:n_elements],w[0:n_elements,0:n_elements,0:n_elements],6)
-zz=calc_Qfull(jaa)
-print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  new D')
-print(np.shape(zz))
-
-
-
-
-
-
-vspace_shape = np.shape(vspace)      
-xvtk = np.arange(0, vspace_shape[0])
-yvtk = np.arange(0, vspace_shape[1])
-zvtk = np.arange(0, vspace_shape[2])
-
-#gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+x=[0]
+y=[0]
+z=[0]
+axis_orig=[x,y,z]
+maxes=[x_max,y_max,z_max]
+interval=100
+for i in range(3):
+    while axis_orig[i][-1]<maxes[i]:
+        axis_orig[i].append(axis_orig[i][-1]+interval)
+    axis_orig[i][-1]=maxes[i]
+    if axis_orig[i][-1]-axis_orig[i][-2]<=20:
+        axis_orig[i][-2]=axis_orig[i][-2]-30
 
 
-
+print('start of calc')
+stop1 = time.clock()
+for i in range(len(axis_orig[0])-1):
+    for j in range(len(axis_orig[1])-1):
+        for k in range(len(axis_orig[2])-1):
+            axis = copy.deepcopy(axis_orig)
+            nah=[i,j,k]
+            start=[0,0,0]
+            end=[axis_orig[0][i+1]-axis_orig[0][i], axis_orig[1][j+1]-axis_orig[1][j], axis_orig[2][k+1]-axis_orig[2][k]]
+            for xx in range(3):
+                if not axis[xx][nah[xx]]==0:
+                    axis[xx][nah[xx]]-=3
+                    start[xx]=3
+                    end[xx]+=3
+                if not axis[xx][nah[xx]+1]==maxes[xx]:
+                    axis[xx][nah[xx]+1]+=3
+  
+            Dfields=full_D_matrix( u[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]], v[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]],w[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]],6)
+            vorticity_strength[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[1][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
+            vorticity_x[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[2][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
+            vorticity_y[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[3][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
+            vorticity_z[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[4][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
+            if to_calc_Q:
+                zz=calc_Qfull(Dfields[0])
+            elif to_calc_Lambda2:
+                zz=Lambda2full(Dfields[0])
+            if to_calc_Q or to_calc_Lambda2:
+                vspace[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = zz[start[0]:end[0], start[1]:end[1], start[2]:end[2]]
+print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  calcs done')            
+   
+if to_save:
+    if to_calc_Q: method='Q'
+    elif to_calc_Lambda2: method='Lambda2'     
+    xvtk = np.arange(0, vspace.shape[0])
+    yvtk = np.arange(0, vspace.shape[1])
+    zvtk = np.arange(0, vspace.shape[2])
+    #gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 
 
 
