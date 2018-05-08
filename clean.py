@@ -45,7 +45,7 @@ if y_max>maxx:
     maxx=y_max
 elif z_max>maxx:
     maxx=z_max
-delta=2.*math.pi/maxx
+delta=2.*math.pi/(maxx + 1)
 
 #calculating gradients with whole matrixes
 def ord6_full_mat(mat):
@@ -54,7 +54,7 @@ def ord6_full_mat(mat):
     derx[0,:,:]=mat[1,:,:]-mat[0,:,:]
     derx[1,:,:]=(mat[2,:,:]-mat[0,:,:])/2
     derx[2,:,:]=(8*(mat[3,:,:]-mat[1,:,:])-mat[4,:,:]+mat[0,:,:])/12
-    derx[-3,:,:]=(8*(mat[-2,:,:]-mat[-4,:,:])-mat[-1,:,:]+mat[-5,:,:])/12
+    derx[-3,:,:]=(8*(mat[-2,:,:]-mat[-4,:,:])-mat[-1,:,:]+mat[-e5,:,:])/12
     derx[-2,:,:]=(mat[-1,:,:]-mat[-3,:,:])/2
     derx[-1,:,:]=mat[-1,:,:]-mat[-2,:,:]
     
