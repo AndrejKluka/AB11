@@ -3,12 +3,16 @@ start = time.clock()
 #----------------------------------------------------------Modules used for plotting 
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+<<<<<<< HEAD
 # =============================================================================
 # import plotly.plotly as py
 # import plotly
 # from plotly.graph_objs import *
 # import plotly.figure_factory
 # =============================================================================
+=======
+#import plotly.plotly as py
+>>>>>>> e05b1f21863a6e3bc3a297c9819be3906c036702
 from pyevtk.hl import gridToVTK
 #import matplotlib.pyplot
 #graveyard pf unused module for now
@@ -35,14 +39,23 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
+<<<<<<< HEAD
 n_elements=3        # number of elements on each side of cube calculated
 to_calc_Q=False          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
 order_der_method=6     # only 2 or 4 are implemented 3 is 2 but new
+=======
+n_elements=96        # number of elements on each side of cube calculated
+to_calc_Q=True          # if true will calc Q on cube with n_elements
+to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+to_calc_vorticity = True  #if true calculate vorticity
+q_threshold=0.16          # threshold for marching cubes algorithm 
+order_der_method=5     # only 2 or 4 are implemented 3 is 2 but new
+>>>>>>> e05b1f21863a6e3bc3a297c9819be3906c036702
 data_num=0              # 0 for validation dataset, 1 for raw_data_1
-check_data=False        # check only first time you are using dataset
+check_data=True        # check only first time you are using dataset
 
 
 
@@ -223,8 +236,13 @@ def D_matrix(point):
 
 
 
+<<<<<<< HEAD
 def S_matrix(Dmatrix,):
     #print ((Dmatrix+np.transpose(Dmatrix))/2.)
+=======
+def S_matrix(Dmatrix):
+    
+>>>>>>> e05b1f21863a6e3bc3a297c9819be3906c036702
     return (Dmatrix+np.transpose(Dmatrix))/2.    
     
 #   O is Omega matrix       

@@ -8,6 +8,7 @@ import plotly
 from plotly.graph_objs import *
 import plotly.figure_factory
 from pyevtk.hl import gridToVTK
+
 #import matplotlib.pyplot
 #graveyard pf unused module for now
 #from mpl_toolkits.mplot3d import Axes3D
@@ -18,6 +19,7 @@ plotly.tools.set_credentials_file(username='hunter139', api_key='lgN7Sd8dqPktT2w
 
 #----------------------------------------------------------Modules for general life
 from os import path
+import os
 import scipy.io
 import scipy
 import numpy as np
@@ -523,4 +525,5 @@ yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
 gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
-
+os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
+os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
