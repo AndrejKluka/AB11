@@ -14,17 +14,22 @@ stop=time.clock()
 print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 ''' To do list '''
-#see why lambda 2 is all positive
-#Think about adding some smart loading
-#add script for paraview thingy and automate
+#automate when we get more data
 
 #---------------------------------------------------------General setup for program run
 Visualization = False
+<<<<<<< HEAD
 
 to_save=True  
 to_calc_Q=False       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
 data_num=2            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+=======
+to_save=True  
+to_calc_Q=True       # if true will calc Q 
+to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+data_num=1            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+>>>>>>> ba5682bfc8dba52c40c13bea4236d418a3b7d445
 
 
 data_set=['validation_Q_l2','raw_data_1','data_001']
@@ -39,6 +44,8 @@ w=data['w']
 x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
 z_max=np.shape(u)[2]-1
+n_points=(x_max+1)*(y_max+1)*(z_max+1)
+points_calculated=0
 
 maxx=x_max
 if y_max>maxx:
@@ -47,7 +54,12 @@ elif z_max>maxx:
     maxx=z_max
 delta=2.*math.pi/(maxx+1)
 
-
+#stuff just for fun
+def print_statusline(msg: str):
+    last_msg_length = len(print_statusline.last_msg) if hasattr(print_statusline, 'last_msg') else 0
+    print(' ' * last_msg_length, end='\r')
+    print(msg, end='\r')
+    print_statusline.last_msg = msg
 #calculating gradients with whole matrixes
 def ord6_full_mat(mat):
     derx=np.zeros((np.shape(mat)))
@@ -155,9 +167,16 @@ for i in range(3):
     if axis_orig[i][-1]-axis_orig[i][-2]<=20:
         axis_orig[i][-2]=axis_orig[i][-2]-30
 
-
+if to_calc_Q:
+    method_of_choice=calc_Qfull
+elif to_calc_Lambda2:
+    method_of_choice=Lambda2full
+    
+    
 print('start of calc')
+print_statusline(str(int(points_calculated/n_points*100))+'%')
 stop1 = time.clock()
+
 for i in range(len(axis_orig[0])-1):
     for j in range(len(axis_orig[1])-1):
         for k in range(len(axis_orig[2])-1):
@@ -172,28 +191,34 @@ for i in range(len(axis_orig[0])-1):
                     end[xx]+=3
                 if not axis[xx][nah[xx]+1]==maxes[xx]:
                     axis[xx][nah[xx]+1]+=3
-  
+            
             Dfields=full_D_matrix( u[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]], v[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]],w[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]],6)
             vorticity_strength[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[1][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
             vorticity_x[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[2][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
             vorticity_y[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[3][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
             vorticity_z[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[4][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
-            if to_calc_Q:
-                zz=calc_Qfull(Dfields[0])
-            elif to_calc_Lambda2:
-                zz=Lambda2full(Dfields[0])
+            zz=method_of_choice(Dfields[0])
             if to_calc_Q or to_calc_Lambda2:
                 vspace[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = zz[start[0]:end[0], start[1]:end[1], start[2]:end[2]]
-print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  calcs done')            
-   
+            points_calculated+=(-start[0]+end[0])*(-start[1]+end[1])*(-start[2]+end[2])
+            print_statusline(str(int(points_calculated/n_points*100))+'%')        
+ 
+vorticity_x=np.nan_to_num(vorticity_x/vorticity_strength)
+vorticity_y=np.nan_to_num(vorticity_y/vorticity_strength)
+vorticity_z=np.nan_to_num(vorticity_z/vorticity_strength)
+print_statusline(str(100)+'%')
+print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  calculations done') 
+
+
 if to_save:
     if to_calc_Q: method='Q'
     elif to_calc_Lambda2: method='Lambda2'     
     xvtk = np.arange(0, vspace.shape[0])
     yvtk = np.arange(0, vspace.shape[1])
     zvtk = np.arange(0, vspace.shape[2])
-
     gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+
+
 if Visualization : 
     os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
     os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
