@@ -195,13 +195,15 @@ for i in range(len(axis_orig[0])-1):
             if to_calc_Q or to_calc_Lambda2:
                 vspace[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = zz[start[0]:end[0], start[1]:end[1], start[2]:end[2]]
             points_calculated+=(-start[0]+end[0])*(-start[1]+end[1])*(-start[2]+end[2])
-            print_statusline(str(int(points_calculated/n_points*100))+'%')
-
-print_statusline(str(100)+'%')
-print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  calcs done')            
+            print_statusline(str(int(points_calculated/n_points*100))+'%')        
  
+vorticity_x=np.nan_to_num(vorticity_x/vorticity_strength)
+vorticity_y=np.nan_to_num(vorticity_y/vorticity_strength)
+vorticity_z=np.nan_to_num(vorticity_z/vorticity_strength)
+print_statusline(str(100)+'%')
+print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  calculations done') 
 
-  
+
 if to_save:
     if to_calc_Q: method='Q'
     elif to_calc_Lambda2: method='Lambda2'     
