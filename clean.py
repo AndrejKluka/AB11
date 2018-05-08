@@ -191,28 +191,9 @@ if to_save:
     xvtk = np.arange(0, vspace.shape[0])
     yvtk = np.arange(0, vspace.shape[1])
     zvtk = np.arange(0, vspace.shape[2])
-<<<<<<< HEAD
-
     gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-    gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
-=======
->>>>>>> 776b9bd870321d36f99e305f176d21c07b7bc2ee
->>>>>>> ec444c6228a3b6da7b8d4073ea986dbb2c0c252b
-
->>>>>>> 26d8697b22ecb8f89c0470d874dbcfd6df7a2604
-=======
->>>>>>> cb1d2b379fc548e47d79c1d152d892d4dec8f9ce
-
-<<<<<<< HEAD
 
 
-=======
-    gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
->>>>>>> ec444c6228a3b6da7b8d4073ea986dbb2c0c252b
 if Visualization : 
     os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
     os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
