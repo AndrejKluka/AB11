@@ -14,7 +14,7 @@ stop=time.clock()
 print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 ''' To do list '''
-#automate
+#automate when we get more data
 
 
 
@@ -23,7 +23,7 @@ Visualization = False
 to_save=True  
 to_calc_Q=True       # if true will calc Q 
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-data_num=0            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+data_num=1            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
 
 
 data_set=['validation_Q_l2','raw_data_1','data_001']
@@ -38,6 +38,8 @@ w=data['w']
 x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
 z_max=np.shape(u)[2]-1
+n_points=(x_max+1)*(y_max+1)*(z_max+1)
+points_calculated=0
 
 maxx=x_max
 if y_max>maxx:
@@ -46,7 +48,12 @@ elif z_max>maxx:
     maxx=z_max
 delta=2.*math.pi/(maxx+1)
 
-
+#stuff just for fun
+def print_statusline(msg: str):
+    last_msg_length = len(print_statusline.last_msg) if hasattr(print_statusline, 'last_msg') else 0
+    print(' ' * last_msg_length, end='\r')
+    print(msg, end='\r')
+    print_statusline.last_msg = msg
 #calculating gradients with whole matrixes
 def ord6_full_mat(mat):
     derx=np.zeros((np.shape(mat)))
@@ -158,9 +165,12 @@ if to_calc_Q:
     method_of_choice=calc_Qfull
 elif to_calc_Lambda2:
     method_of_choice=Lambda2full
-
+    
+    
 print('start of calc')
+print_statusline(str(int(points_calculated/n_points*100))+'%')
 stop1 = time.clock()
+
 for i in range(len(axis_orig[0])-1):
     for j in range(len(axis_orig[1])-1):
         for k in range(len(axis_orig[2])-1):
@@ -175,7 +185,7 @@ for i in range(len(axis_orig[0])-1):
                     end[xx]+=3
                 if not axis[xx][nah[xx]+1]==maxes[xx]:
                     axis[xx][nah[xx]+1]+=3
-  
+            
             Dfields=full_D_matrix( u[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]], v[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]],w[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]],6)
             vorticity_strength[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[1][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
             vorticity_x[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[2][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
@@ -184,8 +194,14 @@ for i in range(len(axis_orig[0])-1):
             zz=method_of_choice(Dfields[0])
             if to_calc_Q or to_calc_Lambda2:
                 vspace[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = zz[start[0]:end[0], start[1]:end[1], start[2]:end[2]]
+            points_calculated+=(-start[0]+end[0])*(-start[1]+end[1])*(-start[2]+end[2])
+            print_statusline(str(int(points_calculated/n_points*100))+'%')
+
+print_statusline(str(100)+'%')
 print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  calcs done')            
-   
+ 
+
+  
 if to_save:
     if to_calc_Q: method='Q'
     elif to_calc_Lambda2: method='Lambda2'     
