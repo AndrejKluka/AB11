@@ -7,7 +7,7 @@ from os import path
 import scipy.io
 import scipy
 import numpy as np
-from pyevtk.hl import gridToVTK
+#from pyevtk.hl import gridToVTK
 
 import math
 stop=time.clock()
@@ -21,13 +21,23 @@ to_load=False          # if true will load already the last calculated Q or lamb
 to_save=False
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=100      # number of elements on each side of cube calculated
-to_calc_Q=True        # if true will calc Q on cube with n_elements
-to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+<<<<<<< HEAD
+n_elements=3     # number of elements on each side of cube calculated
+to_calc_Q=False        # if true will calc Q on cube with n_elements
+to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
-order_der_method=6      #2,4,6 are with looping in 2,4,6 orders respectetively
-to_loop=False           # True if the data loops 
+order_der_method=4      #2,4,6 are with looping in 2,4,6 orders respectetively
+to_loop=True           # True if the data loops 
 data_num=0              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+=======
+n_elements=1     # number of elements on each side of cube calculated
+to_calc_Q=False        # if true will calc Q on cube with n_elements
+to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+to_calc_vorticity = False  #if true calculate vorticity
+order_der_method=2      #2,4,6 are with looping in 2,4,6 orders respectetively
+to_loop=False           # True if the data loops 
+data_num=2              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+>>>>>>> 9c162a561426e57ee431d1e3e0e9a6f08474f922
 check_data=False        # check only first time you are using dataset
  
 
@@ -246,6 +256,7 @@ def D_matrix2(point):
     return(np.array([[xu, yu,zu],\
                     [xv, yv, zv],\
                     [xw,yw , zw]])), strength, i, j, k
+    
 def D_matrix2loop(point):
     xu=vel_der_ord2loopx(u,point)
     xv=vel_der_ord2loopx(v,point)
@@ -351,6 +362,7 @@ def S_matrix(D):
     D[0,1]=D[1,0]=(D[0,1]+D[1,0])/2.
     D[0,2]=D[2,0]=(D[0,2]+D[2,0])/2.
     D[2,1]=D[1,2]=(D[2,1]+D[1,2])/2.
+    print (D)
     return(D)       
  
 #   O is Omega matrix        
@@ -375,6 +387,7 @@ def Q(normO,normS):
     
 def calc_Q(point):
     D=D_matrix(point)
+    print (D)
     return Q(norm(O_matrix(D[0])),norm(S_matrix(D[0]))),D[1], D[2], D[3], D[4]   #q value, vorticity strenght, vorticity i,j,k
 
 def Lambda2(point):
@@ -423,6 +436,8 @@ else:
                 for k in range(n_elements):
                     Lambdaandvorticity=Lambda2(np.array([i,j,k]))
                     vspace[i,j,k]=Lambdaandvorticity[0]
+                    if (vspace[i,j,k]) <0:
+                        print (vspace[i,j,k])
                     vorticity_space[i,j,k]=Lambdaandvorticity[1]
                     vorticity_x[i,j,k]=Lambdaandvorticity[2]
                     vorticity_y[i,j,k]=Lambdaandvorticity[3]
@@ -446,7 +461,7 @@ if to_save: np.save(calculated_data_file,vspace)
    
 
 
-
+'''
 #   Saving calculation times to calctimes.txt
 if not to_load:
     if to_calc_Q: method='Q'
@@ -456,12 +471,11 @@ if not to_load:
     f.write(wri)
     f.write('\n')
     f.close()
-
-
+'''    
 vspace_shape = np.shape(vspace)      
 xvtk = np.arange(0, vspace_shape[0])
 yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
-gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+#gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 

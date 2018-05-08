@@ -3,10 +3,7 @@ start = time.clock()
 #----------------------------------------------------------Modules used for plotting 
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-import plotly.plotly as py
-import plotly
-from plotly.graph_objs import *
-import plotly.figure_factory
+#import plotly.plotly as py
 from pyevtk.hl import gridToVTK
 #import matplotlib.pyplot
 #graveyard pf unused module for now
@@ -14,7 +11,7 @@ from pyevtk.hl import gridToVTK
 
 
 #plotly authentification, I can give you the access to the account just ask
-plotly.tools.set_credentials_file(username='hunter139', api_key='lgN7Sd8dqPktT2wwpfCc')
+#plotly.tools.set_credentials_file(username='hunter139', api_key='lgN7Sd8dqPktT2wwpfCc')
 
 #----------------------------------------------------------Modules for general life
 from os import path
@@ -38,9 +35,9 @@ to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
-order_der_method=2     # only 2 or 4 are implemented 3 is 2 but new
+order_der_method=5     # only 2 or 4 are implemented 3 is 2 but new
 data_num=0              # 0 for validation dataset, 1 for raw_data_1
-check_data=False        # check only first time you are using dataset
+check_data=True        # check only first time you are using dataset
 
 
 
@@ -221,6 +218,7 @@ def D_matrix(point):
 
 
 def S_matrix(Dmatrix):
+    
     return (Dmatrix+np.transpose(Dmatrix))/2.    
     
 #   O is Omega matrix       

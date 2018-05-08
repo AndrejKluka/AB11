@@ -14,11 +14,10 @@ stop=time.clock()
 print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 
-# improve method 6 it does not work with 0,0,0
-
 #---------------------------------------------------------General setup for program run
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_save=False
+<<<<<<< HEAD
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
 <<<<<<< HEAD
@@ -38,18 +37,27 @@ n_elements_x=255       #in x-direction
 n_elements_y=255        # in y-direction
 n_elements_z=767   # number of elements on each side of cube calculated- z-direction
 >>>>>>> 2d731150056e12b6ef7164f0055e573834f74e14
+=======
+n_elements_x=100       #in x-direction
+n_elements_y=100        # in y-direction
+n_elements_z=100   # number of elements on each side of cube calculated- z-direction
+>>>>>>> edb4c20bb3e675176679807d9b0084fe13a56193
 q_threshold=0.16          # threshold for marching cubes algorithm     
-to_calc_Q=True        # if true will calc Q on cube with n_elements
->>>>>>> ab617adfb27d09222934ed6a4e94fba6c03f5be1
+to_calc_Q=False        # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-to_calc_vorticity = True  #if true calculate vorticity
-order_der_method=2     #2,4,6 are with looping in 2,4,6 orders respectetively
+to_calc_vorticity = False  #if true calculate vorticity
+order_der_method=6     #2,4,6 are with looping in 2,4,6 orders respectetively
 to_loop=False         # True if the data loops 
+<<<<<<< HEAD
 <<<<<<< HEAD
 data_num=0              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
 =======
 data_num=2              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
 >>>>>>> 2d731150056e12b6ef7164f0055e573834f74e14
+=======
+to_save_calctime=False  #saving calc times to text file
+data_num=1              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+>>>>>>> edb4c20bb3e675176679807d9b0084fe13a56193
 
 check_data=False        # check only first time you are using dataset
  
@@ -87,7 +95,7 @@ if check_data:
     if ok:print('data is cubical and ok')
     else:print('data not fine')
 
-#vspace=np.zeros(np.shape(u))
+vspace=np.zeros(np.shape(u))
 x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
 z_max=np.shape(u)[2]-1
@@ -113,51 +121,83 @@ vorticity_space = np.zeros((n_elements_x,n_elements_y,n_elements_z))
 vorticity_x = np.zeros((n_elements_x,n_elements_y,n_elements_z))
 vorticity_y = np.zeros((n_elements_x,n_elements_y,n_elements_z))
 vorticity_z = np.zeros((n_elements_x,n_elements_y,n_elements_z))
-    
-#calculating gradients with whole matrixes
-#stuff for concatenating matrixes
 
 #stuff for finite diff method
-def ord2_matx(mat):
-    mat1x=np.concatenate((mat,np.zeros((2,np.shape(mat)[1],np.shape(mat)[2]))),axis=0)                     
-    mat2x=np.concatenate((np.zeros((2,np.shape(mat)[1],np.shape(mat)[2])),mat),axis=0)           
-    derx=(mat1x-mat2x)/2.
-    derx[1,:,:]=mat1x[1,:,:]-mat1x[0,:,:]
-    derx[-2,:,:]=mat2x[-1,:,:]-mat2x[-2,:,:]
-    return derx[1:-1,:,:]
-
-def ord2_maty(mat):
-    mat1y=np.concatenate((mat,np.zeros((np.shape(mat)[0],2,np.shape(mat)[2]))),axis=1)                     
-    mat2y=np.concatenate((np.zeros((np.shape(mat)[0],2,np.shape(mat)[2])),mat),axis=1)           
-    dery=(mat1y-mat2y)/2.
-    dery[:,1,:]=mat1y[:,1,:]-mat1y[:,0,:]
-    dery[:,-2,:]=mat2y[:,-1,:]-mat2y[:,-2,:]
-    return dery[:,1:-1,:]
+def ord2_full_mat(mat):
+    derx=np.zeros((np.shape(mat)))
+    derx[1:-1,:,:]=(mat[2:,:,:]-mat[:-2,:,:])/2
+    derx[0,:,:]=mat[1,:,:]-mat[0,:,:]
+    derx[-1,:,:]=mat[-1,:,:]-mat[-2,:,:]
     
-def ord2_matz(mat):
-    mat1z=np.concatenate((mat,np.zeros((np.shape(mat)[0],np.shape(mat)[1],2))),axis=2)                     
-    mat2z=np.concatenate((np.zeros((np.shape(mat)[0],np.shape(mat)[1],2)),mat),axis=2)           
-    derz=(mat1z-mat2z)/2.
-    derz[:,:,1]=mat1z[:,:,1]-mat1z[:,:,0]
-    derz[:,:,-2]=mat2z[:,:,-1]-mat2z[:,:,-2]
-    return derz[:,:,1:-1]
-'''n=3
-un=np.zeros((n,n,n))
-for i in range(n):
-    for j in range(n):
-        for k in range(n):
-            un[i,j,k]=i+j+k    
-print(un) 
-reun=np.reshape(un,(n,n,n,1))
-unx=np.concatenate((reun,reun*2), axis=3)
-uny=np.concatenate((reun*-1,reun*-2), axis=3)
-print(np.shape(uny))
-unn=np.concatenate((np.reshape(unx,(n,n,n,2,1)),np.reshape(uny,(n,n,n,2,1))), axis=4)
-print(np.shape(unn))
-print(unn)'''
+    dery=np.zeros((np.shape(mat)))
+    dery[:,1:-1,:]=(mat[:,2:,:]-mat[:,:-2,:])/2
+    dery[:,0,:]=mat[:,1,:]-mat[:,0,:]
+    dery[:,-1,:]=mat[:,-1,:]-mat[:,-2,:]
+    
+    derz=np.zeros((np.shape(mat)))
+    derz[:,:,1:-1]=(mat[:,:,2:]-mat[:,:,:-2])/2
+    derz[:,:,0]=mat[:,:,1]-mat[:,:,0]
+    derz[:,:,-1]=mat[:,:,-1]-mat[:,:,-2]
+    return derx/delta, dery/delta, derz/delta
 
+def ord4_full_mat(mat):
+    derx=np.zeros((np.shape(mat)))
+    derx[2:-2,:,:]=(8*(mat[3:-1,:,:]-mat[1:-3,:,:])-mat[4:,:,:]+mat[:-4,:,:])/12
+    derx[0,:,:]=mat[1,:,:]-mat[0,:,:]
+    derx[1,:,:]=(mat[2,:,:]-mat[0,:,:])/2
+    derx[-2,:,:]=(mat[-1,:,:]-mat[-3,:,:])/2
+    derx[-1,:,:]=mat[-1,:,:]-mat[-2,:,:]
+    
+    dery=np.zeros((np.shape(mat)))
+    dery[:,2:-2,:]=(8*(mat[:,3:-1,:]-mat[:,1:-3,:])-mat[:,4:,:]+mat[:,:-4,:])/12
+    dery[:,0,:]=mat[:,1,:]-mat[:,0,:]
+    dery[:,1,:]=(mat[:,2,:]-mat[:,0,:])/2
+    dery[:,-2,:]=(mat[:,-1,:]-mat[:,-3,:])/2
+    dery[:,-1,:]=mat[:,-1,:]-mat[:,-2,:]
+    
+    derz=np.zeros((np.shape(mat)))
+    derz[:,:,2:-2]=(8*(mat[:,:,3:-1]-mat[:,:,1:-3])-mat[:,:,4:]+mat[:,:,:-4])/12
+    derz[:,:,0]=mat[:,:,1]-mat[:,:,0]
+    derz[:,:,1]=(mat[:,:,2]-mat[:,:,0])/2
+    derz[:,:,-2]=(mat[:,:,-1]-mat[:,:,-3])/2
+    derz[:,:,-1]=mat[:,:,-1]-mat[:,:,-2]
+    
+    return derx/delta, dery/delta, derz/delta
+
+def ord6_full_mat(mat):
+    derx=np.zeros((np.shape(mat)))
+    derx[3:-3,:,:]=(45*(mat[4:-2,:,:]-mat[2:-4,:,:])-9*(mat[5:-1,:,:]-mat[1:-5,:,:])+mat[6:,:,:]-mat[:-6,:,:])/60
+    derx[0,:,:]=mat[1,:,:]-mat[0,:,:]
+    derx[1,:,:]=(mat[2,:,:]-mat[0,:,:])/2
+    derx[2,:,:]=(8*(mat[3,:,:]-mat[1,:,:])-mat[4,:,:]+mat[0,:,:])/12
+    derx[-3,:,:]=(8*(mat[-2,:,:]-mat[-4,:,:])-mat[-1,:,:]+mat[-5,:,:])/12
+    derx[-2,:,:]=(mat[-1,:,:]-mat[-3,:,:])/2
+    derx[-1,:,:]=mat[-1,:,:]-mat[-2,:,:]
+    
+    dery=np.zeros((np.shape(mat)))
+    dery[:,3:-3,:]=(45*(mat[:,4:-2,:]-mat[:,2:-4,:])-9*(mat[:,5:-1,:]-mat[:,1:-5,:])+mat[:,6:,:]-mat[:,:-6,:])/60
+    dery[:,0,:]=mat[:,1,:]-mat[:,0,:]
+    dery[:,1,:]=(mat[:,2,:]-mat[:,0,:])/2
+    dery[:,2,:]=(8*(mat[:,3,:]-mat[:,1,:])-mat[:,4,:]+mat[:,0,:])/12
+    dery[:,-3,:]=(8*(mat[:,-2,:]-mat[:,-4,:])-mat[:,-1,:]+mat[:,-5,:])/12
+    dery[:,-2,:]=(mat[:,-1,:]-mat[:,-3,:])/2
+    dery[:,-1,:]=mat[:,-1,:]-mat[:,-2,:]
+    
+    derz=np.zeros((np.shape(mat)))
+    derz[:,:,3:-3]=(45*(mat[:,:,4:-2]-mat[:,:,2:-4])-9*(mat[:,:,5:-1]-mat[:,:,1:-5])+mat[:,:,6:]-mat[:,:,:-6])/60
+    derz[:,:,0]=mat[:,:,1]-mat[:,:,0]
+    derz[:,:,1]=(mat[:,:,2]-mat[:,:,0])/2
+    derz[:,:,2]=(8*(mat[:,:,3]-mat[:,:,1])-mat[:,:,4]+mat[:,:,0])/12
+    derz[:,:,-3]=(8*(mat[:,:,-2]-mat[:,:,-4])-mat[:,:,-1]+mat[:,:,-5])/12
+    derz[:,:,-2]=(mat[:,:,-1]-mat[:,:,-3])/2
+    derz[:,:,-1]=mat[:,:,-1]-mat[:,:,-2]
+    
+    return derx/delta, dery/delta, derz/delta
+
+
+
+#stuff for concatenating matrixes
 def full_D_matrix(u,v,w,order_of_method):
-<<<<<<< HEAD
     if order_of_method==2:
         method=ord2_full_mat
     if order_of_method==4:
@@ -170,23 +210,13 @@ def full_D_matrix(u,v,w,order_of_method):
     f_line=np.concatenate((np.reshape(deru[0],(np.shape(deru[0])[0],np.shape(deru[0])[1],np.shape(deru[0])[2],1)), np.reshape(derv[0],(np.shape(derv[0])[0],np.shape(derv[0])[1],np.shape(derv[0])[2],1)), np.reshape(derw[0],(np.shape(derw[0])[0],np.shape(derw[0])[1],np.shape(derw[0])[2],1))),axis=3)
     s_line=np.concatenate((np.reshape(deru[1],(np.shape(deru[1])[0],np.shape(deru[1])[1],np.shape(deru[1])[2],1)), np.reshape(derv[1],(np.shape(derv[1])[0],np.shape(derv[1])[1],np.shape(derv[1])[2],1)), np.reshape(derw[1],(np.shape(derw[1])[0],np.shape(derw[1])[1],np.shape(derw[1])[2],1))),axis=3)
     t_line=np.concatenate((np.reshape(deru[2],(np.shape(deru[2])[0],np.shape(deru[2])[1],np.shape(deru[2])[2],1)), np.reshape(derv[2],(np.shape(derv[2])[0],np.shape(derv[2])[1],np.shape(derv[2])[2],1)), np.reshape(derw[2],(np.shape(derw[2])[0],np.shape(derw[2])[1],np.shape(derw[2])[2],1))),axis=3)
-    i = derv[2] - derw[0]
-    j = -deru[2] + derw[0]
-    k = deru[1] -  derv[0]
-    print (i) 
-    print (derv)
-    print (derw)
+    i = derw[1] - derv[2]
+    j = deru[2] - derw[0]
+    k = derv[0] - deru[1]
+    strength=(i**2. + j**2. + k**2.)**0.5
     gradient_tensor=np.concatenate(( np.reshape(f_line,(np.shape(f_line)[0],np.shape(f_line)[1],np.shape(f_line)[2],3,1)),  np.reshape(s_line,(np.shape(s_line)[0],np.shape(s_line)[1],np.shape(s_line)[2],3,1)),  np.reshape(t_line,(np.shape(t_line)[0],np.shape(t_line)[1],np.shape(t_line)[2],3,1))), axis=4)
-    return gradient_tensor
-=======
-    pass
-'''    
-def D_matrix2(point):
-    return(np.array([[vel_der_ord2x(u,point), vel_der_ord2y(u,point), vel_der_ord2z(u,point)],\
-                    [vel_der_ord2x(v,point), vel_der_ord2y(v,point), vel_der_ord2z(v,point)],\
-                    [vel_der_ord2x(w,point), vel_der_ord2y(w,point), vel_der_ord2z(w,point)]]))
-'''
->>>>>>> ab617adfb27d09222934ed6a4e94fba6c03f5be1
+    return gradient_tensor, strength, i ,j ,k
+
 
 #extending velocity fields in all directions if the data repeats 
 def extend_matrix(matrix):
@@ -293,6 +323,7 @@ def D_matrix2(point):
     return(np.array([[xu, yu,zu],\
                     [xv, yv, zv],\
                     [xw,yw , zw]])), strength, i, j, k
+    
 def D_matrix2loop(point):
     xu=vel_der_ord2loopx(u,point)
     xv=vel_der_ord2loopx(v,point)
@@ -310,7 +341,7 @@ def D_matrix2loop(point):
     return(np.array([[xu, yu,zu],\
                     [xv, yv, zv],\
                     [xw,yw , zw]])), strength, i, j, k
-    
+   
 def D_matrix4(point):
     xu=vel_der_ord4x(u,point)
     xv=vel_der_ord4x(v,point)
@@ -365,7 +396,7 @@ def D_matrix6loop(point):
     return(np.array([[xu, yu,zu],\
                     [xv, yv, zv],\
                     [xw,yw , zw]])), strength, i, j, k
-    
+   
 def D_matrix6(point):    
     xu=vel_der_ord6x(u,point)
     xv=vel_der_ord6x(v,point)
@@ -384,6 +415,7 @@ def D_matrix6(point):
                     [xv, yv, zv],\
                     [xw,yw , zw]])), strength, i, j, k
 
+
 if to_loop:        
     if order_der_method==2:   D_matrix=D_matrix2loop 
     elif order_der_method==4:    D_matrix=D_matrix4loop   
@@ -394,45 +426,90 @@ else:
     elif order_der_method==6:    D_matrix=D_matrix6
 
 
-def S_matrix(D):    
-    D[:,:,:,0,1]=D[:,:,:,1,0]=(D[:,:,:,0,1]+D[:,:,:,1,0])/2.
-    D[:,:,:,0,2]=D[:,:,:,2,0]=(D[:,:,:,0,2]+D[:,:,:,2,0])/2.
-    D[:,:,:,2,1]=D[:,:,:,1,2]=(D[:,:,:,2,1]+D[:,:,:,1,2])/2.
-    print (D)
-    return(D)
+def S_matrix(D):
+    s=np.zeros(np.shape(D))#[0],np.shape(D)[1],np.shape(D)[2],3,3)
+    s[:,:,:,0,1]=(D[:,:,:,0,1]+D[:,:,:,1,0])/2.
+    s[:,:,:,1,0]=(D[:,:,:,0,1]+D[:,:,:,1,0])/2.
+    s[:,:,:,0,2]=(D[:,:,:,0,2]+D[:,:,:,2,0])/2.
+    s[:,:,:,2,0]=(D[:,:,:,0,2]+D[:,:,:,2,0])/2.
+    s[:,:,:,2,1]=(D[:,:,:,2,1]+D[:,:,:,1,2])/2.
+    s[:,:,:,1,2]=(D[:,:,:,2,1]+D[:,:,:,1,2])/2.
+    #print (D)
+    return(s)       
+
+def O_matrix(D):
+    s=np.zeros(np.shape(D))#[0],np.shape(D)[1],np.shape(D)[2],3,3)
+    s[:,:,:,0,1]=(D[:,:,:,0,1]-D[:,:,:,1,0])/2.
+    s[:,:,:,1,0]=(D[:,:,:,0,1]-D[:,:,:,1,0])/2.
+    s[:,:,:,0,2]=(D[:,:,:,0,2]-D[:,:,:,2,0])/2.
+    s[:,:,:,2,0]=(D[:,:,:,0,2]-D[:,:,:,2,0])/2.
+    s[:,:,:,2,1]=(D[:,:,:,2,1]-D[:,:,:,1,2])/2.
+    s[:,:,:,1,2]=(D[:,:,:,2,1]-D[:,:,:,1,2])/2.
+    #print(s)
+    return(s)        
+
+   
+def S_matrixold(D):  
+    s=np.zeros((3,3))
+    s[0,1]=s[1,0]=(D[0,1]+D[1,0])/2.
+    s[0,2]=s[2,0]=(D[0,2]+D[2,0])/2.
+    s[2,1]=s[1,2]=(D[2,1]+D[1,2])/2.
+    return(s)       
  
 #   O is Omega matrix        
-def O_matrix(D):
-    s=np.zeros(np.shape(D)[0],np.shape(D)[1],np.shape(D)[2],3,3)
-    s[:,:,:,0,1]=s[:,:,:,1,0]=(D[:,:,:,0,1]-D[:,:,:,1,0])/2.
-    s[:,:,:,0,2]=s[:,:,:,2,0]=(D[:,:,:,0,2]-D[:,:,:,2,0])/2.
-    s[:,:,:,2,1]=s[:,:,:,1,2]=(D[:,:,:,2,1]-D[:,:,:,1,2])/2.
-    print(s)
-    return(s)        
-   
+def O_matrixold(D):
+    s=np.zeros((3,3))
+    s[0,1]=s[1,0]=(D[0,1]-D[1,0])/2.
+    s[0,2]=s[2,0]=(D[0,2]-D[2,0])/2.
+    s[2,1]=s[1,2]=(D[2,1]-D[1,2])/2.
+    return(s)  
+ 
 def A_matrix(matS,matO):
     return np.dot(matS,matS)+np.dot(matO,matO)
-    
+
 def norm(m):
     mat=np.dot(m,np.transpose(m))
     return (mat[0,0]+mat[1,1]+mat[2,2])**0.5
 
+def norm_full(field):
+    ft=np.transpose(field, (0,1,2,4,3))
+    mat=np.matmul(field,ft)
+    s=(mat[:,:,:,0,0]+mat[:,:,:,1,1]+mat[:,:,:,2,2])**0.5
+    return s
    
 def Q(normO,normS):
-    return 0.5*(normO**2-normS**2)
-
-    
+    return 0.5*(normO**2.-normS**2.)
+  
 def calc_Q(point):
     D=D_matrix(point) 
-    return Q(norm(O_matrix(D[0])),norm(S_matrix(D[0]))),D[1], D[2], D[3], D[4]   #q value, vorticity strenght, vorticity i,j,k
+    return Q(norm(O_matrixold(D[0])),norm(S_matrixold(D[0]))),D[1], D[2], D[3], D[4]   #q value, vorticity strenght, vorticity i,j,k
+
+def calc_Qfull(Dfield):
+    qspace=0.5*(norm_full(O_matrix(Dfield[0]))**2.-norm_full(S_matrix(Dfield[0]))**2.)
+    return qspace, Dfield[1], Dfield[2], Dfield[3], Dfield[4]
+    
+ 
+    
+def calc_Qx(D):
+    return Q(norm(O_matrixold(D)),norm(S_matrixold(D)))  #q value, vorticity strenght, vorticity i,j,k
+
 
 def Lambda2(point):
     D=D_matrix(point)
-    w, v = np.linalg.eigh(A_matrix(S_matrix(D[0]),O_matrix(D[0])))
+    w, v = np.linalg.eigh(A_matrix(S_matrixold(D[0]),O_matrixold(D[0])))
     return w[1], D[1], D[2], D[3], D[4]
 
+def Lambda2full(Dfield):
+    Ofield=O_matrix(Dfield[0])
+    Sfield=S_matrix(Dfield[0])
+    A=np.matmul(Sfield,Sfield)+np.matmul(Ofield,Ofield)
+    lambda2_space=np.linalg.eigh(A)[0][:,:,:,1]
+    return lambda2_space, Dfield[1], Dfield[2], Dfield[3], Dfield[4]
 
 
+def Lambda2x(D):
+    w, v = np.linalg.eigh(A_matrix(S_matrixold(D),O_matrixold(D)))
+    return w[1]
 
 
 
@@ -467,8 +544,12 @@ else:
         
 =======
                     if i==10 and j==10 and k==10: print (vspace[10,10,10])
+<<<<<<< HEAD
         #print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
 >>>>>>> 2d731150056e12b6ef7164f0055e573834f74e14
+=======
+        print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
+>>>>>>> edb4c20bb3e675176679807d9b0084fe13a56193
         highest_vorticity=np.amax(vspace)
     elif to_calc_Q:
         for i in range(n_elements_x):           
@@ -504,39 +585,39 @@ else:
 
 if to_save: np.save(calculated_data_file,vspace)  
 
-<<<<<<< HEAD
 
 
-n_elements=1
-vspace=np.zeros((n_elements,n_elements,n_elements,3,3))
+'''
+n_elements=30
+vspace=np.zeros((n_elements,n_elements,n_elements))
 print('okee')
 
 stop1 = time.clock()    
-jaa=full_D_matrix(u[0:n_elements,0:n_elements,0:n_elements],v[0:n_elements,0:n_elements,0:n_elements],w[0:n_elements,0:n_elements,0:n_elements],2)
+jaa=full_D_matrix(u[0:n_elements,0:n_elements,0:n_elements],v[0:n_elements,0:n_elements,0:n_elements],w[0:n_elements,0:n_elements,0:n_elements],6)
+zz=calc_Qfull(jaa)
 print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  new D')
-#print(np.shape(jaa))
+print(np.shape(zz))
 #print (jaa)
 
+#yy=Lambda2new(jaa)
 
 stop1 = time.clock()
 for i in range(n_elements):
     for j in range(n_elements):
         for k in range(n_elements):  
-            vspace[i,j,k]=D_matrix2((i,j,k))
-#print(np.shape(vspace))
+            vspace[i,j,k]=calc_Qx(D_matrix6([i,j,k]))
+print(np.shape(vspace))
 print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  old D')
+print(np.sum(vspace[:-3,:-3,:-3]-zz[:-3,:-3,:-3]))
+'''
 
 
 
-
-
-=======
-   
->>>>>>> ab617adfb27d09222934ed6a4e94fba6c03f5be1
 
 
 
 #   Saving calculation times to calctimes.txt
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if not to_load:
 #    if to_calc_Q: method='Q'
@@ -555,9 +636,12 @@ print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  old D')
 #
 =======
 if not to_load:
+=======
+if to_save_calctime:
+>>>>>>> edb4c20bb3e675176679807d9b0084fe13a56193
     if to_calc_Q: method='Q'
     elif to_calc_Lambda2: method='Lambda2'
-    wri=str('points ='+str(n_elements**3)+'   order of method='+str(order_der_method)+'  method='+method+'  time taken='+str(calc_time)+'sec    time per point='+str(calc_time/(n_elements**3.)*1000000)+'^10-6  ' )
+    wri=str('points ='+str(n_elements_x*n_elements_y*n_elements_z)+'   order of method='+str(order_der_method)+'  method='+method+'  time taken='+str(calc_time)+'sec    time per point='+str(calc_time/(n_elements_x*n_elements_y*n_elements_z)*1000000)+'^10-6  ' )
     f=open('calctimes.txt','a')
     f.write(wri)
     f.write('\n')
@@ -569,6 +653,10 @@ xvtk = np.arange(0, vspace_shape[0])
 yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
+<<<<<<< HEAD
 >>>>>>> 2d731150056e12b6ef7164f0055e573834f74e14
 #gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+=======
+gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+>>>>>>> edb4c20bb3e675176679807d9b0084fe13a56193
 

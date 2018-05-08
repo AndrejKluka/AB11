@@ -27,7 +27,7 @@ to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = False  #if true calculate vorticity
 order_der_method=2      #2,4,6 are with looping in 2,4,6 orders respectetively
 to_loop=False            # True if the data loops 
-data_num=1              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+data_num=0              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
 
 check_data=False        # check only first time you are using dataset
  
@@ -152,10 +152,11 @@ def full_D_matrix(u,v,w,order_of_method):
     i = derv[2] - derw[0]
     j = -deru[2] + derw[0]
     k = deru[1] -  derv[0]
-    print (i) 
-    print (derv)
-    print (derw)
+    #print (deru) 
+    #print (derv)
+    #print (derw)
     gradient_tensor=np.concatenate(( np.reshape(f_line,(np.shape(f_line)[0],np.shape(f_line)[1],np.shape(f_line)[2],3,1)),  np.reshape(s_line,(np.shape(s_line)[0],np.shape(s_line)[1],np.shape(s_line)[2],3,1)),  np.reshape(t_line,(np.shape(t_line)[0],np.shape(t_line)[1],np.shape(t_line)[2],3,1))), axis=4)
+    #print (gradient_tensor)
     return gradient_tensor
 
     
@@ -456,7 +457,7 @@ if to_save: np.save(calculated_data_file,vspace)
 
 
 
-n_elements=1
+n_elements=4
 vspace=np.zeros((n_elements,n_elements,n_elements,3,3))
 print('okee')
 
@@ -465,13 +466,15 @@ jaa=full_D_matrix(u[0:n_elements,0:n_elements,0:n_elements],v[0:n_elements,0:n_e
 print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  new D')
 #print(np.shape(jaa))
 #print (jaa)
-
+print (jaa)
+print ("----------------------")
 
 stop1 = time.clock()
 for i in range(n_elements):
     for j in range(n_elements):
         for k in range(n_elements):  
             vspace[i,j,k]=D_matrix2((i,j,k))
+print (vspace[-1])
 #print(np.shape(vspace))
 print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  old D')
 
@@ -500,4 +503,4 @@ yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
 #gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
-
+"""_________________________>>> need to change axis numbering"""
