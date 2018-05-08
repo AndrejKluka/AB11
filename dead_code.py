@@ -20,6 +20,19 @@ q_threshold=0.16          # threshold for marching cubes algorithm
 
 
 
+
+
+
+@@@put back
+
+@@@
+
+
+
+
+
+
+
 xx=np.zeros((5,5,5))
 un=xx.astype(dtype=str)
 for i in range(5):
@@ -42,7 +55,12 @@ print(np.shape(uny))
 unn=np.concatenate((np.reshape(unx,(n,n,n,2,1)),np.reshape(uny,(n,n,n,2,1))), axis=4)
 print(np.shape(unn))
 print(unn)'''
-
+def ord2_full_mat(mat):
+    mat1x=np.concatenate((mat,np.zeros((2,np.shape(mat)[1],np.shape(mat)[2]))),axis=0)                     
+    mat2x=np.concatenate((np.zeros((2,np.shape(mat)[1],np.shape(mat)[2])),mat),axis=0)           
+    derx=(mat1x-mat2x)/2.
+    derx[1,:,:]=mat1x[1,:,:]-mat1x[0,:,:]
+    derx[-2,:,:]=mat2x[-1,:,:]-mat2x[-2,:,:]
 
 nx=2
 ny=5
@@ -81,7 +99,6 @@ print(derz[:,:,1:-1])
 
 
 
-
 def D_matrix2(point):
     return(np.array([[vel_der_ord2x(u,point), vel_der_ord2y(u,point), vel_der_ord2z(u,point)],\
                     [vel_der_ord2x(v,point), vel_der_ord2y(v,point), vel_der_ord2z(v,point)],\
@@ -90,7 +107,64 @@ def D_matrix4(point):
     return(np.array([[vel_der_ord4x(u,point), vel_der_ord4y(u,point), vel_der_ord4z(u,point)],\
                     [vel_der_ord4x(v,point), vel_der_ord4y(v,point), vel_der_ord4z(v,point)],\
                     [vel_der_ord4x(w,point), vel_der_ord4y(w,point), vel_der_ord4z(w,point)]]))
+def D_matrix6(point):
+    return(np.array([[vel_der_ord6x(u,point), vel_der_ord6y(u,point), vel_der_ord6z(u,point)],\
+                    [vel_der_ord6x(v,point), vel_der_ord6y(v,point), vel_der_ord6z(v,point)],\
+                    [vel_der_ord6x(w,point), vel_der_ord6y(w,point), vel_der_ord6z(w,point)]]))
+ 
     
+    
+            print(axis[0][i],axis[0][i+1],axis[1][j],axis[1][j+1],axis[2][k],axis[2][k+1]) 
+            print(start,end)
+            print(axis_orig[0][i],axis_orig[0][i+1],axis_orig[1][j],axis_orig[1][j+1],axis_orig[2][k],axis_orig[2][k+1])
+            print(i,j,k)
+            print(start, end)
+            
+            
+            print('\n')    
+            
+            
+'''
+vspace=np.zeros((n_elements,n_elements,n_elements))
+print('start of calc')
+
+stop1 = time.clock()    
+jaa=full_D_matrix(u[0:n_elements,0:n_elements,0:n_elements],v[0:n_elements,0:n_elements,0:n_elements],w[0:n_elements,0:n_elements,0:n_elements],6)
+zz=calc_Qfull(jaa)
+print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  new D')
+print(np.shape(zz))
+'''
+
+'''
+n=8
+mat=np.zeros((n,n,n))
+for i in range(n):
+    for j in range(n):
+        for k in range(n):
+            mat[i,j,k]=i+j*j*j*j+k # i*i*i*0.5 + 0.5*j*j*j + 0.5*k*k*k 
+
+dery=np.zeros((np.shape(mat)))
+dery[:,3:-3,:]=(45*(mat[:,4:-2,:]-mat[:,2:-4,:])-9*(mat[:,5:-1,:]-mat[:,1:-5,:])+mat[:,6:,:]-mat[:,:-6,:])/60
+dery[:,0,:]=mat[:,1,:]-mat[:,0,:]
+dery[:,1,:]=(mat[:,2,:]-mat[:,0,:])/2
+dery[:,2,:]=(8*(mat[:,3,:]-mat[:,1,:])-mat[:,4,:]+mat[:,0,:])/12
+dery[:,-3,:]=(8*(mat[:,-2,:]-mat[:,-4,:])-mat[:,-1,:]+mat[:,-5,:])/12
+dery[:,-2,:]=(mat[:,-1,:]-mat[:,-3,:])/2
+dery[:,-1,:]=mat[:,-1,:]-mat[:,-2,:]
+print(dery)
+print(np.shape(dery))
+'''
+    
+def Lambda2fucked(Dfield):
+    Ofield=O_matrix(Dfield)
+    Sfield=S_matrix(Dfield)
+    Lambda=np.empty((np.shape(Dfield)[0],np.shape(Dfield)[1],np.shape(Dfield)[2]))
+    for i in range(np.shape(Dfield)[0]):
+        for j in range(np.shape(Dfield)[1]):
+            for k in range(np.shape(Dfield)[2]):
+                w,v=np.linalg.eigh(np.dot(Sfield[i,j,k],Sfield[i,j,k])+np.dot(Ofield[i,j,k],Ofield[i,j,k]))
+                Lambda[i,j,k]=w[1]
+    return Lambda
     
 def vorticity(point):
     if order_der_method==5:
