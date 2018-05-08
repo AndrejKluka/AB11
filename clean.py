@@ -49,6 +49,7 @@ elif z_max>maxx:
     maxx=z_max
 delta=2.*math.pi/(maxx+1)
 
+
 #calculating gradients with whole matrixes
 def ord6_full_mat(mat):
     derx=np.zeros((np.shape(mat)))
