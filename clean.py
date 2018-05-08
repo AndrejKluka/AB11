@@ -22,7 +22,7 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 #---------------------------------------------------------General setup for program run
 
-Visualization = True
+Visualization = False
 to_save=True  
 to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
@@ -117,9 +117,6 @@ def O_matrix(D):
     s[:,:,:,2,0]=(D[:,:,:,0,2]-D[:,:,:,2,0])/2.
     s[:,:,:,2,1]=(D[:,:,:,2,1]-D[:,:,:,1,2])/2.
     s[:,:,:,1,2]=(D[:,:,:,2,1]-D[:,:,:,1,2])/2.
-    s[:,:,:,0,0]=D[:,:,:,0,0]
-    s[:,:,:,1,1]=D[:,:,:,1,1]
-    s[:,:,:,2,2]=D[:,:,:,2,2]
     return(s) 
 
 def norm_full(field):
