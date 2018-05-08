@@ -2,6 +2,7 @@ import time
 start = time.clock()
 #----------------------------------------------------------Modules for general life
 from os import path
+import os
 import scipy.io
 import scipy
 import numpy as np
@@ -15,18 +16,35 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 ''' To do list '''
 #see why lambda 2 is all positive
 #Think about adding some smart loading
-#download pyevtk.hl, paraview and make it save
 #add script for paraview thingy and automate
 #make it calculate bigger datasets
 
 
 #---------------------------------------------------------General setup for program run
+<<<<<<< HEAD
 to_save=True  
 to_calc_Q=False       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
 data_num=2              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+=======
+<<<<<<< HEAD
+to_save=True  
+to_calc_Q=True       # if true will calc Q on cube with n_elements
+to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+data_num=2            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+>>>>>>> 26d8697b22ecb8f89c0470d874dbcfd6df7a2604
 #15.3111 sec
 #37.3022 sec
+=======
+
+Visualization = False
+to_save=True  
+to_calc_Q=True       # if true will calc Q on cube with n_elements
+to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+data_num=0             # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+
+
+>>>>>>> 776b9bd870321d36f99e305f176d21c07b7bc2ee
 data_set=['validation_Q_l2','raw_data_1','data_001']
 
 #   reading raw dataset and putting them into u,v,w arrays
@@ -45,7 +63,8 @@ if y_max>maxx:
     maxx=y_max
 elif z_max>maxx:
     maxx=z_max
-delta=2.*math.pi/maxx
+delta=2.*math.pi/(maxx+1)
+
 
 #calculating gradients with whole matrixes
 def ord6_full_mat(mat):
@@ -102,6 +121,9 @@ def S_matrix(D):
     s[:,:,:,2,0]=(D[:,:,:,0,2]+D[:,:,:,2,0])/2.
     s[:,:,:,2,1]=(D[:,:,:,2,1]+D[:,:,:,1,2])/2.
     s[:,:,:,1,2]=(D[:,:,:,2,1]+D[:,:,:,1,2])/2.
+    s[:,:,:,0,0]=D[:,:,:,0,0]
+    s[:,:,:,1,1]=D[:,:,:,1,1]
+    s[:,:,:,2,2]=D[:,:,:,2,2]
     return(s)       
 
 def O_matrix(D):
@@ -188,7 +210,19 @@ if to_save:
     xvtk = np.arange(0, vspace.shape[0])
     yvtk = np.arange(0, vspace.shape[1])
     zvtk = np.arange(0, vspace.shape[2])
+<<<<<<< HEAD
     gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+=======
+<<<<<<< HEAD
+    gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+=======
+>>>>>>> 776b9bd870321d36f99e305f176d21c07b7bc2ee
 
+>>>>>>> 26d8697b22ecb8f89c0470d874dbcfd6df7a2604
+
+gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+if Visualization : 
+    os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
+    os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
 
 
