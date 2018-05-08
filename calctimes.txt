@@ -1200,3 +1200,11 @@ points =857375   order of method=2  method=Q  time taken=6.1186sec    time per p
 points =857375   order of method=2  method=Q  time taken=6.324sec    time per point=7.37600233270156^10-6  
 points =857375   order of method=2  method=Q  time taken=6.1722sec    time per point=7.198950284298003^10-6  
 points =857375   order of method=2  method=Q  time taken=6.3203sec    time per point=7.37168683481557^10-6  
+points =857375   order of method=4  method=Lambda2  time taken=57.9435sec    time per point=67.58244642076104^10-6  
+points =857375   order of method=4  method=Lambda2  time taken=58.923sec    time per point=68.7248870097682^10-6  
+points =857375   order of method=4  method=Lambda2  time taken=59.6031sec    time per point=69.5181221752442^10-6  
+points =27   order of method=4  method=Lambda2  time taken=0.0093sec    time per point=344.4444444444444^10-6  
+points =27   order of method=4  method=Lambda2  time taken=0.0143sec    time per point=529.6296296296297^10-6  
+points =857375   order of method=5  method=Lambda2  time taken=167.1354sec    time per point=194.93850415512466^10-6  
+points =857375   order of method=5  method=Lambda2  time taken=159.1601sec    time per point=185.6365067794139^10-6  
+points =857375   order of method=5  method=Q  time taken=78.2387sec    time per point=91.25376877095786^10-6  
