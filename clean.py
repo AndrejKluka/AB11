@@ -18,22 +18,14 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 #Think about adding some smart loading
 #add script for paraview thingy and automate
 
-
-
 #---------------------------------------------------------General setup for program run
 Visualization = False
-<<<<<<< HEAD
+
 to_save=True  
-to_calc_Q=True       # if true will calc Q on cube with n_elements
-to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-data_num=0            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
-=======
-to_save=False  
 to_calc_Q=False       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
-data_num=0             # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+data_num=2            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
 
->>>>>>> ec444c6228a3b6da7b8d4073ea986dbb2c0c252b
 
 data_set=['validation_Q_l2','raw_data_1','data_001']
 
