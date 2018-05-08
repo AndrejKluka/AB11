@@ -3,10 +3,11 @@ start = time.clock()
 #----------------------------------------------------------Modules used for plotting 
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-import plotly.plotly as py
-import plotly
-from plotly.graph_objs import *
-import plotly.figure_factory
+# =============================================================================
+# import plotly.plotly as py
+# import plotly
+# from plotly.graph_objs import *
+# import plotly.figure_factory
 from pyevtk.hl import gridToVTK
 #import matplotlib.pyplot
 #graveyard pf unused module for now
@@ -14,7 +15,7 @@ from pyevtk.hl import gridToVTK
 
 
 #plotly authentification, I can give you the access to the account just ask
-plotly.tools.set_credentials_file(username='hunter139', api_key='lgN7Sd8dqPktT2wwpfCc')
+#plotly.tools.set_credentials_file(username='hunter139', api_key='lgN7Sd8dqPktT2wwpfCc')
 
 #----------------------------------------------------------Modules for general life
 from os import path
@@ -40,7 +41,7 @@ to_calc_vorticity = True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
 order_der_method=6     # only 2 or 4 are implemented 3 is 2 but new
 data_num=0              # 0 for validation dataset, 1 for raw_data_1
-check_data=False        # check only first time you are using dataset
+check_data=True        # check only first time you are using dataset
 
 
 
@@ -237,7 +238,9 @@ def D_matrix(point):
         D=np.array([[vel_der_ord6x(u,point), vel_der_ord6y(u,point), vel_der_ord6z(u,point)],\
                     [vel_der_ord6x(v,point), vel_der_ord6y(v,point), vel_der_ord6z(v,point)],\
                     [vel_der_ord6x(w,point), vel_der_ord6y(w,point), vel_der_ord6z(w,point)]])
+
     return D
+
 
 
 
@@ -303,9 +306,13 @@ else:
     stop1 = time.clock()
     if to_calc_Q:
         for i in range(n_elements):
+            print (i)
             for j in range(n_elements):
                 for k in range(n_elements):
                     vspace[i,j,k]=calc_Q(np.array([i,j,k]))
+                    if i==50 and j==50 and k==50:
+                        print (vspace[i,j,k])
+        print (len(vspace))
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
         highest_vorticity=np.amax(vspace)
     elif to_calc_Lambda2:
@@ -399,4 +406,4 @@ zvtk = np.arange(0, vspace_shape[2])
 
 
 
-gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method + "backup3", xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })

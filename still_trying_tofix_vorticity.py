@@ -21,8 +21,8 @@ to_load=False          # if true will load already the last calculated Q or lamb
 to_save=False
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-n_elements=100       # number of elements on each side of cube calculated
-to_calc_Q=False          # if true will calc Q on cube with n_elements
+n_elements=1       # number of elements on each side of cube calculated
+to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = False  #if true calculate vorticity
 order_der_method=2      #2,4,6 are with looping in 2,4,6 orders respectetively
@@ -149,15 +149,18 @@ def full_D_matrix(u,v,w,order_of_method):
     f_line=np.concatenate((np.reshape(deru[0],(np.shape(deru[0])[0],np.shape(deru[0])[1],np.shape(deru[0])[2],1)), np.reshape(derv[0],(np.shape(derv[0])[0],np.shape(derv[0])[1],np.shape(derv[0])[2],1)), np.reshape(derw[0],(np.shape(derw[0])[0],np.shape(derw[0])[1],np.shape(derw[0])[2],1))),axis=3)
     s_line=np.concatenate((np.reshape(deru[1],(np.shape(deru[1])[0],np.shape(deru[1])[1],np.shape(deru[1])[2],1)), np.reshape(derv[1],(np.shape(derv[1])[0],np.shape(derv[1])[1],np.shape(derv[1])[2],1)), np.reshape(derw[1],(np.shape(derw[1])[0],np.shape(derw[1])[1],np.shape(derw[1])[2],1))),axis=3)
     t_line=np.concatenate((np.reshape(deru[2],(np.shape(deru[2])[0],np.shape(deru[2])[1],np.shape(deru[2])[2],1)), np.reshape(derv[2],(np.shape(derv[2])[0],np.shape(derv[2])[1],np.shape(derv[2])[2],1)), np.reshape(derw[2],(np.shape(derw[2])[0],np.shape(derw[2])[1],np.shape(derw[2])[2],1))),axis=3)
-    i = derv[2] - derw[0]
+    i = derv[2] - derw[1]
     j = -deru[2] + derw[0]
     k = deru[1] -  derv[0]
     #print (deru) 
     #print (derv)
     #print (derw)
+    print (i)
+    print (j)
+    print (k)
     gradient_tensor=np.concatenate(( np.reshape(f_line,(np.shape(f_line)[0],np.shape(f_line)[1],np.shape(f_line)[2],3,1)),  np.reshape(s_line,(np.shape(s_line)[0],np.shape(s_line)[1],np.shape(s_line)[2],3,1)),  np.reshape(t_line,(np.shape(t_line)[0],np.shape(t_line)[1],np.shape(t_line)[2],3,1))), axis=4)
     #print (gradient_tensor)
-    return gradient_tensor
+    return gradient_tensor, i, j, k
 
     
     
@@ -357,107 +360,111 @@ else:
     elif order_der_method==6:    D_matrix=D_matrix6
 
 
-def S_matrix(D):    
-    D[:,:,:,0,1]=D[:,:,:,1,0]=(D[:,:,:,0,1]+D[:,:,:,1,0])/2.
-    D[:,:,:,0,2]=D[:,:,:,2,0]=(D[:,:,:,0,2]+D[:,:,:,2,0])/2.
-    D[:,:,:,2,1]=D[:,:,:,1,2]=(D[:,:,:,2,1]+D[:,:,:,1,2])/2.
-    print (D)
-    return(D)
- 
-#   O is Omega matrix        
-def O_matrix(D):
-    s=np.zeros(np.shape(D)[0],np.shape(D)[1],np.shape(D)[2],3,3)
-    s[:,:,:,0,1]=s[:,:,:,1,0]=(D[:,:,:,0,1]-D[:,:,:,1,0])/2.
-    s[:,:,:,0,2]=s[:,:,:,2,0]=(D[:,:,:,0,2]-D[:,:,:,2,0])/2.
-    s[:,:,:,2,1]=s[:,:,:,1,2]=(D[:,:,:,2,1]-D[:,:,:,1,2])/2.
-    print(s)
-    return(s)        
-   
-def A_matrix(matS,matO):
-    return np.dot(matS,matS)+np.dot(matO,matO)
-    
-def norm(m):
-    mat=np.dot(m,np.transpose(m))
-    return (mat[0,0]+mat[1,1]+mat[2,2])**0.5
+# =============================================================================
+# def S_matrix(D):    
+#     D[:,:,:,0,1]=D[:,:,:,1,0]=(D[:,:,:,0,1]+D[:,:,:,1,0])/2.
+#     D[:,:,:,0,2]=D[:,:,:,2,0]=(D[:,:,:,0,2]+D[:,:,:,2,0])/2.
+#     D[:,:,:,2,1]=D[:,:,:,1,2]=(D[:,:,:,2,1]+D[:,:,:,1,2])/2.
+#     print (D)
+#     return(D)
+#  
+# #   O is Omega matrix        
+# def O_matrix(D):
+#     s=np.zeros(np.shape(D)[0],np.shape(D)[1],np.shape(D)[2],3,3)
+#     s[:,:,:,0,1]=s[:,:,:,1,0]=(D[:,:,:,0,1]-D[:,:,:,1,0])/2.
+#     s[:,:,:,0,2]=s[:,:,:,2,0]=(D[:,:,:,0,2]-D[:,:,:,2,0])/2.
+#     s[:,:,:,2,1]=s[:,:,:,1,2]=(D[:,:,:,2,1]-D[:,:,:,1,2])/2.
+#     print(s)
+#     return(s)        
+#    
+# def A_matrix(matS,matO):
+#     return np.dot(matS,matS)+np.dot(matO,matO)
+#     
+# def norm(m):
+#     mat=np.dot(m,np.transpose(m))
+#     return (mat[0,0]+mat[1,1]+mat[2,2])**0.5
+# 
+#    
+# def Q(normO,normS):
+#     return 0.5*(normO**2-normS**2)
+# 
+#     
+# def calc_Q(point):
+#     D=D_matrix(point) 
+#     return Q(norm(O_matrix(D[0])),norm(S_matrix(D[0]))),D[1], D[2], D[3], D[4]   #q value, vorticity strenght, vorticity i,j,k
+# =============================================================================
 
-   
-def Q(normO,normS):
-    return 0.5*(normO**2-normS**2)
-
-    
-def calc_Q(point):
-    D=D_matrix(point) 
-    return Q(norm(O_matrix(D[0])),norm(S_matrix(D[0]))),D[1], D[2], D[3], D[4]   #q value, vorticity strenght, vorticity i,j,k
-
-def Lambda2(point):
-    D=D_matrix(point)
-    w, v = np.linalg.eigh(A_matrix(S_matrix(D[0]),O_matrix(D[0])))
-    return w[1], D[1], D[2], D[3], D[4]
-
-
-#timed_calc_Q([10,10,10])
-if to_load:
-    stop1 = time.clock()
-    vspace=np.load(calculated_data_file)
-    '''vorticity_space=np.load(calculated_vorticity_file)
-    vorticity_x=np.load(calculated_vorticityx_file)
-    vorticity_y=np.load(calculated_vorticityy_file)
-    vorticity_z=np.load(calculated_vorticityz_file)'''
-    calc_time=int((time.clock()-stop1)*10000)/10000.
-    print ('\n',calc_time,'sec  loaded calculation')
-    highest_vorticity=np.amax(vspace) # need to be careful, here I assume that I load calculated Q values and no L2
-else:
-    print ('start calc')
-    stop1 = time.clock()
-    if to_calc_Q and to_calc_vorticity:
-        for i in range(n_elements):
-            for j in range(n_elements):
-                for k in range(n_elements):
-                    Qandvorticity=calc_Q(np.array([i,j,k]))
-                    vspace[i,j,k]=Qandvorticity[0]
-                    vorticity_space[i,j,k]=Qandvorticity[1]
-                    vorticity_x[i,j,k]=Qandvorticity[2]
-                    vorticity_y[i,j,k]=Qandvorticity[3]
-                    vorticity_z[i,j,k]=Qandvorticity[4]
-        print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
-        highest_vorticity=np.amax(vspace)
-    elif to_calc_Q:
-        for i in range(n_elements):           
-            for j in range(n_elements):
-                for k in range(n_elements):
-                    Qandvorticity=calc_Q(np.array([i,j,k]))
-                    vspace[i,j,k]=Qandvorticity[0]
-        print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
-        highest_vorticity=np.amax(vspace)        
-    elif to_calc_Lambda2 and to_calc_vorticity: 
-        for i in range(n_elements):
-            for j in range(n_elements):
-                for k in range(n_elements):
-                    Lambdaandvorticity=Lambda2(np.array([i,j,k]))
-                    vspace[i,j,k]=Lambdaandvorticity[0]
-                    vorticity_space[i,j,k]=Lambdaandvorticity[1]
-                    vorticity_x[i,j,k]=Lambdaandvorticity[2]
-                    vorticity_y[i,j,k]=Lambdaandvorticity[3]
-                    vorticity_z[i,j,k]=Lambdaandvorticity[4]
-                    
-        print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Lambda2 calculation')
-        highest_vorticity=np.amin(vspace)
-    elif to_calc_Lambda2:
-        for i in range(n_elements):
-             for j in range(n_elements):
-                 for k in range(n_elements):
-                     Lambdaandvorticity=Lambda2(np.array([i,j,k]))
-                     vspace[i,j,k]=Lambdaandvorticity[0]
-        print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Lambda2 calculation')
-        highest_vorticity=np.amin(vspace)
-    calc_time=int((time.clock()-stop1)*10000)/10000.
+# =============================================================================
+# def Lambda2(point):
+#     D=D_matrix(point)
+#     w, v = np.linalg.eigh(A_matrix(S_matrix(D[0]),O_matrix(D[0])))
+#     return w[1], D[1], D[2], D[3], D[4]
+# 
+# 
+# #timed_calc_Q([10,10,10])
+# if to_load:
+#     stop1 = time.clock()
+#     vspace=np.load(calculated_data_file)
+#     '''vorticity_space=np.load(calculated_vorticity_file)
+#     vorticity_x=np.load(calculated_vorticityx_file)
+#     vorticity_y=np.load(calculated_vorticityy_file)
+#     vorticity_z=np.load(calculated_vorticityz_file)'''
+#     calc_time=int((time.clock()-stop1)*10000)/10000.
+#     print ('\n',calc_time,'sec  loaded calculation')
+#     highest_vorticity=np.amax(vspace) # need to be careful, here I assume that I load calculated Q values and no L2
+# else:
+#     print ('start calc')
+#     stop1 = time.clock()
+#     if to_calc_Q and to_calc_vorticity:
+#         for i in range(n_elements):
+#             for j in range(n_elements):
+#                 for k in range(n_elements):
+#                     Qandvorticity=calc_Q(np.array([i,j,k]))
+#                     vspace[i,j,k]=Qandvorticity[0]
+#                     vorticity_space[i,j,k]=Qandvorticity[1]
+#                     vorticity_x[i,j,k]=Qandvorticity[2]
+#                     vorticity_y[i,j,k]=Qandvorticity[3]
+#                     vorticity_z[i,j,k]=Qandvorticity[4]
+#         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
+#         highest_vorticity=np.amax(vspace)
+#     elif to_calc_Q:
+#         for i in range(n_elements):           
+#             for j in range(n_elements):
+#                 for k in range(n_elements):
+#                     Qandvorticity=calc_Q(np.array([i,j,k]))
+#                     vspace[i,j,k]=Qandvorticity[0]
+#         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
+#         highest_vorticity=np.amax(vspace)        
+#     elif to_calc_Lambda2 and to_calc_vorticity: 
+#         for i in range(n_elements):
+#             for j in range(n_elements):
+#                 for k in range(n_elements):
+#                     Lambdaandvorticity=Lambda2(np.array([i,j,k]))
+#                     vspace[i,j,k]=Lambdaandvorticity[0]
+#                     vorticity_space[i,j,k]=Lambdaandvorticity[1]
+#                     vorticity_x[i,j,k]=Lambdaandvorticity[2]
+#                     vorticity_y[i,j,k]=Lambdaandvorticity[3]
+#                     vorticity_z[i,j,k]=Lambdaandvorticity[4]
+#                     
+#         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Lambda2 calculation')
+#         highest_vorticity=np.amin(vspace)
+#     elif to_calc_Lambda2:
+#         for i in range(n_elements):
+#              for j in range(n_elements):
+#                  for k in range(n_elements):
+#                      Lambdaandvorticity=Lambda2(np.array([i,j,k]))
+#                      vspace[i,j,k]=Lambdaandvorticity[0]
+#         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Lambda2 calculation')
+#         highest_vorticity=np.amin(vspace)
+#     calc_time=int((time.clock()-stop1)*10000)/10000.
+# =============================================================================
     
 
 if to_save: np.save(calculated_data_file,vspace)  
 
 
 
-n_elements=4
+n_elements=1
 vspace=np.zeros((n_elements,n_elements,n_elements,3,3))
 print('okee')
 

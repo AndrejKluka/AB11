@@ -2,6 +2,7 @@ import time
 start = time.clock()
 #----------------------------------------------------------Modules for general life
 from os import path
+import os
 import scipy.io
 import scipy
 import numpy as np
@@ -20,12 +21,14 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 
 #---------------------------------------------------------General setup for program run
-to_save=False  
+
+Visualization = True
+to_save=True  
 to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 data_num=0             # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
-#15.3111 sec
-#37.3022 sec
+
+
 data_set=['validation_Q_l2','raw_data_1','data_001']
 
 #   reading raw dataset and putting them into u,v,w arrays
@@ -193,7 +196,11 @@ if to_save:
     xvtk = np.arange(0, vspace.shape[0])
     yvtk = np.arange(0, vspace.shape[1])
     zvtk = np.arange(0, vspace.shape[2])
-    gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 
+
+gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+if Visualization : 
+    os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
+    os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
 
 
