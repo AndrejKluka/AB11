@@ -17,15 +17,23 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 #see why lambda 2 is all positive
 #Think about adding some smart loading
 #add script for paraview thingy and automate
-#make it calculate bigger datasets
+
 
 
 #---------------------------------------------------------General setup for program run
 Visualization = False
+<<<<<<< HEAD
 to_save=True  
 to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 data_num=0            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+=======
+to_save=False  
+to_calc_Q=False       # if true will calc Q on cube with n_elements
+to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
+data_num=0             # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+
+>>>>>>> ec444c6228a3b6da7b8d4073ea986dbb2c0c252b
 
 data_set=['validation_Q_l2','raw_data_1','data_001']
 
@@ -111,11 +119,11 @@ def S_matrix(D):
 def O_matrix(D):
     s=np.zeros(np.shape(D)) #[0],np.shape(D)[1],np.shape(D)[2],3,3)
     s[:,:,:,0,1]=(D[:,:,:,0,1]-D[:,:,:,1,0])/2.
-    s[:,:,:,1,0]=(D[:,:,:,0,1]-D[:,:,:,1,0])/2.
+    s[:,:,:,1,0]=(D[:,:,:,0,1]-D[:,:,:,1,0])/-2.
     s[:,:,:,0,2]=(D[:,:,:,0,2]-D[:,:,:,2,0])/2.
-    s[:,:,:,2,0]=(D[:,:,:,0,2]-D[:,:,:,2,0])/2.
+    s[:,:,:,2,0]=(D[:,:,:,0,2]-D[:,:,:,2,0])/-2.
     s[:,:,:,2,1]=(D[:,:,:,2,1]-D[:,:,:,1,2])/2.
-    s[:,:,:,1,2]=(D[:,:,:,2,1]-D[:,:,:,1,2])/2.
+    s[:,:,:,1,2]=(D[:,:,:,2,1]-D[:,:,:,1,2])/-2.
     return(s) 
 
 def norm_full(field):
@@ -193,7 +201,7 @@ if to_save:
     yvtk = np.arange(0, vspace.shape[1])
     zvtk = np.arange(0, vspace.shape[2])
 
-gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+    gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 if Visualization : 
     os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
     os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
