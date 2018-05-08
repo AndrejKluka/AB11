@@ -7,7 +7,7 @@ from os import path
 import scipy.io
 import scipy
 import numpy as np
-#from pyevtk.hl import gridToVTK
+from pyevtk.hl import gridToVTK
 
 import math
 stop=time.clock()
@@ -21,35 +21,13 @@ to_load=False          # if true will load already the last calculated Q or lamb
 to_save=False
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-<<<<<<< HEAD
 n_elements=100       # number of elements on each side of cube calculated
 to_calc_Q=False          # if true will calc Q on cube with n_elements
-=======
-
-
-<<<<<<< HEAD
-n_elements_x=95       #in x-direction
-n_elements_y=95        # in y-direction
-n_elements_z=95   # number of elements on each side of cube calculated- z-direction
-=======
-
-
-n_elements_x=255       #in x-direction
-n_elements_y=255        # in y-direction
-n_elements_z=767   # number of elements on each side of cube calculated- z-direction
->>>>>>> 2d731150056e12b6ef7164f0055e573834f74e14
-q_threshold=0.16          # threshold for marching cubes algorithm     
-to_calc_Q=True        # if true will calc Q on cube with n_elements
->>>>>>> ab617adfb27d09222934ed6a4e94fba6c03f5be1
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-to_calc_vorticity = True  #if true calculate vorticity
-order_der_method=2     #2,4,6 are with looping in 2,4,6 orders respectetively
-to_loop=False         # True if the data loops 
-<<<<<<< HEAD
-data_num=0              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
-=======
-data_num=2              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
->>>>>>> 2d731150056e12b6ef7164f0055e573834f74e14
+to_calc_vorticity = False  #if true calculate vorticity
+order_der_method=2      #2,4,6 are with looping in 2,4,6 orders respectetively
+to_loop=False            # True if the data loops 
+data_num=1              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
 
 check_data=False        # check only first time you are using dataset
  
@@ -92,72 +70,73 @@ x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
 z_max=np.shape(u)[2]-1
 
-
 maxx=x_max
 if y_max>maxx:
     maxx=y_max
 elif z_max>maxx:
     maxx=z_max
 delta=2.*math.pi/maxx
+    
+    
+if n_elements>x_max:
+    n_elements=x_max
+elif n_elements>y_max:
+    n_elements=y_max
+elif n_elements>z_max:
+    n_elements=z_max
 
-   
-if n_elements_x>x_max:
-    n_elements_x=x_max
-elif n_elements_y>y_max:
-    n_elements_y=y_max
-elif n_elements_z>z_max:
-    n_elements_z=z_max
+vspace=np.zeros((n_elements,n_elements,n_elements))
+vorticity_space = np.zeros((n_elements,n_elements,n_elements))
+vorticity_x = np.zeros((n_elements,n_elements,n_elements))
+vorticity_y = np.zeros((n_elements,n_elements,n_elements))
+vorticity_z = np.zeros((n_elements,n_elements,n_elements))
 
-vspace=np.zeros((n_elements_x,n_elements_y,n_elements_z))
-vorticity_space = np.zeros((n_elements_x,n_elements_y,n_elements_z))
-vorticity_x = np.zeros((n_elements_x,n_elements_y,n_elements_z))
-vorticity_y = np.zeros((n_elements_x,n_elements_y,n_elements_z))
-vorticity_z = np.zeros((n_elements_x,n_elements_y,n_elements_z))
+#extending velocity fields in all directions if the data repeats 
+def extend_matrix(matrix):
+    zzx=np.concatenate((np.array(matrix[(np.shape(matrix)[0]-3):np.shape(matrix)[0],:,:]),matrix[:,:,:],np.array(matrix[0:3,:,:])), axis=0)
+    matrix=zzx
+    zzx=np.concatenate((np.array(matrix[:,(np.shape(matrix)[1]-3):np.shape(matrix)[1],:]),matrix[:,:,:],np.array(matrix[:,0:3,:])), axis=1)
+    matrix=zzx
+    zzx=np.concatenate((np.array(matrix[:,:,(np.shape(matrix)[2]-3):np.shape(matrix)[2]]),matrix[:,:,:],np.array(matrix[:,:,0:3])), axis=2)
+    return(zzx)
+ 
+if to_loop:
+    u=extend_matrix(u)
+    v=extend_matrix(v)
+    w=extend_matrix(w)
     
 #calculating gradients with whole matrixes
-#stuff for concatenating matrixes
-
 #stuff for finite diff method
-def ord2_matx(mat):
+def ord2_full_mat(mat):
     mat1x=np.concatenate((mat,np.zeros((2,np.shape(mat)[1],np.shape(mat)[2]))),axis=0)                     
     mat2x=np.concatenate((np.zeros((2,np.shape(mat)[1],np.shape(mat)[2])),mat),axis=0)           
     derx=(mat1x-mat2x)/2.
     derx[1,:,:]=mat1x[1,:,:]-mat1x[0,:,:]
     derx[-2,:,:]=mat2x[-1,:,:]-mat2x[-2,:,:]
-    return derx[1:-1,:,:]
 
-def ord2_maty(mat):
     mat1y=np.concatenate((mat,np.zeros((np.shape(mat)[0],2,np.shape(mat)[2]))),axis=1)                     
     mat2y=np.concatenate((np.zeros((np.shape(mat)[0],2,np.shape(mat)[2])),mat),axis=1)           
     dery=(mat1y-mat2y)/2.
     dery[:,1,:]=mat1y[:,1,:]-mat1y[:,0,:]
     dery[:,-2,:]=mat2y[:,-1,:]-mat2y[:,-2,:]
-    return dery[:,1:-1,:]
-    
-def ord2_matz(mat):
+
     mat1z=np.concatenate((mat,np.zeros((np.shape(mat)[0],np.shape(mat)[1],2))),axis=2)                     
     mat2z=np.concatenate((np.zeros((np.shape(mat)[0],np.shape(mat)[1],2)),mat),axis=2)           
     derz=(mat1z-mat2z)/2.
     derz[:,:,1]=mat1z[:,:,1]-mat1z[:,:,0]
     derz[:,:,-2]=mat2z[:,:,-1]-mat2z[:,:,-2]
-    return derz[:,:,1:-1]
-'''n=3
-un=np.zeros((n,n,n))
-for i in range(n):
-    for j in range(n):
-        for k in range(n):
-            un[i,j,k]=i+j+k    
-print(un) 
-reun=np.reshape(un,(n,n,n,1))
-unx=np.concatenate((reun,reun*2), axis=3)
-uny=np.concatenate((reun*-1,reun*-2), axis=3)
-print(np.shape(uny))
-unn=np.concatenate((np.reshape(unx,(n,n,n,2,1)),np.reshape(uny,(n,n,n,2,1))), axis=4)
-print(np.shape(unn))
-print(unn)'''
+    return derx[1:-1,:,:]/delta, dery[:,1:-1,:]/delta, derz[:,:,1:-1]/delta
 
+def ord4_full_mat(mat):
+    pass
+
+def ord6_full_mat(mat):
+    pass
+  
+
+
+#stuff for concatenating matrixes
 def full_D_matrix(u,v,w,order_of_method):
-<<<<<<< HEAD
     if order_of_method==2:
         method=ord2_full_mat
     if order_of_method==4:
@@ -178,29 +157,7 @@ def full_D_matrix(u,v,w,order_of_method):
     print (derw)
     gradient_tensor=np.concatenate(( np.reshape(f_line,(np.shape(f_line)[0],np.shape(f_line)[1],np.shape(f_line)[2],3,1)),  np.reshape(s_line,(np.shape(s_line)[0],np.shape(s_line)[1],np.shape(s_line)[2],3,1)),  np.reshape(t_line,(np.shape(t_line)[0],np.shape(t_line)[1],np.shape(t_line)[2],3,1))), axis=4)
     return gradient_tensor
-=======
-    pass
-'''    
-def D_matrix2(point):
-    return(np.array([[vel_der_ord2x(u,point), vel_der_ord2y(u,point), vel_der_ord2z(u,point)],\
-                    [vel_der_ord2x(v,point), vel_der_ord2y(v,point), vel_der_ord2z(v,point)],\
-                    [vel_der_ord2x(w,point), vel_der_ord2y(w,point), vel_der_ord2z(w,point)]]))
-'''
->>>>>>> ab617adfb27d09222934ed6a4e94fba6c03f5be1
 
-#extending velocity fields in all directions if the data repeats 
-def extend_matrix(matrix):
-    zzx=np.concatenate((np.array(matrix[(np.shape(matrix)[0]-3):np.shape(matrix)[0],:,:]),matrix[:,:,:],np.array(matrix[0:3,:,:])), axis=0)
-    matrix=zzx
-    zzx=np.concatenate((np.array(matrix[:,(np.shape(matrix)[1]-3):np.shape(matrix)[1],:]),matrix[:,:,:],np.array(matrix[:,0:3,:])), axis=1)
-    matrix=zzx
-    zzx=np.concatenate((np.array(matrix[:,:,(np.shape(matrix)[2]-3):np.shape(matrix)[2]]),matrix[:,:,:],np.array(matrix[:,:,0:3])), axis=2)
-    return(zzx)
- 
-if to_loop:
-    u=extend_matrix(u)
-    v=extend_matrix(v)
-    w=extend_matrix(w)
     
     
 #   Definitions  for calculations
@@ -266,17 +223,17 @@ def vel_der_ord6y(vcomp,p):
     if p[1]==0: return (vcomp[p[0],p[1]+1,p[2]] - vcomp[p[0],p[1],p[2]])/delta
     elif p[1]==y_max: return (vcomp[p[0],p[1],p[2]] - vcomp[p[0],p[1]-1,p[2]])/delta
     elif p[1]==1 or p[1]==y_max-1: return (vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])/2./delta
-    elif p[1]==2 or p[1]==y_max-2: return (8*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-vcomp[p[0],p[1]+2,p[2]]+vcomp[p[0],p[1]-2,p[2]])/12./delta
+    elif p[1]==2 or p[1]==x_max-2: return (8*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-vcomp[p[0],p[1]+2,p[2]]+vcomp[p[0],p[1]-2,p[2]])/12./delta
     return (45*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-9*(vcomp[p[0],p[1]+2,p[2]]-vcomp[p[0],p[1]-2,p[2]])+vcomp[p[0],p[1]+3,p[2]]-vcomp[p[0],p[1]-3,p[2]])/60./delta
 def vel_der_ord6z(vcomp,p):
     if p[2]==0: return (vcomp[p[0],p[1],p[2]+1] - vcomp[p[0],p[1],p[2]])/delta
     elif p[2]==z_max: return (vcomp[p[0],p[1],p[2]] - vcomp[p[0],p[1],p[2]-1])/delta
     elif p[2]==1 or p[2]==z_max-1: return (vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])/2./delta
-    elif p[2]==2 or p[2]==z_max-2: return (8*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-vcomp[p[0],p[1],p[2]+2]+vcomp[p[0],p[1],p[2]-2])/12./delta
+    elif p[2]==2 or p[2]==x_max-2: return (8*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-vcomp[p[0],p[1],p[2]+2]+vcomp[p[0],p[1],p[2]-2])/12./delta
     return (45*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-9*(vcomp[p[0],p[1],p[2]+2]-vcomp[p[0],p[1],p[2]-2])+vcomp[p[0],p[1],p[2]+3]-vcomp[p[0],p[1],p[2]-3])/60./delta
 
 #   velocity gradient matrix   
-def D_matrix2(point):
+def D_matrix2l(point):
     xu=vel_der_ord2x(u,point)
     xv=vel_der_ord2x(v,point)
     xw=vel_der_ord2x(w,point)
@@ -384,6 +341,11 @@ def D_matrix6(point):
                     [xv, yv, zv],\
                     [xw,yw , zw]])), strength, i, j, k
 
+def D_matrix2(point):
+    return(np.array([[vel_der_ord2x(u,point), vel_der_ord2y(u,point), vel_der_ord2z(u,point)],\
+                    [vel_der_ord2x(v,point), vel_der_ord2y(v,point), vel_der_ord2z(v,point)],\
+                    [vel_der_ord2x(w,point), vel_der_ord2y(w,point), vel_der_ord2z(w,point)]]))
+    
 if to_loop:        
     if order_der_method==2:   D_matrix=D_matrix2loop 
     elif order_der_method==4:    D_matrix=D_matrix4loop   
@@ -432,10 +394,7 @@ def Lambda2(point):
     return w[1], D[1], D[2], D[3], D[4]
 
 
-
-
-
-
+#timed_calc_Q([10,10,10])
 if to_load:
     stop1 = time.clock()
     vspace=np.load(calculated_data_file)
@@ -444,44 +403,35 @@ if to_load:
     vorticity_y=np.load(calculated_vorticityy_file)
     vorticity_z=np.load(calculated_vorticityz_file)'''
     calc_time=int((time.clock()-stop1)*10000)/10000.
-   # print ('\n',calc_time,'sec  loaded calculation')
+    print ('\n',calc_time,'sec  loaded calculation')
     highest_vorticity=np.amax(vspace) # need to be careful, here I assume that I load calculated Q values and no L2
 else:
-    #print ('start calc')
+    print ('start calc')
     stop1 = time.clock()
     if to_calc_Q and to_calc_vorticity:
-        for i in range(x1,x_max):
-            for j in range(y1,y_max):
-                for k in range(z1,z_max):
+        for i in range(n_elements):
+            for j in range(n_elements):
+                for k in range(n_elements):
                     Qandvorticity=calc_Q(np.array([i,j,k]))
                     vspace[i,j,k]=Qandvorticity[0]
                     vorticity_space[i,j,k]=Qandvorticity[1]
                     vorticity_x[i,j,k]=Qandvorticity[2]
                     vorticity_y[i,j,k]=Qandvorticity[3]
                     vorticity_z[i,j,k]=Qandvorticity[4]
-<<<<<<< HEAD
-                    if (i,j,k) == (10,10,10):
-                        print (vspace, Qandvorticity[0])
-                        break
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
-        
-=======
-                    if i==10 and j==10 and k==10: print (vspace[10,10,10])
-        #print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
->>>>>>> 2d731150056e12b6ef7164f0055e573834f74e14
         highest_vorticity=np.amax(vspace)
     elif to_calc_Q:
-        for i in range(n_elements_x):           
-            for j in range(n_elements_y):
-                for k in range(n_elements_z):
+        for i in range(n_elements):           
+            for j in range(n_elements):
+                for k in range(n_elements):
                     Qandvorticity=calc_Q(np.array([i,j,k]))
                     vspace[i,j,k]=Qandvorticity[0]
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Q criterion calculation')
         highest_vorticity=np.amax(vspace)        
     elif to_calc_Lambda2 and to_calc_vorticity: 
-        for i in range(n_elements_x):
-            for j in range(n_elements_y):
-                for k in range(n_elements_z):
+        for i in range(n_elements):
+            for j in range(n_elements):
+                for k in range(n_elements):
                     Lambdaandvorticity=Lambda2(np.array([i,j,k]))
                     vspace[i,j,k]=Lambdaandvorticity[0]
                     vorticity_space[i,j,k]=Lambdaandvorticity[1]
@@ -492,9 +442,9 @@ else:
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Lambda2 calculation')
         highest_vorticity=np.amin(vspace)
     elif to_calc_Lambda2:
-        for i in range(n_elements_x):
-             for j in range(n_elements_y):
-                 for k in range(n_elements_z):
+        for i in range(n_elements):
+             for j in range(n_elements):
+                 for k in range(n_elements):
                      Lambdaandvorticity=Lambda2(np.array([i,j,k]))
                      vspace[i,j,k]=Lambdaandvorticity[0]
         print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  Lambda2 calculation')
@@ -504,7 +454,6 @@ else:
 
 if to_save: np.save(calculated_data_file,vspace)  
 
-<<<<<<< HEAD
 
 
 n_elements=1
@@ -530,31 +479,12 @@ print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  old D')
 
 
 
-=======
-   
->>>>>>> ab617adfb27d09222934ed6a4e94fba6c03f5be1
 
 
 
 #   Saving calculation times to calctimes.txt
-<<<<<<< HEAD
-#if not to_load:
-#    if to_calc_Q: method='Q'
-#    elif to_calc_Lambda2: method='Lambda2'
-#    wri=str('points ='+str(n_elements**3)+'   order of method='+str(order_der_method)+'  method='+method+'  time taken='+str(calc_time)+'sec    time per point='+str(calc_time/(n_elements**3.)*1000000)+'^10-6  ' )
-#    f=open('calctimes.txt','a')
-#    f.write(wri)
-#    f.write('\n')
-#    f.close()
 
-
-#vspace_shape = np.shape(vspace)      
-#xvtk = np.arange(0, vspace_shape[0])
-#yvtk = np.arange(0, vspace_shape[1])
-#zvtk = np.arange(0, vspace_shape[2])
-#
-=======
-if not to_load:
+if to_load:
     if to_calc_Q: method='Q'
     elif to_calc_Lambda2: method='Lambda2'
     wri=str('points ='+str(n_elements**3)+'   order of method='+str(order_der_method)+'  method='+method+'  time taken='+str(calc_time)+'sec    time per point='+str(calc_time/(n_elements**3.)*1000000)+'^10-6  ' )
@@ -569,6 +499,5 @@ xvtk = np.arange(0, vspace_shape[0])
 yvtk = np.arange(0, vspace_shape[1])
 zvtk = np.arange(0, vspace_shape[2])
 
->>>>>>> 2d731150056e12b6ef7164f0055e573834f74e14
 #gridToVTK("./calculated data/" + data_set[data_num] + "-" + str(n_elements) + "of" + str(np.shape(u)[0]) + "-" + method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_space, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 
