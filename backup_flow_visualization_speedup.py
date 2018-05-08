@@ -25,9 +25,9 @@ n_elements=1     # number of elements on each side of cube calculated
 to_calc_Q=False        # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = False  #if true calculate vorticity
-order_der_method=2      #2,4,6 are with looping in 2,4,6 orders respectetively
+order_der_method=6      #2,4,6 are with looping in 2,4,6 orders respectetively
 to_loop=False           # True if the data loops 
-data_num=2              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+data_num=0              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
 check_data=False        # check only first time you are using dataset
  
 

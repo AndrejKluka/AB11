@@ -6,7 +6,7 @@ import scipy.io
 import scipy
 import numpy as np
 import copy
-#from pyevtk.hl import gridToVTK
+from pyevtk.hl import gridToVTK
 
 import math
 stop=time.clock()
@@ -15,7 +15,6 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 ''' To do list '''
 #see why lambda 2 is all positive
 #Think about adding some smart loading
-#download pyevtk.hl, paraview and make it save
 #add script for paraview thingy and automate
 #make it calculate bigger datasets
 
@@ -24,7 +23,7 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 to_save=False  
 to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-data_num=1              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+data_num=0             # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
 #15.3111 sec
 #37.3022 sec
 data_set=['validation_Q_l2','raw_data_1','data_001']
@@ -45,7 +44,7 @@ if y_max>maxx:
     maxx=y_max
 elif z_max>maxx:
     maxx=z_max
-delta=2.*math.pi/maxx
+delta=2.*math.pi/(maxx+1)
 
 #calculating gradients with whole matrixes
 def ord6_full_mat(mat):
@@ -102,6 +101,9 @@ def S_matrix(D):
     s[:,:,:,2,0]=(D[:,:,:,0,2]+D[:,:,:,2,0])/2.
     s[:,:,:,2,1]=(D[:,:,:,2,1]+D[:,:,:,1,2])/2.
     s[:,:,:,1,2]=(D[:,:,:,2,1]+D[:,:,:,1,2])/2.
+    s[:,:,:,0,0]=D[:,:,:,0,0]
+    s[:,:,:,1,1]=D[:,:,:,1,1]
+    s[:,:,:,2,2]=D[:,:,:,2,2]
     return(s)       
 
 def O_matrix(D):
@@ -112,6 +114,9 @@ def O_matrix(D):
     s[:,:,:,2,0]=(D[:,:,:,0,2]-D[:,:,:,2,0])/2.
     s[:,:,:,2,1]=(D[:,:,:,2,1]-D[:,:,:,1,2])/2.
     s[:,:,:,1,2]=(D[:,:,:,2,1]-D[:,:,:,1,2])/2.
+    s[:,:,:,0,0]=D[:,:,:,0,0]
+    s[:,:,:,1,1]=D[:,:,:,1,1]
+    s[:,:,:,2,2]=D[:,:,:,2,2]
     return(s) 
 
 def norm_full(field):
@@ -188,7 +193,7 @@ if to_save:
     xvtk = np.arange(0, vspace.shape[0])
     yvtk = np.arange(0, vspace.shape[1])
     zvtk = np.arange(0, vspace.shape[2])
-    #gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+    gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 
 
 

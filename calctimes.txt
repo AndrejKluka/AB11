@@ -1211,3 +1211,4 @@ points =1   order of method=2  method=Q  time taken=0.0002sec    time per point=
 points =1   order of method=2  method=Q  time taken=0.0007sec    time per point=700.0^10-6  
 points =1   order of method=2  method=Q  time taken=0.0005sec    time per point=500.0^10-6  
 points =1   order of method=2  method=Q  time taken=0.2773sec    time per point=277300.0^10-6  
+points =857375   order of method=6  method=Q  time taken=81.8118sec    time per point=95.42125674296545^10-6  
