@@ -3,16 +3,16 @@ start = time.clock()
 #----------------------------------------------------------Modules used for plotting 
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-<<<<<<< HEAD
 # =============================================================================
 # import plotly.plotly as py
 # import plotly
 # from plotly.graph_objs import *
 # import plotly.figure_factory
-# =============================================================================
-=======
+<<<<<<< HEAD
+# ============================================================================
 #import plotly.plotly as py
->>>>>>> e05b1f21863a6e3bc3a297c9819be3906c036702
+=======
+>>>>>>> 2c1a1d7d11a39f20d8c9527db6d041d434bf8dac
 from pyevtk.hl import gridToVTK
 #import matplotlib.pyplot
 #graveyard pf unused module for now
@@ -43,17 +43,14 @@ to_matplot=False        # if true will use matplotlib to plot
 n_elements=3        # number of elements on each side of cube calculated
 to_calc_Q=False          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
-to_calc_vorticity = True  #if true calculate vorticity
-q_threshold=0.16          # threshold for marching cubes algorithm 
-order_der_method=6     # only 2 or 4 are implemented 3 is 2 but new
 =======
 n_elements=96        # number of elements on each side of cube calculated
 to_calc_Q=True          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+>>>>>>> 2c1a1d7d11a39f20d8c9527db6d041d434bf8dac
 to_calc_vorticity = True  #if true calculate vorticity
 q_threshold=0.16          # threshold for marching cubes algorithm 
-order_der_method=5     # only 2 or 4 are implemented 3 is 2 but new
->>>>>>> e05b1f21863a6e3bc3a297c9819be3906c036702
+order_der_method=6     # only 2 or 4 are implemented 3 is 2 but new
 data_num=0              # 0 for validation dataset, 1 for raw_data_1
 check_data=True        # check only first time you are using dataset
 
@@ -206,6 +203,26 @@ def vel_der_ord6new(vcomp,axis,p):
         elif p[2]==z_max-2: return (45*(vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])-9*(vcomp[p[0]+2*s[0],p[1]+2*s[1],p[2]+2*s[2]]-vcomp[p[0]-2*s[0],p[1]-2*s[1],p[2]-2*s[2]])+vcomp[p[0]+3*s[0],p[1]+3*s[1],0]-vcomp[p[0]-3*s[0],p[1]-3*s[1],p[2]-3*s[2]])/60./delta
     else: print ('wrong axis')   
     return (45*(vcomp[p[0]+s[0],p[1]+s[1],p[2]+s[2]]-vcomp[p[0]-s[0],p[1]-s[1],p[2]-s[2]])-9*(vcomp[p[0]+2*s[0],p[1]+2*s[1],p[2]+2*s[2]]-vcomp[p[0]-2*s[0],p[1]-2*s[1],p[2]-2*s[2]])+vcomp[p[0]+3*s[0],p[1]+3*s[1],p[2]+3*s[2]]-vcomp[p[0]-3*s[0],p[1]-3*s[1],p[2]-3*s[2]])/60./delta
+
+def vel_der_ord6x(vcomp,p):
+    if p[0]==0: return (vcomp[p[0]+1,p[1],p[2]] - vcomp[p[0],p[1],p[2]])/delta
+    elif p[0]==x_max: return (vcomp[p[0],p[1],p[2]] - vcomp[p[0]-1,p[1],p[2]])/delta
+    elif p[0]==1 or p[0]==x_max-1: return (vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])/2./delta
+    elif p[0]==2 or p[0]==x_max-2: return (8*(vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-vcomp[p[0]+2,p[1],p[2]]+vcomp[p[0]-2,p[1],p[2]])/12./delta
+    return (45*(vcomp[p[0]+1,p[1],p[2]]-vcomp[p[0]-1,p[1],p[2]])-9*(vcomp[p[0]+2,p[1],p[2]]-vcomp[p[0]-2,p[1],p[2]])+vcomp[p[0]+3,p[1],p[2]]-vcomp[p[0]-3,p[1],p[2]])/60./delta
+def vel_der_ord6y(vcomp,p):
+    if p[1]==0: return (vcomp[p[0],p[1]+1,p[2]] - vcomp[p[0],p[1],p[2]])/delta
+    elif p[1]==y_max: return (vcomp[p[0],p[1],p[2]] - vcomp[p[0],p[1]-1,p[2]])/delta
+    elif p[1]==1 or p[1]==y_max-1: return (vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])/2./delta
+    elif p[1]==2 or p[1]==y_max-2: return (8*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-vcomp[p[0],p[1]+2,p[2]]+vcomp[p[0],p[1]-2,p[2]])/12./delta
+    return (45*(vcomp[p[0],p[1]+1,p[2]]-vcomp[p[0],p[1]-1,p[2]])-9*(vcomp[p[0],p[1]+2,p[2]]-vcomp[p[0],p[1]-2,p[2]])+vcomp[p[0],p[1]+3,p[2]]-vcomp[p[0],p[1]-3,p[2]])/60./delta
+def vel_der_ord6z(vcomp,p):
+    if p[2]==0: return (vcomp[p[0],p[1],p[2]+1] - vcomp[p[0],p[1],p[2]])/delta
+    elif p[2]==z_max: return (vcomp[p[0],p[1],p[2]] - vcomp[p[0],p[1],p[2]-1])/delta
+    elif p[2]==1 or p[2]==z_max-1: return (vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])/2./delta
+    elif p[2]==2 or p[2]==z_max-2: return (8*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-vcomp[p[0],p[1],p[2]+2]+vcomp[p[0],p[1],p[2]-2])/12./delta
+    return (45*(vcomp[p[0],p[1],p[2]+1]-vcomp[p[0],p[1],p[2]-1])-9*(vcomp[p[0],p[1],p[2]+2]-vcomp[p[0],p[1],p[2]-2])+vcomp[p[0],p[1],p[2]+3]-vcomp[p[0],p[1],p[2]-3])/60./delta
+
 #   velocity gradient matrix
 def D_matrix(point):
     if order_der_method==4:
@@ -225,12 +242,15 @@ def D_matrix(point):
                     [vel_der_ord4new(v,'x',point), vel_der_ord4new(v,'y',point), vel_der_ord4new(v,'z',point)],\
                     [vel_der_ord4new(w,'x',point), vel_der_ord4new(w,'y',point), vel_der_ord4new(w,'z',point)]])
     elif order_der_method==6:
-         D=np.array([[vel_der_ord6new(u,'x',point), vel_der_ord6new(u,'y',point), vel_der_ord6new(u,'z',point)],\
+        '''
+        D=np.array([[vel_der_ord6new(u,'x',point), vel_der_ord6new(u,'y',point), vel_der_ord6new(u,'z',point)],\
                     [vel_der_ord6new(v,'x',point), vel_der_ord6new(v,'y',point), vel_der_ord6new(v,'z',point)],\
-                    [vel_der_ord6new(w,'x',point), vel_der_ord6new(w,'y',point), vel_der_ord6new(w,'z',point)]])
-    print (D)
+                    [vel_der_ord6new(w,'x',point), vel_der_ord6new(w,'y',point), vel_der_ord6new(w,'z',point)]])'''
+        D=np.array([[vel_der_ord6x(u,point), vel_der_ord6y(u,point), vel_der_ord6z(u,point)],\
+                    [vel_der_ord6x(v,point), vel_der_ord6y(v,point), vel_der_ord6z(v,point)],\
+                    [vel_der_ord6x(w,point), vel_der_ord6y(w,point), vel_der_ord6z(w,point)]])
+
     return D
-    
 
 
 
@@ -238,11 +258,9 @@ def D_matrix(point):
 
 <<<<<<< HEAD
 def S_matrix(Dmatrix,):
-    #print ((Dmatrix+np.transpose(Dmatrix))/2.)
 =======
 def S_matrix(Dmatrix):
-    
->>>>>>> e05b1f21863a6e3bc3a297c9819be3906c036702
+>>>>>>> 2c1a1d7d11a39f20d8c9527db6d041d434bf8dac
     return (Dmatrix+np.transpose(Dmatrix))/2.    
     
 #   O is Omega matrix       
