@@ -21,6 +21,21 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 
 #---------------------------------------------------------General setup for program run
+<<<<<<< HEAD
+to_save=True  
+to_calc_Q=False       # if true will calc Q on cube with n_elements
+to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
+data_num=2              # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+=======
+<<<<<<< HEAD
+to_save=True  
+to_calc_Q=True       # if true will calc Q on cube with n_elements
+to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+data_num=2            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+>>>>>>> 26d8697b22ecb8f89c0470d874dbcfd6df7a2604
+#15.3111 sec
+#37.3022 sec
+=======
 
 Visualization = False
 to_save=False  
@@ -29,6 +44,7 @@ to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
 data_num=0             # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
 
 
+>>>>>>> 776b9bd870321d36f99e305f176d21c07b7bc2ee
 data_set=['validation_Q_l2','raw_data_1','data_001']
 
 #   reading raw dataset and putting them into u,v,w arrays
@@ -194,7 +210,15 @@ if to_save:
     xvtk = np.arange(0, vspace.shape[0])
     yvtk = np.arange(0, vspace.shape[1])
     zvtk = np.arange(0, vspace.shape[2])
+<<<<<<< HEAD
+    gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+=======
+<<<<<<< HEAD
+    gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+=======
+>>>>>>> 776b9bd870321d36f99e305f176d21c07b7bc2ee
 
+>>>>>>> 26d8697b22ecb8f89c0470d874dbcfd6df7a2604
 
     gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 if Visualization : 
