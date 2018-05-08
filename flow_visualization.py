@@ -30,9 +30,19 @@ n_elements_z=95   # number of elements on each side of cube calculated- z-direct
 q_threshold=0.16          # threshold for marching cubes algorithm     
 
 to_calc_Q=True        # if true will calc Q on cube with n_elements
+<<<<<<< HEAD
 
+=======
+=======
+<<<<<<< HEAD
+to_calc_Q=True        # if true will calc Q on cube with n_elements
+=======
+to_calc_Q=False        # if true will calc Q on cube with n_elements
+>>>>>>> 5a19d77e6eb8da8f93b7de45cc0438ba0fe31dcb
+>>>>>>> e05b1f21863a6e3bc3a297c9819be3906c036702
+>>>>>>> 5b27397b53e6ab496af6f2e38e1557dea2a0f065
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-to_calc_vorticity = False  #if true calculate vorticity
+to_calc_vorticity = True  #if true calculate vorticity
 order_der_method=6     #2,4,6 are with looping in 2,4,6 orders respectetively
 to_loop=False         # True if the data loops 
 
@@ -507,9 +517,9 @@ else:
     #print ('start calc')
     stop1 = time.clock()
     if to_calc_Q and to_calc_vorticity:
-        for i in range(x1,x_max):
-            for j in range(y1,y_max):
-                for k in range(z1,z_max):
+        for i in range(0,x_max):
+            for j in range(0,y_max):
+                for k in range(0,z_max):
                     Qandvorticity=calc_Q(np.array([i,j,k]))
                     vspace[i,j,k]=Qandvorticity[0]
                     vorticity_space[i,j,k]=Qandvorticity[1]

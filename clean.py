@@ -8,7 +8,10 @@ import scipy
 import numpy as np
 import copy
 from pyevtk.hl import gridToVTK
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5b27397b53e6ab496af6f2e38e1557dea2a0f065
 
 import math
 stop=time.clock()
@@ -23,7 +26,10 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 
 #---------------------------------------------------------General setup for program run
+<<<<<<< HEAD
 Visualization = True
+=======
+>>>>>>> 5b27397b53e6ab496af6f2e38e1557dea2a0f065
 to_save=True  
 to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
@@ -191,6 +197,10 @@ if to_save:
     xvtk = np.arange(0, vspace.shape[0])
     yvtk = np.arange(0, vspace.shape[1])
     zvtk = np.arange(0, vspace.shape[2])
+<<<<<<< HEAD
+=======
+    gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+>>>>>>> 5b27397b53e6ab496af6f2e38e1557dea2a0f065
 
 gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 if Visualization : 
