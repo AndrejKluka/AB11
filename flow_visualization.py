@@ -21,11 +21,6 @@ to_load=False          # if true will load already the last calculated Q or lamb
 to_save=False
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
-<<<<<<< HEAD
-n_elements=100       # number of elements on each side of cube calculated
-to_calc_Q=False          # if true will calc Q on cube with n_elements
-=======
-
 
 
 
@@ -34,7 +29,6 @@ n_elements_y=255        # in y-direction
 n_elements_z=767   # number of elements on each side of cube calculated- z-direction
 q_threshold=0.16          # threshold for marching cubes algorithm     
 to_calc_Q=True        # if true will calc Q on cube with n_elements
->>>>>>> ab617adfb27d09222934ed6a4e94fba6c03f5be1
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = True  #if true calculate vorticity
 order_der_method=2     #2,4,6 are with looping in 2,4,6 orders respectetively
@@ -486,7 +480,6 @@ else:
 
 if to_save: np.save(calculated_data_file,vspace)  
 
-<<<<<<< HEAD
 
 
 n_elements=1
@@ -510,11 +503,6 @@ print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  old D')
 
 
 
-
-
-=======
-   
->>>>>>> ab617adfb27d09222934ed6a4e94fba6c03f5be1
 
 
 
