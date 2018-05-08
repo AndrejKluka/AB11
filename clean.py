@@ -154,6 +154,10 @@ for i in range(3):
     if axis_orig[i][-1]-axis_orig[i][-2]<=20:
         axis_orig[i][-2]=axis_orig[i][-2]-30
 
+if to_calc_Q:
+    method_of_choice=calc_Qfull
+elif to_calc_Lambda2:
+    method_of_choice=Lambda2full
 
 print('start of calc')
 stop1 = time.clock()
@@ -177,10 +181,7 @@ for i in range(len(axis_orig[0])-1):
             vorticity_x[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[2][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
             vorticity_y[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[3][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
             vorticity_z[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[4][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
-            if to_calc_Q:
-                zz=calc_Qfull(Dfields[0])
-            elif to_calc_Lambda2:
-                zz=Lambda2full(Dfields[0])
+            zz=method_of_choice(Dfields[0])
             if to_calc_Q or to_calc_Lambda2:
                 vspace[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = zz[start[0]:end[0], start[1]:end[1], start[2]:end[2]]
 print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  calcs done')            
