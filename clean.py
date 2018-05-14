@@ -34,6 +34,7 @@ frames=1                # frames to calc from movie
 
 data_set=['validation_Q_l2','raw_data_1','data_001','uvwp_00001.h5']
 
+
 #   reading raw dataset and putting them into u,v,w arrays
 data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num]) 
 movie_data=path.join(path.join(path.dirname(__file__),'data sets'),'Movie data')
@@ -231,12 +232,8 @@ if to_save:
     xvtk = np.arange(0, vspace.shape[0])
     yvtk = np.arange(0, vspace.shape[1])
     zvtk = np.arange(0, vspace.shape[2])
-
-
-
     gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
-
-
+    gridToVTK("C:\\Users\\Public\\Calculated_data\\" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 
 if Visualization : 
     os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
