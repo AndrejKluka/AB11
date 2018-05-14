@@ -8,39 +8,57 @@ import scipy
 import numpy as np
 import copy
 from pyevtk.hl import gridToVTK
+import h5py
 
 import math
 stop=time.clock()
 print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 ''' To do list '''
-#see why lambda 2 is all positive
-#Think about adding some smart loading
-#add script for paraview thingy and automate
-#make it calculate bigger datasets
-
+#automate when we get more data
 
 #---------------------------------------------------------General setup for program run
-
-Visualization = True
-to_save=True  
+Visualization = False
+to_save=False  
 to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-data_num=0             # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+data_num=3            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
+interval=110             # size of the cubes with which the program calculates Q/Lambda
+frames=1                # frames to calc from movie
+#65 -132sec
+#100-125sec
+#130-125sec
+#160-114sec
+#180-119sec
+#256-154sec
 
-
-data_set=['validation_Q_l2','raw_data_1','data_001']
+data_set=['validation_Q_l2','raw_data_1','data_001','uvwp_00001.h5']
 
 #   reading raw dataset and putting them into u,v,w arrays
-data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num]) 
-data=scipy.io.loadmat(data_set_file, mdict=None, appendmat=True)
-u=data['u']
-v=data['v']
-w=data['w']
+data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num])  
+
+if data_num==3:
+    movie_data=path.join(path.join(path.dirname(__file__),'data sets'),'Movie data')
+    filename =path.join(movie_data, data_set[data_num])
+    f = h5py.File(filename, 'r')
+    # List all groups
+    #print("Keys: %s" % f.keys())
+    p=f[list(f.keys())[0]]
+    u=f[list(f.keys())[1]]
+    v=f[list(f.keys())[2]]
+    w=f[list(f.keys())[3]]    
+else:    
+    data=scipy.io.loadmat(data_set_file, mdict=None, appendmat=True)
+    u=data['u']
+    v=data['v']
+    w=data['w']
+
 
 x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
 z_max=np.shape(u)[2]-1
+n_points=(x_max+1)*(y_max+1)*(z_max+1)
+points_calculated=0
 
 maxx=x_max
 if y_max>maxx:
@@ -49,7 +67,12 @@ elif z_max>maxx:
     maxx=z_max
 delta=2.*math.pi/(maxx+1)
 
-
+#stuff just for fun
+def print_statusline(msg: str):
+    last_msg_length = len(print_statusline.last_msg) if hasattr(print_statusline, 'last_msg') else 0
+    print(' ' * last_msg_length, end='\r')
+    print(msg, end='\r')
+    print_statusline.last_msg = msg
 #calculating gradients with whole matrixes
 def ord6_full_mat(mat):
     derx=np.zeros((np.shape(mat)))
@@ -157,9 +180,16 @@ for i in range(3):
     if axis_orig[i][-1]-axis_orig[i][-2]<=20:
         axis_orig[i][-2]=axis_orig[i][-2]-30
 
-
+if to_calc_Q:
+    method_of_choice=calc_Qfull
+elif to_calc_Lambda2:
+    method_of_choice=Lambda2full
+    
+    
 print('start of calc')
+print_statusline(str(int(points_calculated/n_points*100))+'%')
 stop1 = time.clock()
+
 for i in range(len(axis_orig[0])-1):
     for j in range(len(axis_orig[1])-1):
         for k in range(len(axis_orig[2])-1):
@@ -174,27 +204,36 @@ for i in range(len(axis_orig[0])-1):
                     end[xx]+=3
                 if not axis[xx][nah[xx]+1]==maxes[xx]:
                     axis[xx][nah[xx]+1]+=3
-  
+            
             Dfields=full_D_matrix( u[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]], v[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]],w[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]],6)
             vorticity_strength[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[1][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
             vorticity_x[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[2][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
             vorticity_y[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[3][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
             vorticity_z[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[4][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
-            if to_calc_Q:
-                zz=calc_Qfull(Dfields[0])
-            elif to_calc_Lambda2:
-                zz=Lambda2full(Dfields[0])
+            zz=method_of_choice(Dfields[0])
             if to_calc_Q or to_calc_Lambda2:
                 vspace[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = zz[start[0]:end[0], start[1]:end[1], start[2]:end[2]]
-print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  calcs done')            
-   
+            points_calculated+=(-start[0]+end[0])*(-start[1]+end[1])*(-start[2]+end[2])
+            print_statusline(str(int(points_calculated/n_points*100))+'%')        
+ 
+vorticity_x=np.nan_to_num(vorticity_x/vorticity_strength)
+vorticity_y=np.nan_to_num(vorticity_y/vorticity_strength)
+vorticity_z=np.nan_to_num(vorticity_z/vorticity_strength)
+print_statusline(str(100)+'%')
+print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  calculations done') 
+
+
 if to_save:
     if to_calc_Q: method='Q'
     elif to_calc_Lambda2: method='Lambda2'     
     xvtk = np.arange(0, vspace.shape[0])
     yvtk = np.arange(0, vspace.shape[1])
     zvtk = np.arange(0, vspace.shape[2])
+    gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+    gridToVTK("C:\\Users\\Public\\Calculated_data\\" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+    
 
+<<<<<<< HEAD
 vtrname = str(data_set[data_num] + "-"+ method + ".vtr")
 f=open('C:\\Users\\timvd\\Documents\\TUDelft\\Second year\\Project\\Semester 2\\paraview_movie\\vtrfile.txt','w')
 f.write(vtrname)
@@ -202,6 +241,8 @@ f.close()
 
 gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 
+=======
+>>>>>>> ad98bc93a55ccb360b9c44a26cffa7bc3611a445
 if Visualization : 
     os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
     os.system("pvpython.exe C:\\Users\\timvd\\Documents\\TUDelft\\Second year\\Project\\Semester 2\\paraview_movie\\pv2.py")
