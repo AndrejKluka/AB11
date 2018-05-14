@@ -8,6 +8,7 @@ import scipy
 import numpy as np
 import copy
 from pyevtk.hl import gridToVTK
+import h5py
 
 import math
 stop=time.clock()
@@ -17,27 +18,43 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 #automate when we get more data
 
 #---------------------------------------------------------General setup for program run
-
-
-
-
-
-
 Visualization = False
-to_save=True  
-to_calc_Q=False       # if true will calc Q on cube with n_elements
-to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
-data_num=2            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+to_save=False  
+to_calc_Q=True       # if true will calc Q on cube with n_elements
+to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+data_num=3            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
+interval=160             # size of the cubes with which the program calculates Q/Lambda
+frames=1                # frames to calc from movie
+#65 -132sec
+#100-125sec
+#130-125sec
+#160-114sec
+#180-119sec
+#256-154sec
 
-
-data_set=['validation_Q_l2','raw_data_1','data_001']
+data_set=['validation_Q_l2','raw_data_1','data_001','uvwp_00001.h5']
 
 #   reading raw dataset and putting them into u,v,w arrays
 data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num]) 
-data=scipy.io.loadmat(data_set_file, mdict=None, appendmat=True)
-u=data['u']
-v=data['v']
-w=data['w']
+movie_data=path.join(path.join(path.dirname(__file__),'data sets'),'Movie data')
+
+if data_num==3:
+    movie_data=path.join(path.join(path.dirname(__file__),'data sets'),'Movie data')
+    filename =path.join(movie_data, data_set[data_num])
+    f = h5py.File(filename, 'r')
+    # List all groups
+    #print("Keys: %s" % f.keys())
+    p=f[list(f.keys())[0]]
+    u=f[list(f.keys())[1]]
+    v=f[list(f.keys())[2]]
+    w=f[list(f.keys())[3]]    
+else:    
+    data=scipy.io.loadmat(data_set_file, mdict=None, appendmat=True)
+    u=data['u']
+    v=data['v']
+    w=data['w']
+
+
 
 x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
@@ -157,13 +174,13 @@ y=[0]
 z=[0]
 axis_orig=[x,y,z]
 maxes=[x_max,y_max,z_max]
-interval=100
 for i in range(3):
     while axis_orig[i][-1]<maxes[i]:
         axis_orig[i].append(axis_orig[i][-1]+interval)
     axis_orig[i][-1]=maxes[i]
     if axis_orig[i][-1]-axis_orig[i][-2]<=20:
         axis_orig[i][-2]=axis_orig[i][-2]-30
+#print(axis_orig)
 
 if to_calc_Q:
     method_of_choice=calc_Qfull
