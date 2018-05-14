@@ -17,11 +17,18 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 #automate when we get more data
 
 #---------------------------------------------------------General setup for program run
+
+
+
+
+
+
 Visualization = False
 to_save=True  
 to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 data_num=2            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
+
 
 data_set=['validation_Q_l2','raw_data_1','data_001']
 
@@ -207,9 +214,21 @@ if to_save:
     xvtk = np.arange(0, vspace.shape[0])
     yvtk = np.arange(0, vspace.shape[1])
     zvtk = np.arange(0, vspace.shape[2])
+<<<<<<< HEAD
+    gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+    gridToVTK("C:\\Users\\Public\\Calculated_data\\" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+    
+    
+    
+=======
+
+
+
     gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 
 
+
+>>>>>>> 3de5644d8339a9c43f5b6bdd093dea13d6237dc8
 if Visualization : 
     os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
     os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
