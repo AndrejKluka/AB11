@@ -113,14 +113,11 @@ def S_matrix(D):
 def O_matrix(D):
     s=np.zeros(np.shape(D)) #[0],np.shape(D)[1],np.shape(D)[2],3,3)
     s[:,:,:,0,1]=(D[:,:,:,0,1]-D[:,:,:,1,0])/2.
-    s[:,:,:,1,0]=(D[:,:,:,0,1]-D[:,:,:,1,0])/2.
+    s[:,:,:,1,0]=(D[:,:,:,0,1]-D[:,:,:,1,0])/-2.
     s[:,:,:,0,2]=(D[:,:,:,0,2]-D[:,:,:,2,0])/2.
-    s[:,:,:,2,0]=(D[:,:,:,0,2]-D[:,:,:,2,0])/2.
+    s[:,:,:,2,0]=(D[:,:,:,0,2]-D[:,:,:,2,0])/-2.
     s[:,:,:,2,1]=(D[:,:,:,2,1]-D[:,:,:,1,2])/2.
-    s[:,:,:,1,2]=(D[:,:,:,2,1]-D[:,:,:,1,2])/2.
-    s[:,:,:,0,0]=D[:,:,:,0,0]
-    s[:,:,:,1,1]=D[:,:,:,1,1]
-    s[:,:,:,2,2]=D[:,:,:,2,2]
+    s[:,:,:,1,2]=(D[:,:,:,2,1]-D[:,:,:,1,2])/-2.
     return(s) 
 
 def norm_full(field):
@@ -198,10 +195,15 @@ if to_save:
     yvtk = np.arange(0, vspace.shape[1])
     zvtk = np.arange(0, vspace.shape[2])
 
+vtrname = str(data_set[data_num] + "-"+ method + ".vtr")
+f=open('C:\\Users\\timvd\\Documents\\TUDelft\\Second year\\Project\\Semester 2\\paraview_movie\\vtrfile.txt','w')
+f.write(vtrname)
+f.close()
 
 gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+
 if Visualization : 
     os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
-    os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
+    os.system("pvpython.exe C:\\Users\\timvd\\Documents\\TUDelft\\Second year\\Project\\Semester 2\\paraview_movie\\pv2.py")
 
 
