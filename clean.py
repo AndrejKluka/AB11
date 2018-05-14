@@ -8,6 +8,7 @@ import scipy
 import numpy as np
 import copy
 from pyevtk.hl import gridToVTK
+import h5py
 
 import math
 stop=time.clock()
@@ -17,22 +18,41 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 #automate when we get more data
 
 #---------------------------------------------------------General setup for program run
+Visualization = False
+to_save=False  
+to_calc_Q=True       # if true will calc Q on cube with n_elements
+to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
+data_num=3            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
+interval=110             # size of the cubes with which the program calculates Q/Lambda
+frames=1                # frames to calc from movie
+#65 -132sec
+#100-125sec
+#130-125sec
+#160-114sec
+#180-119sec
+#256-154sec
 
-Visualization = True
-to_save=True  
-to_calc_Q=False       # if true will calc Q on cube with n_elements
-to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
-data_num=0            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
-
-
-data_set=['validation_Q_l2','raw_data_1','data_001', 'Moviedata']
+data_set=['validation_Q_l2','raw_data_1','data_001','uvwp_00001.h5']
 
 #   reading raw dataset and putting them into u,v,w arrays
-data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num]) 
-data=scipy.io.loadmat(data_set_file, mdict=None, appendmat=True)
-u=data['u']
-v=data['v']
-w=data['w']
+data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num])  
+
+if data_num==3:
+    movie_data=path.join(path.join(path.dirname(__file__),'data sets'),'Movie data')
+    filename =path.join(movie_data, data_set[data_num])
+    f = h5py.File(filename, 'r')
+    # List all groups
+    #print("Keys: %s" % f.keys())
+    p=f[list(f.keys())[0]]
+    u=f[list(f.keys())[1]]
+    v=f[list(f.keys())[2]]
+    w=f[list(f.keys())[3]]    
+else:    
+    data=scipy.io.loadmat(data_set_file, mdict=None, appendmat=True)
+    u=data['u']
+    v=data['v']
+    w=data['w']
+
 
 x_max=np.shape(u)[0]-1
 y_max=np.shape(u)[1]-1
