@@ -9,6 +9,7 @@ import numpy as np
 import copy
 from pyevtk.hl import gridToVTK
 import h5py
+import warnings
 
 import math
 stop=time.clock()
@@ -19,33 +20,22 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 #---------------------------------------------------------General setup for program run
 Visualization = False
-to_save=True  
+to_save=False  
 to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 data_num=3            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
-interval=110             # size of the cubes with which the program calculates Q/Lambda
-frames=2              # frames to calc from movie
-#65 -132sec
-#100-125sec
-#130-125sec
-#160-114sec
-#180-119sec
-#256-154sec
-optimal_intervals=[110,110,160,110]
+frames=1              # frames to calc from movie
+#65 -132sec 100-125sec 130-125sec 160-114sec 180-119sec 256-154sec
+#110-15.86sec 110-15.37sec  110-15.2sec  193-14.1sec 97-15.66
+optimal_intervals=[110,110,160,193]
 interval=optimal_intervals[data_num]
 data_set=['validation_Q_l2','raw_data_1','data_001','uvwp_00001.h5']
 
-frame_names=['uvwp_00001.h5']
-if data_num==3 and frames!=1:
+frame_names=[]
+if data_num==3 and frames>0:
     for i in range(frames):
-        name='00'
-        if (i+2)>=10:
-            name='0'
-        if (i+2)>=100:
-            name=''
-        name=name+str(i+2)
-        frame_names.append('uvwp_00{}.h5' .format(name))
-        
+        frame_names.append('uvwp_00{:03}.h5' .format(i+1))
+      
 #   reading raw dataset and putting them into u,v,w arrays
 data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num])  
 movie_data=path.join(path.join(path.dirname(__file__),'data sets'),'Movie data')
@@ -56,6 +46,8 @@ def print_statusline(msg: str):
     print(' ' * last_msg_length, end='\r')
     print(msg, end='\r')
     print_statusline.last_msg = msg
+def fxn():
+    warnings.warn("deprecated", DeprecationWarning)
 #calculating gradients with whole matrixes
 def ord6_full_mat(mat):
     derx=np.zeros((np.shape(mat)))
@@ -147,7 +139,7 @@ times=1
 if data_num==3 and frames!=1:
     times=frames
 
-for frame in range(times) :   
+for frame in range(times) : 
     if data_num==3:    
         filename =path.join(movie_data, frame_names[frame])
         f = h5py.File(filename, 'r')
@@ -185,7 +177,6 @@ for frame in range(times) :
     z=[0]
     axis_orig=[x,y,z]
     maxes=[x_max,y_max,z_max]
-    interval=100
     for i in range(3):
         while axis_orig[i][-1]<maxes[i]:
             axis_orig[i].append(axis_orig[i][-1]+interval)
@@ -199,7 +190,7 @@ for frame in range(times) :
         method_of_choice=Lambda2full
         
         
-    print('start of calc')
+    #print('start of calc')
     print_statusline(str(int(points_calculated/n_points*100))+'%')
     stop1 = time.clock()
     
@@ -228,11 +219,14 @@ for frame in range(times) :
                     vspace[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = zz[start[0]:end[0], start[1]:end[1], start[2]:end[2]]
                 points_calculated+=(-start[0]+end[0])*(-start[1]+end[1])*(-start[2]+end[2])
                 print_statusline(str(int(points_calculated/n_points*100))+'%')        
-     
-    vorticity_x=np.nan_to_num(vorticity_x/vorticity_strength)
-    vorticity_y=np.nan_to_num(vorticity_y/vorticity_strength)
-    vorticity_z=np.nan_to_num(vorticity_z/vorticity_strength)
-    print_statusline(str(100)+'%')
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        
+        vorticity_x=np.nan_to_num(vorticity_x/vorticity_strength)
+        vorticity_y=np.nan_to_num(vorticity_y/vorticity_strength)
+        vorticity_z=np.nan_to_num(vorticity_z/vorticity_strength)
+        fxn() 
+    print_statusline(str(100)+'%   '+str(int((time.clock()-stop1)*10000)/10000.)+'sec  calculations done')
     print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  calculations done') 
     
     
@@ -248,9 +242,11 @@ for frame in range(times) :
             addon=data_set[data_num]
         gridToVTK("./calculated data/" + addon + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
         #gridToVTK("C:\\Users\\Public\\Calculated_data\\" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
-        
+        print_statusline('file saved')
     
     if Visualization : 
         os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
         os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
-
+        print_statusline('visualized')
+        
+    print('Frame ['+str(frame+1)+'/'+str(frames)+'] is done')
