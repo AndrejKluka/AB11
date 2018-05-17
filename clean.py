@@ -18,11 +18,11 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 #automate when we get more data
 
 #---------------------------------------------------------General setup for program run
-Visualization = False
+Visualization = True
 to_save=False  
 to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-data_num=3            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
+data_num=0            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
 interval=110             # size of the cubes with which the program calculates Q/Lambda
 frames=1                # frames to calc from movie
 #65 -132sec
@@ -230,19 +230,15 @@ if to_save:
     yvtk = np.arange(0, vspace.shape[1])
     zvtk = np.arange(0, vspace.shape[2])
     gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
-    gridToVTK("C:\\Users\\Public\\Calculated_data\\" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+    #gridToVTK("C:\\Users\\Public\\Calculated_data\\" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
     
 
-<<<<<<< HEAD
 vtrname = str(data_set[data_num] + "-"+ method + ".vtr")
 f=open('C:\\Users\\timvd\\Documents\\TUDelft\\Second year\\Project\\Semester 2\\paraview_movie\\vtrfile.txt','w')
 f.write(vtrname)
 f.close()
 
-gridToVTK("./calculated data/" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
 
-=======
->>>>>>> ad98bc93a55ccb360b9c44a26cffa7bc3611a445
 if Visualization : 
     os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
     os.system("pvpython.exe C:\\Users\\timvd\\Documents\\TUDelft\\Second year\\Project\\Semester 2\\paraview_movie\\pv2.py")
