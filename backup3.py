@@ -8,7 +8,10 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 # import plotly
 # from plotly.graph_objs import *
 # import plotly.figure_factory
+<<<<<<< HEAD
+=======
 #import plotly.plotly as py
+>>>>>>> ad98bc93a55ccb360b9c44a26cffa7bc3611a445
 from pyevtk.hl import gridToVTK
 #import matplotlib.pyplot
 #graveyard pf unused module for now
@@ -35,7 +38,11 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 to_load=False          # if true will load already the last calculated Q or lambda dataset
 to_plotly=False        # if true will send the plot to plotly website
 to_matplot=False        # if true will use matplotlib to plot
+<<<<<<< HEAD
+n_elements=96       # number of elements on each side of cube calculated
+=======
 n_elements=55        # number of elements on each side of cube calculated
+>>>>>>> ad98bc93a55ccb360b9c44a26cffa7bc3611a445
 to_calc_Q=False          # if true will calc Q on cube with n_elements
 to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
 to_calc_vorticity = False  #if true calculate vorticity
