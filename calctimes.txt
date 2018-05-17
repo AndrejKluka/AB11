@@ -1271,5 +1271,11 @@ points =27   order of method=6  method=Lambda2  time taken=0.1406sec    time per
 =======
 >>>>>>> 060b714214c63f0e7fa789cf04f7d7ba3b50a1be
 >>>>>>> 2c1a1d7d11a39f20d8c9527db6d041d434bf8dac
+<<<<<<< HEAD
+points =3375   order of method=6  method=Lambda2  time taken=0.4883sec    time per point=144.68148148148148^10-6  
+points =857375   order of method=6  method=Lambda2  time taken=128.2436sec    time per point=149.57702288963404^10-6  
+points =857375   order of method=6  method=Lambda2  time taken=146.8684sec    time per point=171.30007289692375^10-6  
+=======
 points =3375   order of method=6  method=Lambda2  time taken=0.9564sec    time per point=283.3777777777778^10-6  
 points =166375   order of method=6  method=Lambda2  time taken=41.2358sec    time per point=247.84853493613824^10-6  
+>>>>>>> ad98bc93a55ccb360b9c44a26cffa7bc3611a445
