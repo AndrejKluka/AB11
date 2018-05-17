@@ -158,7 +158,7 @@ for frame in range(times) :
     z_max=np.shape(u)[2]-1
     n_points=(x_max+1)*(y_max+1)*(z_max+1)
     points_calculated=0
-    
+
     maxx=x_max
     if y_max>maxx:
         maxx=y_max
@@ -250,3 +250,4 @@ for frame in range(times) :
         print_statusline('visualized')
         
     print('Frame ['+str(frame+1)+'/'+str(frames)+'] is done')
+
