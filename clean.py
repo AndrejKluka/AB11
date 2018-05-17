@@ -19,22 +19,7 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 #automate when we get more data
 
 #---------------------------------------------------------General setup for program run
-<<<<<<< HEAD
-Visualization = True
-to_save=True  
-to_calc_Q=True       # if true will calc Q on cube with n_elements
-to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-data_num=0            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
-interval=110             # size of the cubes with which the program calculates Q/Lambda
-frames=1              # frames to calc from movie
-#65 -132sec
-#100-125sec
-#130-125sec
-#160-114sec
-#180-119sec
-#256-154sec
-optimal_intervals=[110,110,160,110]
-=======
+
 Visualization = False
 to_save=False  
 to_calc_Q=True       # if true will calc Q on cube with n_elements
@@ -49,7 +34,6 @@ frames=1              # frames to calc from movie
 #65 -132sec 100-125sec 130-125sec 160-114sec 180-119sec 256-154sec
 #110-15.86sec 110-15.37sec  110-15.2sec  193-14.1sec 97-15.66
 optimal_intervals=[110,110,160,193]
->>>>>>> 9d6ddebbc09f6ee16917a0b5f59eede1c5d6590f
 interval=optimal_intervals[data_num]
 data_set=['validation_Q_l2','raw_data_1','data_001','uvwp_00001.h5']
 
