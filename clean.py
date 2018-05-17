@@ -138,6 +138,8 @@ def Lambda2full(Dfield):
 times=1   
 if data_num==3 and frames!=1:
     times=frames
+stop11 = time.clock()
+points_calculated=0
 
 for frame in range(times) : 
     if data_num==3:    
@@ -156,8 +158,8 @@ for frame in range(times) :
     x_max=np.shape(u)[0]-1
     y_max=np.shape(u)[1]-1
     z_max=np.shape(u)[2]-1
-    n_points=(x_max+1)*(y_max+1)*(z_max+1)
-    points_calculated=0
+    n_points=(x_max+1)*(y_max+1)*(z_max+1)*frames
+    
 
     maxx=x_max
     if y_max>maxx:
@@ -189,10 +191,8 @@ for frame in range(times) :
     elif to_calc_Lambda2:
         method_of_choice=Lambda2full
         
-        
-    #print('start of calc')
-    print_statusline(str(int(points_calculated/n_points*100))+'%')
-    stop1 = time.clock()
+    print_statusline('Calculating frame ['+str(frame+1)+'/'+str(frames)+'] '+str(int(points_calculated/n_points*100))+'% all together')
+    #stop1 = time.clock()
     
     for i in range(len(axis_orig[0])-1):
         for j in range(len(axis_orig[1])-1):
@@ -226,8 +226,8 @@ for frame in range(times) :
         vorticity_y=np.nan_to_num(vorticity_y/vorticity_strength)
         vorticity_z=np.nan_to_num(vorticity_z/vorticity_strength)
         fxn() 
-    print_statusline(str(100)+'%   '+str(int((time.clock()-stop1)*10000)/10000.)+'sec  calculations done')
-    print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  calculations done') 
+    print_statusline('Calculating frame ['+str(frame+1)+'/'+str(frames)+'] '+str(int(points_calculated/n_points*100))+'% all together')
+    #print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  calculations done') 
     
     
     if to_save:
@@ -249,5 +249,6 @@ for frame in range(times) :
         os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
         print_statusline('visualized')
         
-    print('Frame ['+str(frame+1)+'/'+str(frames)+'] is done')
+    print_statusline('Frame ['+str(frame+1)+'/'+str(frames)+'] is done')
 
+print ('\n',int((time.clock()-stop11)*10000)/10000.,'sec  calculations done') 
