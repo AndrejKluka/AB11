@@ -20,11 +20,11 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 #---------------------------------------------------------General setup for program run
 
-Visualization = False
-to_save=False  
+Visualization = True
+to_save=True  
 to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-data_num=3            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
+data_num=0            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
 frames=1              # frames to calc from movie
 
 
@@ -257,4 +257,4 @@ for frame in range(times) :
 
     print_statusline('Frame ['+str(frame+1)+'/'+str(frames)+'] is done')
 
-print ('\n',int((time.clock()-stop11)*10000)/10000.,'sec  calculations done') 
+print ('\n',int((time.clock()-stop11)*10000)/10000.,'sec  calculations done')
