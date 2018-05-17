@@ -243,11 +243,11 @@ for frame in range(times) :
         gridToVTK("./calculated data/" + addon + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
         #gridToVTK("C:\\Users\\Public\\Calculated_data\\" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
         print_statusline('file saved')
-    
-    if Visualization : 
-        os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
-        os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
-        print_statusline('visualized')
-        
+# ============================================================================= 
+#     if Visualization : 
+#         os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
+#         os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
+#         print_statusline('visualized')       
+# =============================================================================
     print('Frame ['+str(frame+1)+'/'+str(frames)+'] is done')
 
