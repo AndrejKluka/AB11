@@ -259,4 +259,4 @@ for frame in range(times) :
 
     print_statusline('Frame ['+str(frame+1)+'/'+str(frames)+'] is done')
 
-print ('\n',int((time.clock()-stop11)*10000)/10000.,'sec  calculations done') 
+print ('\n',int((time.clock()-stop11)*10000)/10000.,'sec  calculations done')
