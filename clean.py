@@ -20,18 +20,9 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 #---------------------------------------------------------General setup for program run
 Visualization = False
 to_save=True  
-<<<<<<< HEAD
 to_calc_Q=False       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=True   # if true will calc lambda2 on cube with n_elements
 data_num=2            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001
-
-
-data_set=['validation_Q_l2','raw_data_1','data_001']
-
-=======
-to_calc_Q=True       # if true will calc Q on cube with n_elements
-to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-data_num=3            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
 interval=110             # size of the cubes with which the program calculates Q/Lambda
 frames=2              # frames to calc from movie
 #65 -132sec
@@ -55,7 +46,6 @@ if data_num==3 and frames!=1:
         name=name+str(i+2)
         frame_names.append('uvwp_00{}.h5' .format(name))
         
->>>>>>> 5e21a826f19da9fdcdcec1bed14a7d0617712d60
 #   reading raw dataset and putting them into u,v,w arrays
 data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num])  
 movie_data=path.join(path.join(path.dirname(__file__),'data sets'),'Movie data')
@@ -178,7 +168,6 @@ for frame in range(times) :
     n_points=(x_max+1)*(y_max+1)*(z_max+1)
     points_calculated=0
     
-<<<<<<< HEAD
 print('start of calc')
 print_statusline(str(int(points_calculated/n_points*100))+'%')
 stop1 = time.clock()
@@ -229,7 +218,6 @@ if Visualization :
     os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
     os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
 
-=======
     maxx=x_max
     if y_max>maxx:
         maxx=y_max
@@ -316,5 +304,5 @@ if Visualization :
     if Visualization : 
         os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
         os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
->>>>>>> 5e21a826f19da9fdcdcec1bed14a7d0617712d60
+
 
