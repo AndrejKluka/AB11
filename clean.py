@@ -18,13 +18,13 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 #automate when we get more data
 
 #---------------------------------------------------------General setup for program run
-Visualization = False
+Visualization = True
 to_save=True  
 to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-data_num=3            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
+data_num=0            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
 interval=110             # size of the cubes with which the program calculates Q/Lambda
-frames=2              # frames to calc from movie
+frames=1              # frames to calc from movie
 #65 -132sec
 #100-125sec
 #130-125sec
