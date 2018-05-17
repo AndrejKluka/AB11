@@ -25,6 +25,11 @@ to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 data_num=3            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
 frames=1              # frames to calc from movie
+
+
+
+
+
 #65 -132sec 100-125sec 130-125sec 160-114sec 180-119sec 256-154sec
 #110-15.86sec 110-15.37sec  110-15.2sec  193-14.1sec 97-15.66
 optimal_intervals=[110,110,160,193]
@@ -35,7 +40,7 @@ frame_names=[]
 if data_num==3 and frames>0:
     for i in range(frames):
         frame_names.append('uvwp_00{:03}.h5' .format(i+1))
-      
+
 #   reading raw dataset and putting them into u,v,w arrays
 data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num])  
 movie_data=path.join(path.join(path.dirname(__file__),'data sets'),'Movie data')
@@ -159,7 +164,6 @@ for frame in range(times) :
     y_max=np.shape(u)[1]-1
     z_max=np.shape(u)[2]-1
     n_points=(x_max+1)*(y_max+1)*(z_max+1)*frames
-    
 
     maxx=x_max
     if y_max>maxx:
@@ -248,7 +252,7 @@ for frame in range(times) :
         os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
         os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
         print_statusline('visualized')
-        
+
     print_statusline('Frame ['+str(frame+1)+'/'+str(frames)+'] is done')
 
 print ('\n',int((time.clock()-stop11)*10000)/10000.,'sec  calculations done') 
