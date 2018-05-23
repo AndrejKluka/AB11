@@ -20,10 +20,10 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 #---------------------------------------------------------General setup for program run
 Visualization = False
-to_save=False  
+to_save=False
 to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-data_num=3            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
+data_num=0            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
 frames=1              # frames to calc from movie
 
 
@@ -42,7 +42,7 @@ if data_num==3 and frames>0:
         frame_names.append('uvwp_00{:03}.h5' .format(i+1))
 
 #   reading raw dataset and putting them into u,v,w arrays
-data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num])  
+data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num])
 movie_data=path.join(path.join(path.dirname(__file__),'data sets'),'Movie data')
 
 #stuff just for fun
@@ -63,7 +63,7 @@ def ord6_full_mat(mat):
     derx[-3,:,:]=(8*(mat[-2,:,:]-mat[-4,:,:])-mat[-1,:,:]+mat[-5,:,:])/12
     derx[-2,:,:]=(mat[-1,:,:]-mat[-3,:,:])/2
     derx[-1,:,:]=mat[-1,:,:]-mat[-2,:,:]
-    
+
     dery=np.zeros((np.shape(mat)))
     dery[:,3:-3,:]=(45*(mat[:,4:-2,:]-mat[:,2:-4,:])-9*(mat[:,5:-1,:]-mat[:,1:-5,:])+mat[:,6:,:]-mat[:,:-6,:])/60
     dery[:,0,:]=mat[:,1,:]-mat[:,0,:]
@@ -72,7 +72,7 @@ def ord6_full_mat(mat):
     dery[:,-3,:]=(8*(mat[:,-2,:]-mat[:,-4,:])-mat[:,-1,:]+mat[:,-5,:])/12
     dery[:,-2,:]=(mat[:,-1,:]-mat[:,-3,:])/2
     dery[:,-1,:]=mat[:,-1,:]-mat[:,-2,:]
-    
+
     derz=np.zeros((np.shape(mat)))
     derz[:,:,3:-3]=(45*(mat[:,:,4:-2]-mat[:,:,2:-4])-9*(mat[:,:,5:-1]-mat[:,:,1:-5])+mat[:,:,6:]-mat[:,:,:-6])/60
     derz[:,:,0]=mat[:,:,1]-mat[:,:,0]
@@ -81,7 +81,7 @@ def ord6_full_mat(mat):
     derz[:,:,-3]=(8*(mat[:,:,-2]-mat[:,:,-4])-mat[:,:,-1]+mat[:,:,-5])/12
     derz[:,:,-2]=(mat[:,:,-1]-mat[:,:,-3])/2
     derz[:,:,-1]=mat[:,:,-1]-mat[:,:,-2]
-    
+
     return derx/delta, dery/delta, derz/delta
 
 #stuff for concatenating matrixes
@@ -94,7 +94,7 @@ def full_D_matrix(u,v,w,order_of_method):
     s_line=np.concatenate((np.reshape(deru[1],(np.shape(deru[1])[0],np.shape(deru[1])[1],np.shape(deru[1])[2],1)), np.reshape(derv[1],(np.shape(derv[1])[0],np.shape(derv[1])[1],np.shape(derv[1])[2],1)), np.reshape(derw[1],(np.shape(derw[1])[0],np.shape(derw[1])[1],np.shape(derw[1])[2],1))),axis=3)
     t_line=np.concatenate((np.reshape(deru[2],(np.shape(deru[2])[0],np.shape(deru[2])[1],np.shape(deru[2])[2],1)), np.reshape(derv[2],(np.shape(derv[2])[0],np.shape(derv[2])[1],np.shape(derv[2])[2],1)), np.reshape(derw[2],(np.shape(derw[2])[0],np.shape(derw[2])[1],np.shape(derw[2])[2],1))),axis=3)
     i = derw[1] - derv[2]
-    j = deru[2] - derw[0] 
+    j = deru[2] - derw[0]
     k = derv[0] - deru[1]
     strength=(i**2. + j**2. + k**2.)**0.5
     gradient_tensor=np.concatenate(( np.reshape(f_line,(np.shape(f_line)[0],np.shape(f_line)[1],np.shape(f_line)[2],3,1)),  np.reshape(s_line,(np.shape(s_line)[0],np.shape(s_line)[1],np.shape(s_line)[2],3,1)),  np.reshape(t_line,(np.shape(t_line)[0],np.shape(t_line)[1],np.shape(t_line)[2],3,1))), axis=4)
@@ -111,7 +111,7 @@ def S_matrix(D):
     s[:,:,:,0,0]=D[:,:,:,0,0]
     s[:,:,:,1,1]=D[:,:,:,1,1]
     s[:,:,:,2,2]=D[:,:,:,2,2]
-    return(s)       
+    return(s)
 
 def O_matrix(D):
     s=np.zeros(np.shape(D)) #[0],np.shape(D)[1],np.shape(D)[2],3,3)
@@ -121,7 +121,7 @@ def O_matrix(D):
     s[:,:,:,2,0]=(D[:,:,:,0,2]-D[:,:,:,2,0])/-2.
     s[:,:,:,2,1]=(D[:,:,:,2,1]-D[:,:,:,1,2])/2.
     s[:,:,:,1,2]=(D[:,:,:,2,1]-D[:,:,:,1,2])/-2.
-    return(s) 
+    return(s)
 
 def norm_full(field):
     ft=np.transpose(field, (0,1,2,4,3))
@@ -140,26 +140,26 @@ def Lambda2full(Dfield):
     lambda2_space=np.linalg.eigh(A)[0][:,:,:,1]
     return lambda2_space
 
-times=1   
+times=1
 if data_num==3 and frames!=1:
     times=frames
 stop11 = time.clock()
 points_calculated=0
 
-for frame in range(times) : 
-    if data_num==3:    
+for frame in range(times) :
+    if data_num==3:
         filename =path.join(movie_data, frame_names[frame])
         f = h5py.File(filename, 'r')
         p=f[list(f.keys())[0]]
         u=f[list(f.keys())[1]]
         v=f[list(f.keys())[2]]
-        w=f[list(f.keys())[3]]    
-    else:    
+        w=f[list(f.keys())[3]]
+    else:
         data=scipy.io.loadmat(data_set_file, mdict=None, appendmat=True)
         u=data['u']
         v=data['v']
         w=data['w']
-    
+
     x_max=np.shape(u)[0]-1
     y_max=np.shape(u)[1]-1
     z_max=np.shape(u)[2]-1
@@ -171,13 +171,13 @@ for frame in range(times) :
     elif z_max>maxx:
         maxx=z_max
     delta=2.*math.pi/(maxx+1)
-    
+
     vspace=np.empty((u.shape),dtype='float32')
     vorticity_strength = np.empty((u.shape),dtype='float32')
     vorticity_x = np.empty((u.shape),dtype='float32')
     vorticity_y = np.empty((u.shape),dtype='float32')
     vorticity_z = np.empty((u.shape),dtype='float32')
-    
+
     x=[0]
     y=[0]
     z=[0]
@@ -189,15 +189,15 @@ for frame in range(times) :
         axis_orig[i][-1]=maxes[i]
         if axis_orig[i][-1]-axis_orig[i][-2]<=20:
             axis_orig[i][-2]=axis_orig[i][-2]-30
-    
+
     if to_calc_Q:
         method_of_choice=calc_Qfull
     elif to_calc_Lambda2:
         method_of_choice=Lambda2full
-        
+
     print_statusline('Calculating frame ['+str(frame+1)+'/'+str(frames)+'] '+str(int(points_calculated/n_points*100))+'% all together')
     #stop1 = time.clock()
-    
+
     for i in range(len(axis_orig[0])-1):
         for j in range(len(axis_orig[1])-1):
             for k in range(len(axis_orig[2])-1):
@@ -212,7 +212,7 @@ for frame in range(times) :
                         end[xx]+=3
                     if not axis[xx][nah[xx]+1]==maxes[xx]:
                         axis[xx][nah[xx]+1]+=3
-                
+
                 Dfields=full_D_matrix( u[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]], v[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]],w[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]],6)
                 vorticity_strength[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[1][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
                 vorticity_x[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[2][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
@@ -222,21 +222,21 @@ for frame in range(times) :
                 if to_calc_Q or to_calc_Lambda2:
                     vspace[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = zz[start[0]:end[0], start[1]:end[1], start[2]:end[2]]
                 points_calculated+=(-start[0]+end[0])*(-start[1]+end[1])*(-start[2]+end[2])
-                print_statusline(str(int(points_calculated/n_points*100))+'%')        
+                print_statusline(str(int(points_calculated/n_points*100))+'%')
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        
+
         vorticity_x=np.nan_to_num(vorticity_x/vorticity_strength)
         vorticity_y=np.nan_to_num(vorticity_y/vorticity_strength)
         vorticity_z=np.nan_to_num(vorticity_z/vorticity_strength)
-        fxn() 
+        fxn()
     print_statusline('Calculating frame ['+str(frame+1)+'/'+str(frames)+'] '+str(int(points_calculated/n_points*100))+'% all together')
-    #print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  calculations done') 
-    
-    
+    #print ('\n',int((time.clock()-stop1)*10000)/10000.,'sec  calculations done')
+
+
     if to_save:
         if to_calc_Q: method='Q'
-        elif to_calc_Lambda2: method='Lambda2'     
+        elif to_calc_Lambda2: method='Lambda2'
         xvtk = np.arange(0, vspace.shape[0])
         yvtk = np.arange(0, vspace.shape[1])
         zvtk = np.arange(0, vspace.shape[2])
@@ -247,12 +247,12 @@ for frame in range(times) :
         gridToVTK("./calculated data/" + addon + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
         #gridToVTK("C:\\Users\\Public\\Calculated_data\\" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
         print_statusline('file saved')
-    
-    if Visualization : 
+
+    if Visualization :
         os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
         os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
         print_statusline('visualized')
 
     print_statusline('Frame ['+str(frame+1)+'/'+str(frames)+'] is done')
 
-print ('\n',int((time.clock()-stop11)*10000)/10000.,'sec  calculations done') 
+print ('\n',int((time.clock()-stop11)*10000)/10000.,'sec  calculations done')
