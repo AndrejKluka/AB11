@@ -28,9 +28,6 @@ data_num=3            # 0 for validation dataset, 1 for raw_data_1, 2 for data_0
 frames=20              # frames to calc from movie
 
 
-
-
-
 #65 -132sec 100-125sec 130-125sec 160-114sec 180-119sec 256-154sec
 #110-15.86sec 110-15.37sec  110-15.2sec  193-14.1sec 97-15.66
 optimal_intervals=[110,110,160,193]
@@ -40,10 +37,12 @@ data_set=['validation_Q_l2','raw_data_1','data_001','uvwp_00001.h5']
 frame_names=[]
 if data_num==3 and frames>0:
     for i in range(frames):
-        frame_names.append('uvwp_00{:03}.h5' .format(i+1))
+        frame_names.append('uvwp_0{:04}.h5' .format(i+1))
 
 #   reading raw dataset and putting them into u,v,w arrays
-data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num])
+
+#data_set_file=path.join(path.join(path.dirname(__file__),'data sets'),data_set[data_num])  
+data_set_file = "F:\\Data\\" + data_set[data_num]
 movie_data=path.join(path.join(path.dirname(__file__),'data sets'),'Movie data')
 
 #stuff just for fun
@@ -245,7 +244,7 @@ for frame in range(times) :
             addon=frame_names[frame]
         else:
             addon=data_set[data_num]
-        gridToVTK("./calculated data/" + addon + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity z" : vorticity_z})# , "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y})
+        gridToVTK("F:\Calculated VTK files\\" + addon + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity z" : vorticity_z})# , "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y})
         #gridToVTK("C:\\Users\\Public\\Calculated_data\\" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
         print_statusline('file saved')
 # =============================================================================
