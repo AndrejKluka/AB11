@@ -19,11 +19,7 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 
 to_save=True
 data_num=3            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
-frames=20              # frames to calc from movie
-
-
-
-
+frames=1200              # frames to calc from movie
 
 #65 -132sec 100-125sec 130-125sec 160-114sec 180-119sec 256-154sec
 #110-15.86sec 110-15.37sec  110-15.2sec  193-14.1sec 97-15.66
@@ -241,7 +237,7 @@ for frame in range(times) :
             addon=frame_names[frame]
         else:
             addon=data_set[data_num]
-        gridToVTK("./calculated data/" + addon + "-"+ method, xvtk, yvtk, zvtk, pointData = {Qname: qspace, Lname: lspace,"Vorticity z" : vorticity_z})# , "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y})
+        gridToVTK("F:\Calculated VTK files\\" + addon + "-"+ method, xvtk, yvtk, zvtk, pointData = {Qname: qspace, Lname: lspace,"Vorticity z" : vorticity_z})# , "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y})
         #gridToVTK("C:\\Users\\Public\\Calculated_data\\" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
         print_statusline('file saved')
 

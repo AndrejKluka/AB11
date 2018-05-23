@@ -25,7 +25,7 @@ to_save=True
 to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
 data_num=3            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
-frames=20              # frames to calc from movie
+frames=1              # frames to calc from movie
 
 
 #65 -132sec 100-125sec 130-125sec 160-114sec 180-119sec 256-154sec
