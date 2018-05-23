@@ -33,8 +33,15 @@ if data_num==3 and frames>0:
         frame_names.append('uvwp_0{:04}.h5' .format(i+1))
 
 #   reading raw dataset and putting them into u,v,w arrays
-data_set_file=os.path.join(os.path.dirname(__file__),'data sets',data_set[data_num])
-movie_data=os.path.join(os.path.dirname(__file__),'data sets','Movie data')
+#data_set_file=os.path.join(os.path.dirname(__file__),'data sets',data_set[data_num])
+#movie_data=os.path.join(os.path.dirname(__file__),'data sets','Movie data')
+
+data_set_file = "F:\\Data\\" + data_set[data_num]
+movie_data=path.join(path.join(path.dirname(__file__),'data sets'),'Movie data')
+
+
+
+
 
 #stuff just for fun
 def print_statusline(msg: str):
