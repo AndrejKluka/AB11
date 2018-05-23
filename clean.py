@@ -19,12 +19,13 @@ print ('\n',int((stop-start)*1000)/1000.,'sec -- imported modules')
 #automate when we get more data
 
 #---------------------------------------------------------General setup for program run
+
 Visualization = False
-to_save=False
+to_save=True
 to_calc_Q=True       # if true will calc Q on cube with n_elements
 to_calc_Lambda2=False   # if true will calc lambda2 on cube with n_elements
-data_num=0            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
-frames=1              # frames to calc from movie
+data_num=3            # 0 for validation dataset, 1 for raw_data_1, 2 for data_001,  3 for movie files
+frames=20              # frames to calc from movie
 
 
 
@@ -174,8 +175,8 @@ for frame in range(times) :
 
     vspace=np.empty((u.shape),dtype='float32')
     vorticity_strength = np.empty((u.shape),dtype='float32')
-    vorticity_x = np.empty((u.shape),dtype='float32')
-    vorticity_y = np.empty((u.shape),dtype='float32')
+    #vorticity_x = np.empty((u.shape),dtype='float32')
+    #vorticity_y = np.empty((u.shape),dtype='float32')
     vorticity_z = np.empty((u.shape),dtype='float32')
 
     x=[0]
@@ -215,8 +216,8 @@ for frame in range(times) :
 
                 Dfields=full_D_matrix( u[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]], v[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]],w[axis[0][i]:axis[0][i+1], axis[1][j]:axis[1][j+1], axis[2][k]:axis[2][k+1]],6)
                 vorticity_strength[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[1][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
-                vorticity_x[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[2][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
-                vorticity_y[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[3][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
+                #vorticity_x[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[2][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
+                #vorticity_y[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[3][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
                 vorticity_z[axis_orig[0][i]:axis_orig[0][i+1], axis_orig[1][j]:axis_orig[1][j+1], axis_orig[2][k]:axis_orig[2][k+1]] = Dfields[4][start[0]:end[0], start[1]:end[1], start[2]:end[2]]
                 zz=method_of_choice(Dfields[0])
                 if to_calc_Q or to_calc_Lambda2:
@@ -226,8 +227,8 @@ for frame in range(times) :
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
 
-        vorticity_x=np.nan_to_num(vorticity_x/vorticity_strength)
-        vorticity_y=np.nan_to_num(vorticity_y/vorticity_strength)
+        #vorticity_x=np.nan_to_num(vorticity_x/vorticity_strength)
+        #vorticity_y=np.nan_to_num(vorticity_y/vorticity_strength)
         vorticity_z=np.nan_to_num(vorticity_z/vorticity_strength)
         fxn()
     print_statusline('Calculating frame ['+str(frame+1)+'/'+str(frames)+'] '+str(int(points_calculated/n_points*100))+'% all together')
@@ -244,14 +245,17 @@ for frame in range(times) :
             addon=frame_names[frame]
         else:
             addon=data_set[data_num]
-        gridToVTK("./calculated data/" + addon + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
+        gridToVTK("./calculated data/" + addon + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity z" : vorticity_z})# , "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y})
         #gridToVTK("C:\\Users\\Public\\Calculated_data\\" + data_set[data_num] + "-"+ method, xvtk, yvtk, zvtk, pointData = {method: vspace, "Vorticity normal": vorticity_strength, "Vorticity x" : vorticity_x , "Vorticity y" : vorticity_y , "Vorticity z" : vorticity_z })
         print_statusline('file saved')
-
-    if Visualization :
-        os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
-        os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
-        print_statusline('visualized')
+# =============================================================================
+#
+#     if Visualization :
+#         os.chdir("C:\\Program Files\\ParaView 5.5.0-RC3-Qt5-Windows-64bit\\bin\\")
+#         os.system("pvpython.exe C:\\Users\\Public\\pv1.py")
+#         print_statusline('visualized')
+#
+# =============================================================================
 
     print_statusline('Frame ['+str(frame+1)+'/'+str(frames)+'] is done')
 
